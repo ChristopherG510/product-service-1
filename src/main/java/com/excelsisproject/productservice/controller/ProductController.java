@@ -31,14 +31,14 @@ public class ProductController {
         return ResponseEntity.ok(productDto);
     }
 
-    // get all products
+    // Get all products
     @GetMapping
     public ResponseEntity<List<ProductDto>> getAllProducts(){
         List<ProductDto> products = productService.getAllProducts();
         return ResponseEntity.ok(products);
     }
 
-    // update product
+    // Update product
     @PutMapping("{id}")
     public ResponseEntity<ProductDto> updateProduct(@PathVariable("id") Long productId, @RequestBody ProductDto updatedProduct){
         ProductDto productDto = productService.updateProduct(productId, updatedProduct);

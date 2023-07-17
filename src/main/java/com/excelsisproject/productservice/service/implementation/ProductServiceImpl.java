@@ -29,7 +29,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDto getProductById(Long productId) {
         Product product = productRepository.findById(productId).orElseThrow(
-                () -> new ResourceNotFoundException("Product does not exist with given id: " + productId));
+                () -> new ResourceNotFoundException("Product does not exists with given id: " + productId));
 
         return ProductMapper.mapToProductDto(product);
     }
