@@ -28,9 +28,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDto getProductById(Long productId) {
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Product does not exist with given id: " + productId));
+        Product product = productRepository.findById(productId).orElseThrow(
+                () -> new ResourceNotFoundException("Product does not exist with given id: " + productId));
+
         return ProductMapper.mapToProductDto(product);
     }
 
@@ -39,6 +39,29 @@ public class ProductServiceImpl implements ProductService {
         List<Product> products = productRepository.findAll();
         return products.stream().map((product) -> ProductMapper.mapToProductDto(product))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public ProductDto updateProduct(Long productId, ProductDto updatedProduct) {
+        Product product = productRepository.findById(productId).orElseThrow(
+                ()-> new ResourceNotFoundException("Product does not exist with given id: " + productId));
+
+        product.setName(updatedProduct.getName());
+        product.setDescription(updatedProduct.getDescription());
+        product.setPrice(updatedProduct.getPrice());
+
+        Product updatedProductObj = productRepository.save(product);
+
+        return ProductMapper.mapToProductDto(updatedProductObj);
+    }
+
+    @Override
+    public void deleteProduct(Long productId) {
+        Product product = productRepository.findById(productId).orElseThrow(
+                ()-> new ResourceNotFoundException("Product does not exist with given id: " + productId));
+
+        productRepository.deleteById(productId);
+
     }
 
 
