@@ -15,5 +15,6 @@ public interface ProductService {
 
     void deleteProduct(Long productId);
 
+//    ProductDto orderProduct(Long productId, ProductDto orderedProduct);
 
 }
