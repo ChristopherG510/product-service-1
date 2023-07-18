@@ -42,5 +42,23 @@ public class OrderServiceImpl implements OrderService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public OrderDto updateOrder(Long orderId, OrderDto updatedOrder) {
+
+        Order order = orderRepository.findById(orderId).orElseThrow(
+                () -> new ResourceNotFoundException("Order does not exist with given Id: " + orderId)
+        );
+
+        order.setOrderUserName(updatedOrder.getOrderUserName());
+        order.setOrderUserAddress(updatedOrder.getOrderUserAddress());
+        order.setOrderContact(updatedOrder.getOrderContact());
+        order.setProductId(updatedOrder.getProductId());
+        order.setOrderAmount(updatedOrder.getOrderAmount());
+
+        Order updatedOrderObj = orderRepository.save(order);
+
+        return OrderMapper.mapToOrderDto(updatedOrderObj);
+    }
+
 
 }
