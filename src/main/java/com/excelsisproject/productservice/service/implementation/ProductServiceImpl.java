@@ -48,7 +48,7 @@ public class ProductServiceImpl implements ProductService {
 
         product.setName(updatedProduct.getName());
         product.setDescription(updatedProduct.getDescription());
-        product.setAmount(updatedProduct.getAmount());
+        product.setAmountInStock(updatedProduct.getAmountInStock());
         product.setPrice(updatedProduct.getPrice());
 
         Product updatedProductObj = productRepository.save(product);
@@ -65,6 +65,17 @@ public class ProductServiceImpl implements ProductService {
         productRepository.deleteById(productId);
     }
 
+    @Override
+    public ProductDto updateAmount(Long productId, double amountOrdered) {
+        Product product = productRepository.findById(productId).orElseThrow(
+                ()-> new ResourceNotFoundException("Product does not exist with given id: " + productId));
+
+        product.setAmountInStock(product.getAmountInStock() - amountOrdered);
+
+        Product updatedProductObj = productRepository.save(product);
+
+        return ProductMapper.mapToProductDto(updatedProductObj);
+    }
 
 
 }

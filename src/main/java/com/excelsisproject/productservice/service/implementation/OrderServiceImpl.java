@@ -20,7 +20,7 @@ public class OrderServiceImpl implements OrderService {
 
     private OrderRepository orderRepository;
     @Override
-    public OrderDto placeOrder(OrderDto orderDto) {
+    public OrderDto orderProduct(OrderDto orderDto) {
         Order order = OrderMapper.mapToOrder(orderDto);
         Order savedOrder = orderRepository.save(order);
 
@@ -44,10 +44,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDto updateOrder(Long orderId, OrderDto updatedOrder) {
-
         Order order = orderRepository.findById(orderId).orElseThrow(
-                () -> new ResourceNotFoundException("Order does not exist with given Id: " + orderId)
-        );
+                ()-> new ResourceNotFoundException("order does not exist with given id: " + orderId));
 
         order.setOrderUserName(updatedOrder.getOrderUserName());
         order.setOrderUserAddress(updatedOrder.getOrderUserAddress());

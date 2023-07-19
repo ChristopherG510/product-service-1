@@ -1,7 +1,9 @@
 package com.excelsisproject.productservice.controller;
 
 import com.excelsisproject.productservice.dto.OrderDto;
+import com.excelsisproject.productservice.dto.ProductDto;
 import com.excelsisproject.productservice.service.OrderService;
+import com.excelsisproject.productservice.service.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,11 +17,16 @@ import java.util.List;
 public class OrderController {
 
     private OrderService orderService;
+    private ProductService productService;
 
     // create order
     @PostMapping
-    public ResponseEntity<OrderDto> placeOrder(@RequestBody OrderDto orderDto){
-        OrderDto savedOrder = orderService.placeOrder(orderDto);
+    public ResponseEntity<OrderDto> orderProduct(@RequestBody OrderDto orderDto){
+        OrderDto savedOrder = orderService.orderProduct(orderDto);
+        double amountOrdered = orderDto.getOrderAmount();
+        Long productId = orderDto.getProductId();
+
+        ProductDto productDto = productService.updateAmount(productId, amountOrdered);
         return new ResponseEntity<>(savedOrder, HttpStatus.CREATED);
     }
 
@@ -35,6 +42,13 @@ public class OrderController {
     public ResponseEntity<List<OrderDto>> getAllOrders(){
         List<OrderDto> orders = orderService.getAllOrders();
         return ResponseEntity.ok(orders);
+    }
+
+    // Update order
+    @PutMapping("{id}")
+    public ResponseEntity<OrderDto> updateOrder(@PathVariable("id") Long orderId, @RequestBody OrderDto updatedOrder){
+        OrderDto orderDto = orderService.updateOrder(orderId, updatedOrder);
+        return ResponseEntity.ok(orderDto);
     }
 
 }

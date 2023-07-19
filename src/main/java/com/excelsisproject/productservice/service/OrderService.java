@@ -1,12 +1,11 @@
 package com.excelsisproject.productservice.service;
 
 import com.excelsisproject.productservice.dto.OrderDto;
-import com.excelsisproject.productservice.dto.ProductDto;
 
 import java.util.List;
 
 public interface OrderService {
-    OrderDto placeOrder(OrderDto orderDto);
+    OrderDto orderProduct(OrderDto orderDto);
 
     OrderDto getOrderById(Long orderId);
 

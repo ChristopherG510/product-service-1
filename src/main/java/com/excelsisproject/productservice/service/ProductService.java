@@ -15,6 +15,6 @@ public interface ProductService {
 
     void deleteProduct(Long productId); // Eliminar un producto
 
-//    ProductDto orderProduct(Long productId, ProductDto orderedProduct);
+    ProductDto updateAmount(Long productId, double amountOrdered);
 
 }
