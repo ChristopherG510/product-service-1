@@ -13,4 +13,6 @@ public interface OrderService {
 
     OrderDto updateOrder(Long orderId, OrderDto updatedOrder);
 
+    OrderDto updatePrice(Long orderId, double totalPrice);
+
 }

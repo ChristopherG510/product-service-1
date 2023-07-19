@@ -10,19 +10,26 @@ public class OrderMapper {
                 order.getOrderUserName(),
                 order.getOrderUserAddress(),
                 order.getOrderContact(),
-                order.getProductId(),
-                order.getOrderAmount()
+                order.getCartItems(),
+                order.getTotalPrice()
         );
     }
 
+
     public static Order mapToOrder(OrderDto orderDto){
+
+//        double fullPrice = 0;
+//        for (Cart cart : orderDto.getCartItems()){
+//            fullPrice += cart.getAmount() * productService.returnPrice(productService.getProductById(cart.getProductId()).getId());
+//        }
+
         return new Order(
                 orderDto.getOrderId(),
                 orderDto.getOrderUserName(),
                 orderDto.getOrderUserAddress(),
                 orderDto.getOrderContact(),
-                orderDto.getProductId(),
-                orderDto.getOrderAmount()
+                orderDto.getCartItems(),
+                orderDto.getTotalPrice()
         );
     }
 }

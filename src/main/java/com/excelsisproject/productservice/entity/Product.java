@@ -22,6 +22,6 @@ public class Product {
     private String name;
     private String description;
     private double amountInStock;
-    private BigDecimal price;
+    private double price;
 
 }

@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -23,9 +26,8 @@ public class Order {
     private String orderUserAddress;
     @Column(name = "contact")
     private String orderContact;
-    @Column(name = "product_id")
-    private Long productId;
-    @Column(name = "amount")
-    private Double orderAmount;
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, targetEntity = Cart.class)
+    private List<Cart> cartItems;
+    private double totalPrice;
 
 }

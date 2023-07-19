@@ -66,7 +66,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDto updateAmount(Long productId, double amountOrdered) {
+    public ProductDto updateStock(Long productId, double amountOrdered) {
         Product product = productRepository.findById(productId).orElseThrow(
                 ()-> new ResourceNotFoundException("Product does not exist with given id: " + productId));
 
@@ -77,5 +77,10 @@ public class ProductServiceImpl implements ProductService {
         return ProductMapper.mapToProductDto(updatedProductObj);
     }
 
-
+    @Override
+    public double getPrice(Long productId) {
+        Product product = productRepository.findById(productId).orElseThrow(
+                () -> new ResourceNotFoundException("Product does not exists with given id: " + productId));
+        return product.getPrice();
+    }
 }

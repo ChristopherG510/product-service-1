@@ -2,6 +2,7 @@ package com.excelsisproject.productservice.controller;
 
 import com.excelsisproject.productservice.dto.OrderDto;
 import com.excelsisproject.productservice.dto.ProductDto;
+import com.excelsisproject.productservice.entity.Cart;
 import com.excelsisproject.productservice.service.OrderService;
 import com.excelsisproject.productservice.service.ProductService;
 import lombok.AllArgsConstructor;
@@ -22,11 +23,18 @@ public class OrderController {
     // create order
     @PostMapping
     public ResponseEntity<OrderDto> orderProduct(@RequestBody OrderDto orderDto){
+        List<Cart> cartItems = orderDto.getCartItems();
+        double totalPrice = 0;
+        for (Cart cart : cartItems){
+            double amountOrdered = cart.getAmount();
+            Long productId = cart.getProductId();
+            productService.updateStock(productId, amountOrdered);
+            cart.setPrice(productService.getPrice(productId));
+            totalPrice += cart.getPrice() * cart.getAmount();
+        }
+        orderDto.setTotalPrice(totalPrice);
         OrderDto savedOrder = orderService.orderProduct(orderDto);
-        double amountOrdered = orderDto.getOrderAmount();
-        Long productId = orderDto.getProductId();
 
-        ProductDto productDto = productService.updateAmount(productId, amountOrdered);
         return new ResponseEntity<>(savedOrder, HttpStatus.CREATED);
     }
 
