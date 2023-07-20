@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigDecimal;
+import java.util.Set;
 
 @Getter @Setter // Para los getters y setters
 @NoArgsConstructor // Constructor vacio
@@ -16,12 +16,21 @@ import java.math.BigDecimal;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     // Se le puede agregar @Column(name ="***") para que en la db se vea diferente
     private Long id;
     private String name;
     private String description;
     private double amountInStock;
     private double price;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "product_images",
+            joinColumns = {
+                    @JoinColumn(name = "product_id")
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "image_id")
+            }
+    )
+    Set<ImageModel> imageFiles;
 
 }

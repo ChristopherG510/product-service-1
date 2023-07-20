@@ -1,13 +1,20 @@
 package com.excelsisproject.productservice.controller;
 
 import com.excelsisproject.productservice.dto.ProductDto;
+import com.excelsisproject.productservice.entity.ImageModel;
 import com.excelsisproject.productservice.service.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.awt.*;
+import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @RestController
@@ -17,11 +24,30 @@ public class ProductController {
     private ProductService productService;
 
     // Add Product
-    @PostMapping
-    public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto productDto){
+    @PostMapping(value = {""}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<ProductDto> createProduct(@RequestPart("product") ProductDto productDto, @RequestPart("imageFile") MultipartFile[] file) {
+        try{
+            Set<ImageModel> images = uploadImage(file);
+            productDto.setImageFiles(images);
+        } catch(Exception e){
+            System.out.println(e.getMessage());
+            return null;
+        }
+        //productDto.setImageFile(file.getBytes());
         ProductDto savedProduct = productService.createProduct(productDto);
-
         return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
+    }
+
+    public Set<ImageModel> uploadImage(MultipartFile[] multipartFiles) throws IOException{
+        Set<ImageModel> imageModels = new HashSet<>();
+
+        for (MultipartFile file: multipartFiles){
+            ImageModel imageModel = new ImageModel(null,
+                    file.getBytes()
+            );
+            imageModels.add(imageModel);
+        }
+        return imageModels;
     }
 
     // Get product by id

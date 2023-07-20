@@ -1,11 +1,13 @@
 package com.excelsisproject.productservice.dto;
 
+import com.excelsisproject.productservice.entity.ImageModel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigDecimal;
+
+import java.util.Set;
 
 @Getter
 @Setter
@@ -18,4 +20,5 @@ public class ProductDto {
     private String description;
     private double amountInStock;
     private double price;
+    Set<ImageModel> imageFiles;
 }
