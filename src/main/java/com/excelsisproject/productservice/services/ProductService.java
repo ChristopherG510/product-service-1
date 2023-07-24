@@ -18,4 +18,6 @@ public interface ProductService {
     ProductDto updateStock(Long productId, double amountOrdered);
 
     double getPrice(Long productId);
+
+    List<ProductDto> searchProducts(String searchKey);
 }

@@ -45,7 +45,7 @@ public class ClosingDetailsController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<ClosingDetailsDto> getDetailstById(@PathVariable("id") Long detailsId){
+    public ResponseEntity<ClosingDetailsDto> getDetailsById(@PathVariable("id") Long detailsId){
         ClosingDetailsDto detailsDto = closingService.getDetailsById(detailsId);
         return ResponseEntity.ok(detailsDto);
     }
