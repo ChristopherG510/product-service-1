@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Getter
@@ -26,6 +25,10 @@ public class Order {
     private String orderUserAddress;
     @Column(name = "contact")
     private String orderContact;
+    @Column(name = "order_date")
+    private String dateOrdered;
+    @Column(name = "order_time")
+    private String timeOrdered;
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, targetEntity = Cart.class)
     private List<Cart> cartItems;
     private double totalPrice;

@@ -1,7 +1,6 @@
 package com.excelsisproject.productservice.controller;
 
 import com.excelsisproject.productservice.dto.OrderDto;
-import com.excelsisproject.productservice.dto.ProductDto;
 import com.excelsisproject.productservice.entity.Cart;
 import com.excelsisproject.productservice.service.OrderService;
 import com.excelsisproject.productservice.service.ProductService;
@@ -10,6 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @AllArgsConstructor
@@ -19,6 +21,7 @@ public class OrderController {
 
     private OrderService orderService;
     private ProductService productService;
+    private ClosingDetailsController detailsController;
 
     // create order
     @PostMapping
@@ -33,6 +36,8 @@ public class OrderController {
             totalPrice += cart.getPrice() * cart.getAmount();
         }
         orderDto.setTotalPrice(totalPrice);
+        orderDto.setDateOrdered(LocalDateTime.now(ZoneId.of("America/Asuncion")).format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+        orderDto.setTimeOrdered(LocalDateTime.now(ZoneId.of("America/Asuncion")).format(DateTimeFormatter.ofPattern("HH:mm:ss")));
         OrderDto savedOrder = orderService.orderProduct(orderDto);
 
         return new ResponseEntity<>(savedOrder, HttpStatus.CREATED);
@@ -59,4 +64,9 @@ public class OrderController {
         return ResponseEntity.ok(orderDto);
     }
 
+    @DeleteMapping("{id}")
+    public ResponseEntity<String> deleteOrder(@PathVariable("id") Long orderId){
+        orderService.deleteOrder(orderId);
+        return ResponseEntity.ok("Order deleted.");
+    }
 }

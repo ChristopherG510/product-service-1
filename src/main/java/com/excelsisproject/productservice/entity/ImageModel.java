@@ -18,8 +18,7 @@ public class ImageModel {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Lob
-    @Column(name = "image", columnDefinition = "BLOB")
+    @Column(name = "image", columnDefinition = "LONGBLOB")
     private byte[] imageFile;
-
 
 }

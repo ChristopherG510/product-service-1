@@ -10,6 +10,8 @@ public class OrderMapper {
                 order.getOrderUserName(),
                 order.getOrderUserAddress(),
                 order.getOrderContact(),
+                order.getDateOrdered(),
+                order.getTimeOrdered(),
                 order.getCartItems(),
                 order.getTotalPrice()
         );
@@ -17,17 +19,13 @@ public class OrderMapper {
 
 
     public static Order mapToOrder(OrderDto orderDto){
-
-//        double fullPrice = 0;
-//        for (Cart cart : orderDto.getCartItems()){
-//            fullPrice += cart.getAmount() * productService.returnPrice(productService.getProductById(cart.getProductId()).getId());
-//        }
-
         return new Order(
                 orderDto.getOrderId(),
                 orderDto.getOrderUserName(),
                 orderDto.getOrderUserAddress(),
                 orderDto.getOrderContact(),
+                orderDto.getDateOrdered(),
+                orderDto.getTimeOrdered(),
                 orderDto.getCartItems(),
                 orderDto.getTotalPrice()
         );

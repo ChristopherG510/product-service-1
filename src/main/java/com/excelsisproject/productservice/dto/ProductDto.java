@@ -20,5 +20,5 @@ public class ProductDto {
     private String description;
     private double amountInStock;
     private double price;
-    Set<ImageModel> imageFiles;
+    private Set<ImageModel> imageFiles;
 }

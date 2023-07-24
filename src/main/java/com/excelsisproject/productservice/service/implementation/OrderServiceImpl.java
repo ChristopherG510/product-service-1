@@ -3,16 +3,14 @@ package com.excelsisproject.productservice.service.implementation;
 import com.excelsisproject.productservice.dto.OrderDto;
 
 import com.excelsisproject.productservice.entity.Order;
-import com.excelsisproject.productservice.entity.Product;
 import com.excelsisproject.productservice.exception.ResourceNotFoundException;
 import com.excelsisproject.productservice.mapper.OrderMapper;
-import com.excelsisproject.productservice.mapper.ProductMapper;
 import com.excelsisproject.productservice.repository.OrderRepository;
 import com.excelsisproject.productservice.service.OrderService;
-import com.excelsisproject.productservice.service.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,6 +34,8 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new ResourceNotFoundException("Order does not exist by given id: " + orderId));
 
         return OrderMapper.mapToOrderDto(order);
+
+
     }
 
     @Override
@@ -61,6 +61,14 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public void deleteOrder(Long orderId) {
+        Order order = orderRepository.findById(orderId).orElseThrow(
+                ()-> new ResourceNotFoundException("Order does not exist with given id: " + orderId));
+
+        orderRepository.deleteById(orderId);
+    }
+
+    @Override
     public OrderDto updatePrice(Long orderId, double totalPrice) {
         Order order = orderRepository.findById(orderId).orElseThrow(
                 ()-> new ResourceNotFoundException("Product does not exist with given id: " + orderId));
@@ -72,5 +80,16 @@ public class OrderServiceImpl implements OrderService {
         return OrderMapper.mapToOrderDto(updatedOrderObj);
     }
 
+    @Override
+    public List<OrderDto> findByDate(String dateOrdered) {
+        System.out.println(orderRepository.findByDateOrdered(dateOrdered));
+        List<Order> orders = orderRepository.findByDateOrdered(dateOrdered);
+        List<OrderDto> ordersDto = new ArrayList<>();
 
+        for (Order orderList : orders){
+            ordersDto.add(OrderMapper.mapToOrderDto(orderList));
+        }
+
+        return ordersDto;
+    }
 }

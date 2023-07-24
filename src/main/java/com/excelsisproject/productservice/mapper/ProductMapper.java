@@ -4,7 +4,6 @@ import com.excelsisproject.productservice.dto.ProductDto;
 import com.excelsisproject.productservice.entity.Product;
 
 public class ProductMapper {
-
     public static ProductDto mapToProductDto(Product product){
         return new ProductDto(
                 product.getId(),

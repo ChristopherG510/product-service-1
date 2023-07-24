@@ -19,6 +19,7 @@ public class Product {
     // Se le puede agregar @Column(name ="***") para que en la db se vea diferente
     private Long id;
     private String name;
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
     private double amountInStock;
     private double price;
@@ -31,6 +32,7 @@ public class Product {
                     @JoinColumn(name = "image_id")
             }
     )
-    Set<ImageModel> imageFiles;
+    private Set<ImageModel> imageFiles;
+    // @Column(name = "image", columnDefinition = "LONGBLOB")
 
 }

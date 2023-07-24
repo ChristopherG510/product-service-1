@@ -7,10 +7,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.awt.*;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
@@ -25,15 +25,13 @@ public class ProductController {
 
     // Add Product
     @PostMapping(value = {""}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<ProductDto> createProduct(@RequestPart("product") ProductDto productDto, @RequestPart("imageFile") MultipartFile[] file) {
+    public ResponseEntity<ProductDto> createProduct(@RequestPart("product") ProductDto productDto, @RequestPart(value = "imageFile", required = false) MultipartFile[] file) {
         try{
             Set<ImageModel> images = uploadImage(file);
             productDto.setImageFiles(images);
         } catch(Exception e){
             System.out.println(e.getMessage());
-            return null;
         }
-        //productDto.setImageFile(file.getBytes());
         ProductDto savedProduct = productService.createProduct(productDto);
         return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
     }
@@ -77,4 +75,11 @@ public class ProductController {
         productService.deleteProduct(productId);
         return ResponseEntity.ok("Product deleted.");
     }
+
+//    @ExceptionHandler(MissingServletRequestParameterException.class)
+//    public void handleMissingParams(MissingServletRequestParameterException ex){
+//        String name = ex.getParameterName();
+//        System.out.println(name + "parameter is missing");
+//
+//    }
 }

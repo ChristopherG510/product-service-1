@@ -13,6 +13,9 @@ public interface OrderService {
 
     OrderDto updateOrder(Long orderId, OrderDto updatedOrder);
 
+    void deleteOrder(Long orderId);
+
     OrderDto updatePrice(Long orderId, double totalPrice);
 
+    List<OrderDto> findByDate(String dateOrdered);
 }
