@@ -75,10 +75,11 @@ public class ProductController {
         return ResponseEntity.ok("Product deleted.");
     }
 
-//    @ExceptionHandler(MissingServletRequestParameterException.class)
-//    public void handleMissingParams(MissingServletRequestParameterException ex){
-//        String name = ex.getParameterName();
-//        System.out.println(name + "parameter is missing");
-//
-//    }
+    // search products
+    @GetMapping("/search")
+    public ResponseEntity<List<ProductDto>> searchProducts(@RequestParam String searchKey){
+        List<ProductDto> products = productService.searchProducts(searchKey);
+        return ResponseEntity.ok(products);
+    }
+
 }

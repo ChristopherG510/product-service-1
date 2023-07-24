@@ -83,4 +83,11 @@ public class ProductServiceImpl implements ProductService {
                 () -> new ResourceNotFoundException("Product does not exists with given id: " + productId));
         return product.getPrice();
     }
+
+    @Override
+    public List<ProductDto> searchProducts(String searchKey) {
+        List<Product> products = productRepository.findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(searchKey, searchKey);
+        return products.stream().map((product) -> ProductMapper.mapToProductDto(product))
+                .collect(Collectors.toList());
+    }
 }
