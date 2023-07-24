@@ -1,6 +1,6 @@
 package com.excelsisproject.productservice.dto;
 
-import com.excelsisproject.productservice.entity.ImageModel;
+import com.excelsisproject.productservice.entities.ImageModel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

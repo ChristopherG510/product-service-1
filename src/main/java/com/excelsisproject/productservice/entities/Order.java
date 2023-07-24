@@ -1,6 +1,6 @@
-package com.excelsisproject.productservice.dto;
+package com.excelsisproject.productservice.entities;
 
-import com.excelsisproject.productservice.entities.Cart;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,16 +12,25 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderDto {
+@Entity
+@Table(name = "Orders")
+public class Order {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId;
+    @Column(name = "user")
     private String orderUserName;
+    @Column(name = "address")
     private String orderUserAddress;
+    @Column(name = "contact")
     private String orderContact;
+    @Column(name = "order_date")
     private String dateOrdered;
+    @Column(name = "order_time")
     private String timeOrdered;
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, targetEntity = Cart.class)
     private List<Cart> cartItems;
     private double totalPrice;
 
 }
-
-
