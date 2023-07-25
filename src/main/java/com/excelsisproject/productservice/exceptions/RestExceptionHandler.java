@@ -1,8 +1,7 @@
-package com.excelsisproject.productservice.config;
+package com.excelsisproject.productservice.exceptions;
 
 
 import com.excelsisproject.productservice.dto.ErrorDto;
-import com.excelsisproject.productservice.exceptions.AppException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
