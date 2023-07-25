@@ -7,9 +7,7 @@ public class OrderMapper {
     public static OrderDto mapToOrderDto(Order order){
         return new OrderDto(
                 order.getOrderId(),
-                order.getOrderUserName(),
-                order.getOrderUserAddress(),
-                order.getOrderContact(),
+                order.getUserId(),
                 order.getDateOrdered(),
                 order.getTimeOrdered(),
                 order.getCartItems(),
@@ -21,9 +19,7 @@ public class OrderMapper {
     public static Order mapToOrder(OrderDto orderDto){
         return new Order(
                 orderDto.getOrderId(),
-                orderDto.getOrderUserName(),
-                orderDto.getOrderUserAddress(),
-                orderDto.getOrderContact(),
+                orderDto.getUserId(),
                 orderDto.getDateOrdered(),
                 orderDto.getTimeOrdered(),
                 orderDto.getCartItems(),

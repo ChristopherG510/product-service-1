@@ -49,9 +49,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderRepository.findById(orderId).orElseThrow(
                 ()-> new ResourceNotFoundException("order does not exist with given id: " + orderId));
 
-        order.setOrderUserName(updatedOrder.getOrderUserName());
-        order.setOrderUserAddress(updatedOrder.getOrderUserAddress());
-        order.setOrderContact(updatedOrder.getOrderContact());
+
         order.setCartItems(updatedOrder.getCartItems());
 
         Order updatedOrderObj = orderRepository.save(order);
