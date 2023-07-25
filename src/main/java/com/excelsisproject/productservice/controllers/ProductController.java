@@ -2,6 +2,7 @@ package com.excelsisproject.productservice.controllers;
 
 import com.excelsisproject.productservice.dto.ProductDto;
 import com.excelsisproject.productservice.entities.ImageModel;
+import com.excelsisproject.productservice.entities.Product;
 import com.excelsisproject.productservice.services.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,7 +25,8 @@ public class ProductController {
 
     // Add Product
     @PostMapping(value = {""}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<ProductDto> createProduct(@RequestPart("product") ProductDto productDto, @RequestPart(value = "imageFile", required = false) MultipartFile[] file) {
+    public ResponseEntity<ProductDto> createProduct(@RequestPart("product") ProductDto productDto,
+                                                    @RequestPart(value = "imageFile", required = false) MultipartFile[] file) {
         try{
             Set<ImageModel> images = uploadImage(file);
             productDto.setImageFiles(images);

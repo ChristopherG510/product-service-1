@@ -1,7 +1,7 @@
 package com.excelsisproject.productservice.filters;
 
 import com.excelsisproject.productservice.Jwt.JwtUtils;
-import com.excelsisproject.productservice.services.UserDetailsServiceImpl;
+import com.excelsisproject.productservice.services.implementation.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
