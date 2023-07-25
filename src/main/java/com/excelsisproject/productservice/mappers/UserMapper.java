@@ -9,6 +9,7 @@ import com.excelsisproject.productservice.entities.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -34,7 +35,16 @@ public interface UserMapper {
         if (signUpDto == null) {
             return null;
         } else {
-            Set<RoleEntity> roles = signUpDto.roles().stream().map(role->RoleEntity.builder().name(ERole.valueOf(role)).build()).collect(Collectors.toSet());
+            // Crear un nuevo objeto RoleEntity con el nombre ADMIN
+            RoleEntity adminRole = new RoleEntity();
+            adminRole.setName(ERole.CLIENT);
+
+            // Crear un nuevo set de roles vacío
+            Set<RoleEntity> roles = new HashSet<>();
+
+            // Añadir el rol admin al set
+            roles.add(adminRole);
+
             User.UserBuilder user = User.builder();
             user.firstName(signUpDto.firstName());
             user.lastName(signUpDto.lastName());
