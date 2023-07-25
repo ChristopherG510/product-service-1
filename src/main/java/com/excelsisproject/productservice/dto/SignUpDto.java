@@ -1,4 +1,6 @@
 package com.excelsisproject.productservice.dto;
 
-public record SignUpDto (String firstName, String lastName, String login, char[] password){
+import com.excelsisproject.productservice.entities.UserInfo;
+
+public record SignUpDto (String firstName, String lastName, UserInfo userInfo, String login, char[] password){
 }
