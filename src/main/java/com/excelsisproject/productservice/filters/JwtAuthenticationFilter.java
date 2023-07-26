@@ -11,6 +11,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -51,8 +53,19 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             throw new RuntimeException(e);
         }
 
+
+        // Se crea un objeto **UsernamePasswordAuthenticationToken** que representa una autenticación basada en un nombre
+        // de usuario y una contraseña.
+        // El constructor de un **UsernamePasswordAuthenticationToken** recibe el nombre de usuario (o principal)
+        // y la contraseña, este constructor se usa para crear un token no autenticado, es decir, que aún no ha sido validado
+        //  por el **AuthenticationManager**.
+
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(login, password);
+
+
+        // El método **authenticate** del **AuthenticationManager** se encarga de
+        // verificar las credenciales y devolver un token autenticado, o lanzar una excepción si las credenciales son inválidas.
 
         return getAuthenticationManager().authenticate(authenticationToken);
     }
@@ -74,6 +87,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         // Se responde en el header de la respuesta con el token de acceso
         response.addHeader("Authorization", token);
 
+
         // Se responde en el cuerpo de la respuesta con los siguientes datos:
         // Se mapea la respuesta a un JSON
         Map<String, Object> httpResponse = new HashMap<>();
@@ -90,4 +104,36 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         super.successfulAuthentication(request, response, chain, authResult);
     }
+
+
+    @Override
+    // Si la autenticacion fue incorrecta, se genera un mensaje de error
+    protected void unsuccessfulAuthentication(HttpServletRequest request,
+                                              HttpServletResponse response,
+                                              AuthenticationException failed) throws IOException {
+
+        // Se crea un mapa para almacenar los datos del error
+        Map<String, Object> errorResponse = new HashMap<>();
+
+        // Se obtiene el codigo y el mensaje del error segun el tipo de excepcion
+        String errorMessage = "";
+        if (failed instanceof BadCredentialsException) {
+            errorMessage = "Nombre de usuario o contraseña inválidos";
+        }
+        // Se agrega el codigo, el mensaje y la excepcion al mapa
+        errorResponse.put("Message", errorMessage);
+
+        // Se escribe el mapa en el cuerpo de la respuesta usando un ObjectMapper
+        response.getWriter().write(new ObjectMapper().writeValueAsString(errorResponse));
+
+        // Se establece el codigo de estado y el tipo de contenido de la respuesta
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.getWriter().flush();
+
+    }
+
+
+
+
 }

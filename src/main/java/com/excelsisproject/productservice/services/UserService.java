@@ -10,10 +10,11 @@ import com.excelsisproject.productservice.entities.User;
 import com.excelsisproject.productservice.exceptions.AppException;
 import com.excelsisproject.productservice.mappers.UserMapper;
 import com.excelsisproject.productservice.repositories.UserRepository;
+import com.excelsisproject.productservice.services.implementation.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.nio.CharBuffer;
@@ -28,6 +29,10 @@ public class UserService {
     @Autowired
     private SecurityConfig securityConfig;
 
+    @Autowired
+    private UserDetailsServiceImpl userDetailsService;
+
+    /*
     public UserDto login(CredentialsDto credentialsDto) {
         User user = userRepository.findByLogin(credentialsDto.login())
                 .orElseThrow(() -> new AppException("Unknown user", HttpStatus.NOT_FOUND));
@@ -35,9 +40,21 @@ public class UserService {
             return UserMapper.toUserDto(user);
         }
         throw new AppException("Invalid password", HttpStatus.BAD_REQUEST);
+    } */
+
+
+    /*
+    public UserDto login(CredentialsDto credentialsDto) {
+        // Se utiliza el método loadUserByUsername para obtener el usuario
+        UserDetails userDetails = userDetailsService.loadUserByUsername(credentialsDto.login());
+        // Se obtiene el usuario de la base de datos a partir del login
+        User user = userRepository.findByLogin(credentialsDto.login()).get();
+        if (securityConfig.passwordEncoder().matches(CharBuffer.wrap(credentialsDto.password()), userDetails.getPassword())) {
+            return UserMapper.toUserDto(user);
+        }
+        throw new AppException("Invalid password", HttpStatus.BAD_REQUEST);
     }
-
-
+    */
 
     public UserDto register(SignUpDto signUpDto) {
         Optional<User> optionalUser = userRepository.findByLogin(signUpDto.login());
