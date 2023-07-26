@@ -53,7 +53,7 @@ public class SecurityConfig  {
                 .authorizeHttpRequests((requests) ->
                         requests.requestMatchers(HttpMethod.POST, "/login", "/register", "/api/products").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/products").permitAll()
-                                .requestMatchers(HttpMethod.DELETE,"/deleteUser", "/api/products/{idgit ad}").permitAll()
+                                .requestMatchers(HttpMethod.DELETE,"/deleteUser", "/api/products/{id}").permitAll()
                                 .anyRequest().authenticated());
 
 
