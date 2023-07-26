@@ -15,6 +15,8 @@ import java.util.Arrays;
 @Configuration
 @EnableWebMvc
 
+
+// Configuracion del CORS
 public class WebConfig {
 
     @Bean

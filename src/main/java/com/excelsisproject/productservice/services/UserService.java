@@ -37,13 +37,14 @@ public class UserService {
         throw new AppException("Invalid password", HttpStatus.BAD_REQUEST);
     }
 
+
+
     public UserDto register(SignUpDto signUpDto) {
         Optional<User> optionalUser = userRepository.findByLogin(signUpDto.login());
 
         if (optionalUser.isPresent()){
             throw new AppException("login already exists", HttpStatus.BAD_REQUEST);
         }
-
         User user = UserMapper.signUpToUser(signUpDto);
         user.setPassword(securityConfig.passwordEncoder().encode(CharBuffer.wrap(signUpDto.password())));
         User savedUser = userRepository.save(user);

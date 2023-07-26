@@ -1,5 +1,7 @@
 package com.excelsisproject.productservice.Jwt;
 
+import com.excelsisproject.productservice.entities.User;
+import com.excelsisproject.productservice.repositories.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -17,27 +19,29 @@ import java.util.function.Function;
 @Slf4j
 public class JwtUtils {
 
-    @Value("${jwt.secret.key}")
+
+    @Value("${jwt.secret.key}") // SecretKey para firmar el token
     private String secretKey;
 
-    @Value("${jwt.time.expiration}")
+    @Value("${jwt.time.expiration}") // Tiempo de expiracion del token
     private String timeExpiration;
 
 
     // Generar token de acceso
-    public String generateAccesToken(String login){
+    public String generateAccesToken(String login){ // Se le pasa el username de la persona que va a generar el token
         return Jwts.builder()
-                .setSubject(login)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + Long.parseLong(timeExpiration)))
-                .signWith(getSignatureKey(), SignatureAlgorithm.HS256)
+                .setSubject(login) // Usuario que genera el token
+                .setIssuedAt(new Date(System.currentTimeMillis())) // Fecha de creacion del token
+                .setExpiration(new Date(System.currentTimeMillis() + Long.parseLong(timeExpiration))) // Fecha de expiracion
+                .signWith(getSignatureKey(), SignatureAlgorithm.HS256) // Se firma el token
                 .compact();
     }
 
     // Validar el token de acceso
     public boolean isTokenValid(String token){
         try{
-            Jwts.parserBuilder()
+            Jwts.parserBuilder() // Decodifica el token para obtener su fecha de creacion, fecha de expiracion,
+                                // el usuario que genero el token, y la firma.
                     .setSigningKey(getSignatureKey())
                     .build()
                     .parseClaimsJws(token)

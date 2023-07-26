@@ -26,6 +26,9 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+
+// Configuracion de seguridad
+
 public class SecurityConfig  {
 
     @Autowired
@@ -70,7 +73,5 @@ public class SecurityConfig  {
                 .userDetailsService(userDetailsService)
                 .passwordEncoder(passwordEncoder).and().build();
     }
-
-
 
 }

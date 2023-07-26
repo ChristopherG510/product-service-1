@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
+// Controlador para el registro y login de usuarios
+
 @RestController
 @RequiredArgsConstructor
 public class AuthController {
