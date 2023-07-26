@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
 
@@ -21,6 +22,8 @@ public class Order {
     private Long orderId;
     @Column(name = "user_id")
     private Long userId;
+    @OneToOne(cascade = CascadeType.ALL)
+    private UserInfo userInfo;
     @Column(name = "order_date")
     private String dateOrdered;
     @Column(name = "order_time")

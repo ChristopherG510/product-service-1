@@ -3,15 +3,18 @@ package com.excelsisproject.productservice.services.implementation;
 import com.excelsisproject.productservice.dto.OrderDto;
 import com.excelsisproject.productservice.entities.Cart;
 import com.excelsisproject.productservice.entities.Order;
+import com.excelsisproject.productservice.entities.User;
 import com.excelsisproject.productservice.exceptions.ResourceNotFoundException;
 import com.excelsisproject.productservice.mappers.OrderMapper;
 import com.excelsisproject.productservice.repositories.OrderRepository;
 import com.excelsisproject.productservice.repositories.ProductRepository;
+import com.excelsisproject.productservice.repositories.UserRepository;
 import com.excelsisproject.productservice.services.OrderService;
 import com.excelsisproject.productservice.services.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -19,6 +22,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,9 +32,10 @@ public class OrderServiceImpl implements OrderService {
 
     private OrderRepository orderRepository;
     private ProductService productService;
+    private UserRepository userRepository;
     @Override
-    public OrderDto orderProduct(OrderDto orderDto) {
-        Order order = OrderMapper.mapToOrder(orderDto);
+    public OrderDto orderProduct(OrderDto orderDto, String loggedUser) {
+
 
         List<Cart> cartItems = orderDto.getCartItems();
 
@@ -43,15 +48,18 @@ public class OrderServiceImpl implements OrderService {
             totalPrice += cart.getPrice() * cart.getAmount();
         }
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentPrincipalName = authentication.getName();
-        System.out.println("Usuario Logueado: " + currentPrincipalName);
+        User user = userRepository.findByLogin(loggedUser)
+                .orElseThrow(() -> new UsernameNotFoundException("El usuario" + loggedUser + "no existe"));
+        Long loggedUserId = user.getId();
+        System.out.println("id: " + loggedUserId);
 
-        //orderDto.setOrderId(Long.parseLong(usuarioLogueado));
+        orderDto.setUserId(loggedUserId);
+        orderDto.setUserInfo(user.getUserInfo());
         orderDto.setTotalPrice(totalPrice);
         orderDto.setDateOrdered(LocalDateTime.now(ZoneId.of("America/Asuncion")).format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
         orderDto.setTimeOrdered(LocalDateTime.now(ZoneId.of("America/Asuncion")).format(DateTimeFormatter.ofPattern("HH:mm:ss")));
 
+        Order order = OrderMapper.mapToOrder(orderDto);
         Order savedOrder = orderRepository.save(order);
 
         return OrderMapper.mapToOrderDto(savedOrder);
