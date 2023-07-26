@@ -24,7 +24,8 @@ public class ProductController {
 
     // Add Product
     @PostMapping(value = {""}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<ProductDto> createProduct(@RequestPart("product") ProductDto productDto, @RequestPart(value = "imageFile", required = false) MultipartFile[] file) {
+    public ResponseEntity<ProductDto> createProduct(@RequestPart("product") ProductDto productDto,
+                                                    @RequestPart(value = "imageFile", required = false) MultipartFile[] file) {
         try{
             Set<ImageModel> images = uploadImage(file);
             productDto.setImageFiles(images);
@@ -70,9 +71,8 @@ public class ProductController {
 
     // Delete product
     @DeleteMapping("{id}")
-    public ResponseEntity<String> deleteProduct(@PathVariable("id") Long productId){
+    public void deleteProduct(@PathVariable("id") Long productId){
         productService.deleteProduct(productId);
-        return ResponseEntity.ok("Product deleted.");
     }
 
     // search products

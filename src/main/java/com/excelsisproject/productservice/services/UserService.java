@@ -2,6 +2,7 @@ package com.excelsisproject.productservice.services;
 
 
 
+import com.excelsisproject.productservice.config.SecurityConfig;
 import com.excelsisproject.productservice.dto.CredentialsDto;
 import com.excelsisproject.productservice.dto.SignUpDto;
 import com.excelsisproject.productservice.dto.UserDto;
@@ -9,9 +10,11 @@ import com.excelsisproject.productservice.entities.User;
 import com.excelsisproject.productservice.exceptions.AppException;
 import com.excelsisproject.productservice.mappers.UserMapper;
 import com.excelsisproject.productservice.repositories.UserRepository;
+import com.excelsisproject.productservice.services.implementation.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.nio.CharBuffer;
@@ -22,17 +25,36 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final UserMapper userMapper;
 
+    @Autowired
+    private SecurityConfig securityConfig;
+
+    @Autowired
+    private UserDetailsServiceImpl userDetailsService;
+
+    /*
     public UserDto login(CredentialsDto credentialsDto) {
         User user = userRepository.findByLogin(credentialsDto.login())
                 .orElseThrow(() -> new AppException("Unknown user", HttpStatus.NOT_FOUND));
-        if (passwordEncoder.matches(CharBuffer.wrap(credentialsDto.password()), user.getPassword())) {
-            return userMapper.toUserDto(user);
+        if (securityConfig.passwordEncoder().matches(CharBuffer.wrap(credentialsDto.password()), user.getPassword())) {
+            return UserMapper.toUserDto(user);
+        }
+        throw new AppException("Invalid password", HttpStatus.BAD_REQUEST);
+    } */
+
+
+    /*
+    public UserDto login(CredentialsDto credentialsDto) {
+        // Se utiliza el método loadUserByUsername para obtener el usuario
+        UserDetails userDetails = userDetailsService.loadUserByUsername(credentialsDto.login());
+        // Se obtiene el usuario de la base de datos a partir del login
+        User user = userRepository.findByLogin(credentialsDto.login()).get();
+        if (securityConfig.passwordEncoder().matches(CharBuffer.wrap(credentialsDto.password()), userDetails.getPassword())) {
+            return UserMapper.toUserDto(user);
         }
         throw new AppException("Invalid password", HttpStatus.BAD_REQUEST);
     }
+    */
 
     public UserDto register(SignUpDto signUpDto) {
         Optional<User> optionalUser = userRepository.findByLogin(signUpDto.login());
@@ -40,11 +62,9 @@ public class UserService {
         if (optionalUser.isPresent()){
             throw new AppException("login already exists", HttpStatus.BAD_REQUEST);
         }
-
-        User user = userMapper.signUpToUser(signUpDto);
-
-        user.setPassword(passwordEncoder.encode(CharBuffer.wrap(signUpDto.password())));
+        User user = UserMapper.signUpToUser(signUpDto);
+        user.setPassword(securityConfig.passwordEncoder().encode(CharBuffer.wrap(signUpDto.password())));
         User savedUser = userRepository.save(user);
-        return userMapper.toUserDto(savedUser);
+        return UserMapper.toUserDto(savedUser);
     }
 }
