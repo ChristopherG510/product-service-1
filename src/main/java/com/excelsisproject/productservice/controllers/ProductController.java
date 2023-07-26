@@ -24,7 +24,8 @@ public class ProductController {
 
     // Add Product
     @PostMapping(value = {""}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<ProductDto> createProduct(@RequestPart("product") ProductDto productDto, @RequestPart(value = "imageFile", required = false) MultipartFile[] file) {
+    public ResponseEntity<ProductDto> createProduct(@RequestPart("product") ProductDto productDto,
+                                                    @RequestPart(value = "imageFile", required = false) MultipartFile[] file) {
         try{
             Set<ImageModel> images = uploadImage(file);
             productDto.setImageFiles(images);

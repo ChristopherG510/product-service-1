@@ -39,6 +39,7 @@ public interface UserMapper {
             return null;
         } else {
             // Crear un nuevo objeto RoleEntity con el nombre ADMIN
+
             RoleEntity role = new RoleEntity();
             role.setName(ERole.CLIENT);
 
