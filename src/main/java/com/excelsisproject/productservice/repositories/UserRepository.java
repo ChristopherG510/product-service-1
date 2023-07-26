@@ -1,4 +1,4 @@
- package com.excelsisproject.productservice.repositories;
+package com.excelsisproject.productservice.repositories;
 
 
 import com.excelsisproject.productservice.entities.User;

@@ -22,8 +22,6 @@ public interface UserMapper {
         } else {
             UserDto.UserDtoBuilder userDto = UserDto.builder();
             userDto.id(user.getId());
-            userDto.firstName(user.getFirstName());
-            userDto.lastName(user.getLastName());
             userDto.userInfo(user.getUserInfo());
             userDto.login(user.getLogin());
             userDto.roles(user.getRoles().stream().map(role -> role.getName().toString()).collect(Collectors.toSet()));
@@ -38,7 +36,7 @@ public interface UserMapper {
         } else {
             // Crear un nuevo objeto RoleEntity con el nombre ADMIN
             RoleEntity adminRole = new RoleEntity();
-            adminRole.setName(ERole.CLIENT);
+            adminRole.setName(ERole.ADMIN);
 
             // Crear un nuevo set de roles vacío
             Set<RoleEntity> roles = new HashSet<>();
@@ -47,8 +45,6 @@ public interface UserMapper {
             roles.add(adminRole);
 
             User.UserBuilder user = User.builder();
-            user.firstName(signUpDto.firstName());
-            user.lastName(signUpDto.lastName());
             user.userInfo(signUpDto.userInfo());
             user.login(signUpDto.login());
             user.roles(roles);
