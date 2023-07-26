@@ -49,10 +49,11 @@ public class SecurityConfig  {
                 .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests((requests) ->
                         requests.requestMatchers(HttpMethod.POST, "/login", "/register", "/api/products").permitAll()
-                                .requestMatchers(HttpMethod.DELETE,"/deleteUser").permitAll()
-                                .anyRequest().authenticated()
+                                .requestMatchers(HttpMethod.GET, "/api/products").permitAll()
+                                .requestMatchers(HttpMethod.DELETE,"/deleteUser", "/api/products/{idgit ad}").permitAll()
+                                .anyRequest().authenticated());
 
-                );
+
         return http.build();
     }
 

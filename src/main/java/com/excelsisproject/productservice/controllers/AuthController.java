@@ -34,7 +34,6 @@ public class AuthController {
         return ResponseEntity.created(URI.create("/users/" + user.getId())).body(user);
     }
 
-
     @DeleteMapping("/deleteUser")
     @PreAuthorize("hasRole('ADMIN')")
     public String deleteUser(@RequestParam Long id){

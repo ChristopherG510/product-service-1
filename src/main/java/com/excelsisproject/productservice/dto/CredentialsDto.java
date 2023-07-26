@@ -1,4 +1,4 @@
 package com.excelsisproject.productservice.dto;
 
-public record CredentialsDto(String login, char[] password) {
+public record CredentialsDto(String login, char[] password, String roles) {
 }

@@ -2,7 +2,6 @@ package com.excelsisproject.productservice.controllers;
 
 import com.excelsisproject.productservice.dto.ProductDto;
 import com.excelsisproject.productservice.entities.ImageModel;
-import com.excelsisproject.productservice.entities.Product;
 import com.excelsisproject.productservice.services.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
