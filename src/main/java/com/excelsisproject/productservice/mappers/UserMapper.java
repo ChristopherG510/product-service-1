@@ -22,7 +22,11 @@ public interface UserMapper {
         } else {
             UserDto.UserDtoBuilder userDto = UserDto.builder();
             userDto.id(user.getId());
-            userDto.userInfo(user.getUserInfo());
+            userDto.firstName(user.getFirstName());
+            userDto.lastName(user.getLastName());
+            userDto.userEmail(user.getUserEmail());
+            userDto.userPhoneNumber(user.getUserPhoneNumber());
+            userDto.userAddress(user.getUserAddress());
             userDto.login(user.getLogin());
             userDto.roles(user.getRoles().stream().map(role -> role.getName().toString()).collect(Collectors.toSet()));
             return userDto.build();
@@ -45,7 +49,11 @@ public interface UserMapper {
             roles.add(adminRole);
 
             User.UserBuilder user = User.builder();
-            user.userInfo(signUpDto.userInfo());
+            user.firstName(signUpDto.firstName());
+            user.lastName(signUpDto.lastName());
+            user.userEmail(signUpDto.userEmail());
+            user.userPhoneNumber(signUpDto.userPhoneNumber());
+            user.userAddress(signUpDto.userAddress());
             user.login(signUpDto.login());
             user.roles(roles);
             return user.build();

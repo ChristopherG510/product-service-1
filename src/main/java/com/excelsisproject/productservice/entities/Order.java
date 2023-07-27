@@ -22,8 +22,13 @@ public class Order {
     private Long orderId;
     @Column(name = "user_id")
     private Long userId;
-    @OneToOne(cascade = CascadeType.ALL)
-    private UserInfo userInfo;
+
+    private String firstName;
+    private String lastName;
+    private String userEmail;
+    private String userPhoneNumber;
+    private String userAddress;
+
     @Column(name = "order_date")
     private String dateOrdered;
     @Column(name = "order_time")

@@ -4,9 +4,11 @@ package com.excelsisproject.productservice.services;
 
 import com.excelsisproject.productservice.config.SecurityConfig;
 import com.excelsisproject.productservice.dto.CredentialsDto;
+import com.excelsisproject.productservice.dto.OrderDto;
 import com.excelsisproject.productservice.dto.SignUpDto;
 import com.excelsisproject.productservice.dto.UserDto;
 import com.excelsisproject.productservice.entities.User;
+import com.excelsisproject.productservice.entities.UserInfo;
 import com.excelsisproject.productservice.exceptions.AppException;
 import com.excelsisproject.productservice.mappers.UserMapper;
 import com.excelsisproject.productservice.repositories.UserRepository;

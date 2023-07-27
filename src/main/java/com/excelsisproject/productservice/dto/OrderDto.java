@@ -16,7 +16,11 @@ import java.util.List;
 public class OrderDto {
     private Long orderId;
     private Long userId;
-    private UserInfo userInfo;
+    private String firstName;
+    private String lastName;
+    private String userEmail;
+    private String userPhoneNumber;
+    private String userAddress;
     private String dateOrdered;
     private String timeOrdered;
     private List<Cart> cartItems;

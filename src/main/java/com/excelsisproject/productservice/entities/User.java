@@ -18,9 +18,20 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false)
+    private String firstName;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    private UserInfo userInfo;
+    @Column(nullable = false)
+    private String lastName;
+
+    @Column(nullable = false)
+    private String userEmail;
+
+    @Column(nullable = false)
+    private String userPhoneNumber;
+
+    @Column(nullable = false)
+    private String userAddress;
 
     @Column(nullable = false)
     private String login;
