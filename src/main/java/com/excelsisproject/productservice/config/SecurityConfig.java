@@ -54,10 +54,12 @@ public class SecurityConfig  {
                         requests.requestMatchers(HttpMethod.POST, "/login", "/register", "api/products/createNew" ).permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/products/view/all", "/api/products/view/productId/{id}").permitAll()
                                 .requestMatchers(HttpMethod.DELETE,"/deleteUser", "/api/products/delete/productId/{id}").permitAll()
+
                                 .anyRequest().authenticated());
 
 
         return http.build();
+        // El build() es el encargado de retornar el http como SecurityFilterChain
     }
 
 

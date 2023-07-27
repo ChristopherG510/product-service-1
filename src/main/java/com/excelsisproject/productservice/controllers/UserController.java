@@ -2,17 +2,13 @@ package com.excelsisproject.productservice.controllers;
 
 
 import com.excelsisproject.productservice.Jwt.JwtUtils;
-import com.excelsisproject.productservice.dto.CredentialsDto;
 import com.excelsisproject.productservice.dto.SignUpDto;
 import com.excelsisproject.productservice.dto.UserDto;
 import com.excelsisproject.productservice.repositories.UserRepository;
 import com.excelsisproject.productservice.services.UserService;
-import com.excelsisproject.productservice.services.implementation.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -21,19 +17,10 @@ import java.net.URI;
 
 @RestController
 @RequiredArgsConstructor
-public class AuthController {
+public class UserController {
 
     private final UserService userService;
-    private final JwtUtils jwtUtils;
     private final UserRepository userRepository;
-
-    /*
-    @PostMapping("/login")
-    public ResponseEntity<UserDto> login(@RequestBody CredentialsDto credentialsDto) {
-        UserDto user = userService.login(credentialsDto);
-        user.setToken(jwtUtils.generateAccesToken(user.getLogin()));
-        return ResponseEntity.ok(user);
-    } */
 
     @PostMapping("/register")
     public ResponseEntity<UserDto> register(@RequestBody SignUpDto singUpDto) {
