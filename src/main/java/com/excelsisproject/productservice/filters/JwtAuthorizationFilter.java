@@ -30,15 +30,20 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
 
+        // Se recupera el token del header Authorization
         String tokenHeader = request.getHeader("Authorization");
 
-        if(tokenHeader != null && tokenHeader.startsWith("Bearer ")){
+        if(tokenHeader != null && tokenHeader.startsWith("Bearer ")){ // Se verifica que el token no es nulo y que empieza con la palabra Bearer
+
+            // Se separa la palabra Bearer del token
             String token = tokenHeader.substring(7);
 
-            if(jwtUtils.isTokenValid(token)){
-                String login = jwtUtils.getUsernameFromToken(token);
-                UserDetails userDetails = userDetailsService.loadUserByUsername(login);
+            if(jwtUtils.isTokenValid(token)){ // Se verifica que el token es valido
+                String login = jwtUtils.getUsernameFromToken(token); // Si el token es valido, se recupera el userName
 
+                UserDetails userDetails = userDetailsService.loadUserByUsername(login); // Se recuperan los detalles del usuario
+
+                // Se autentica el usuario con su userName, contraseña y sus roles
                 UsernamePasswordAuthenticationToken authenticationToken =
                         new UsernamePasswordAuthenticationToken(login, null, userDetails.getAuthorities());
 

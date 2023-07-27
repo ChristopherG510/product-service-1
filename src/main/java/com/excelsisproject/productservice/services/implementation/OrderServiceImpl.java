@@ -53,12 +53,8 @@ public class OrderServiceImpl implements OrderService {
         User user = userRepository.findByLogin(loggedUser)
                 .orElseThrow(() -> new UsernameNotFoundException("El usuario" + loggedUser + "no existe"));
         Long loggedUserId = user.getId();
-        System.out.println("id: " + loggedUserId);
 
         orderDto.setUserId(loggedUserId);
-
-
-
         orderDto.setFirstName(user.getFirstName());
         orderDto.setLastName(user.getLastName());
         orderDto.setUserEmail(user.getUserEmail());

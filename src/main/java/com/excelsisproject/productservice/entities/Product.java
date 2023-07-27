@@ -18,10 +18,13 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     // Se le puede agregar @Column(name ="***") para que en la db se vea diferente
     private Long id;
+    @Column(nullable = false)
     private String name;
-    @Column(name = "description", columnDefinition = "TEXT")
+    @Column(name = "description", columnDefinition = "TEXT", nullable = false)
     private String description;
+    @Column(nullable = false)
     private double amountInStock;
+    @Column(nullable = false)
     private double price;
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "product_images",

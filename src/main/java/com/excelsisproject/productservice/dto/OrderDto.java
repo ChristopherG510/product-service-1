@@ -1,7 +1,6 @@
 package com.excelsisproject.productservice.dto;
 
 import com.excelsisproject.productservice.entities.Cart;
-import com.excelsisproject.productservice.entities.UserInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

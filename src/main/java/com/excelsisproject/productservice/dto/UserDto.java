@@ -1,7 +1,5 @@
 package com.excelsisproject.productservice.dto;
 
-import com.excelsisproject.productservice.entities.UserInfo;
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

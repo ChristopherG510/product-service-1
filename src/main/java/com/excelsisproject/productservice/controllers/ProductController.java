@@ -24,7 +24,7 @@ public class ProductController {
     private ProductService productService;
 
     // Add Product
-    @PreAuthorize("hasRole('CLIENT') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(value = {"/createNew"}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<ProductDto> createProduct(@RequestPart("product") ProductDto productDto, @RequestPart(value = "imageFile", required = false) MultipartFile[] file) {
         try{
@@ -64,9 +64,8 @@ public class ProductController {
     // Delete product
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/productId/{id}")
-    public ResponseEntity<String> deleteProduct(@PathVariable("id") Long productId){
+    public void deleteProduct(@PathVariable("id") Long productId){
         productService.deleteProduct(productId);
-        return ResponseEntity.ok("Product deleted.");
     }
 
     // search products
@@ -81,7 +80,9 @@ public class ProductController {
         Set<ImageModel> imageModels = new HashSet<>();
 
         for (MultipartFile file: multipartFiles){
-            ImageModel imageModel = new ImageModel(null,
+            ImageModel imageModel = new ImageModel(
+                    file.getOriginalFilename(),
+                    file.getContentType(),
                     file.getBytes()
             );
             imageModels.add(imageModel);

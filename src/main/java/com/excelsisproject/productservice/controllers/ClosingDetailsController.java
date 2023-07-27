@@ -19,7 +19,8 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @RestController
-@RequestMapping("/admin/closingDetails")
+@PreAuthorize("hasRole('ADMIN')")
+@RequestMapping("/closingDetails")
 public class ClosingDetailsController {
     private ClosingService closingService;
     private ClosingDetailsRepository closingDetailsRepository;

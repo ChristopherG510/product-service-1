@@ -14,14 +14,13 @@ import java.util.List;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/products")
 public class OrderController {
 
     private OrderService orderService;
 
     // create order
-    // @PreAuthorize("hasRole('CLIENT') or hasRole('ADMIN')")
-    @PostMapping("/order")
+    @PreAuthorize("hasRole('CLIENT') or hasRole('ADMIN')")
+    @PostMapping("/products/order")
     public OrderDto orderProduct(@RequestBody OrderDto orderDto){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String loggedUser = authentication.getName();
@@ -31,7 +30,7 @@ public class OrderController {
 
     // get order
     @PreAuthorize("hasRole('CLIENT') or hasRole('ADMIN')")
-    @GetMapping("/products/orders/view/orderId/{id}")
+    @GetMapping("/products/order/view/orderId/{id}")
     public ResponseEntity<OrderDto> getOrderById(@PathVariable("id") Long orderId){
         OrderDto orderDto = orderService.getOrderById(orderId);
         return ResponseEntity.ok(orderDto);

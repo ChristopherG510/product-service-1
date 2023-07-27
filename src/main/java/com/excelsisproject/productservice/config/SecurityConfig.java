@@ -41,18 +41,22 @@ public class SecurityConfig  {
 
         JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(jwtUtils);
         jwtAuthenticationFilter.setAuthenticationManager(authenticationManager);
+        jwtAuthenticationFilter.setFilterProcessesUrl("/login");
 
         http.csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(customizer -> customizer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilter(jwtAuthenticationFilter)
                 .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests((requests) ->
-                        requests.requestMatchers(HttpMethod.POST,"/login", "/register", "/api/products","/api/orders","/api/closingDetails").permitAll()
-                                .requestMatchers(HttpMethod.DELETE,"/deleteUser", "/api/products/{id}").permitAll()
-                                .anyRequest().authenticated()
+                        requests.requestMatchers(HttpMethod.POST, "/login", "/register", "api/products/createNew" ).permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/products/view/all", "/api/products/view/productId/{id}").permitAll()
+                                .requestMatchers(HttpMethod.DELETE,"/deleteUser", "/api/products/delete/productId/{id}").permitAll()
 
-                );
+                                .anyRequest().authenticated());
+
+
         return http.build();
+        // El build() es el encargado de retornar el http como SecurityFilterChain
     }
 
 
@@ -62,13 +66,15 @@ public class SecurityConfig  {
         return new BCryptPasswordEncoder();
     }
 
+
+    //El AuthenticationManager es la interfaz principal para la autenticación.
+    //El método authenticationManagerBean devuelve una instancia de AuthenticationManager que se puede usar para autenticar
+    //las solicitudes de los usuarios.
     @Bean
-    AuthenticationManager authenticationManager(HttpSecurity httpSecurity, PasswordEncoder passwordEncoder) throws Exception {
-        return httpSecurity.getSharedObject(AuthenticationManagerBuilder.class)
-                .userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder).and().build();
+    public AuthenticationManager authenticationManagerBean(HttpSecurity http, PasswordEncoder passwordEncoder) throws Exception {
+        AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
+        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
+        return authenticationManagerBuilder.build();
     }
-
-
 
 }

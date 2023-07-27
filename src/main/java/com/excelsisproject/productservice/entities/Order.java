@@ -33,6 +33,7 @@ public class Order {
     private String dateOrdered;
     @Column(name = "order_time")
     private String timeOrdered;
+    @Column(nullable = false)
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, targetEntity = Cart.class)
     private List<Cart> cartItems;
     private double totalPrice;
