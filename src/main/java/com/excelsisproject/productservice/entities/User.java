@@ -19,11 +19,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "first_name", nullable = false)
-    private String firstName;
-
-    @Column(name = "last_name", nullable = false)
-    private String lastName;
+    @OneToOne(cascade = CascadeType.ALL)
+    private UserInfo userInfo;
 
     @Column(nullable = false)
     private String login;
@@ -31,9 +28,9 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    // Relacion entre users y roles
-
     @ManyToMany(fetch = FetchType.EAGER, targetEntity = RoleEntity.class, cascade = CascadeType.PERSIST)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name ="user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<RoleEntity> roles;
+
 }
+

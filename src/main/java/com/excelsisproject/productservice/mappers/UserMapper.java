@@ -24,8 +24,7 @@ public interface UserMapper {
         } else {
             UserDto.UserDtoBuilder userDto = UserDto.builder();
             userDto.id(user.getId());
-            userDto.firstName(user.getFirstName());
-            userDto.lastName(user.getLastName());
+            userDto.userInfo(user.getUserInfo());
             userDto.login(user.getLogin());
             userDto.roles(user.getRoles().stream().map(role -> role.getName().toString()).collect(Collectors.toSet()));
             return userDto.build();
@@ -49,8 +48,7 @@ public interface UserMapper {
             // Añadir el rol admin al set
             roles.add(role);
             User.UserBuilder user = User.builder();
-            user.firstName(signUpDto.firstName());
-            user.lastName(signUpDto.lastName());
+            user.userInfo(signUpDto.userInfo());
             user.login(signUpDto.login());
             user.roles(roles);
             return user.build();

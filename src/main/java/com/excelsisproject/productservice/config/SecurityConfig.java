@@ -51,9 +51,9 @@ public class SecurityConfig  {
                 .addFilter(jwtAuthenticationFilter)
                 .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests((requests) ->
-                        requests.requestMatchers(HttpMethod.POST, "/login", "/register", "/api/products").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/api/products").permitAll()
-                                .requestMatchers(HttpMethod.DELETE,"/deleteUser", "/api/products/{id}").permitAll()
+                        requests.requestMatchers(HttpMethod.POST, "/login", "/register", "api/products/createNew" ).permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/products/view/all", "/api/products/view/productId/{id}").permitAll()
+                                .requestMatchers(HttpMethod.DELETE,"/deleteUser", "/api/products/delete/productId/{id}").permitAll()
                                 .anyRequest().authenticated());
 
 

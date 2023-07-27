@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,39 +25,30 @@ public class ClosingDetailsController {
     private ClosingDetailsRepository closingDetailsRepository;
     private OrderService orderService;
 
-    @PostMapping
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/new")
     public ResponseEntity<ClosingDetailsDto> createDetails(@RequestBody ClosingDetailsDto closingDetailsDto){
-
-        String date = closingDetailsDto.getDate();
-        List<OrderDto> orderDtoList = orderService.findByDate(date);
-        double amountSold = 0;
-        double totalOrders = 0;
-
-        for(OrderDto order : orderDtoList){
-            amountSold += order.getTotalPrice();
-            totalOrders += 1;
-        }
-
-        closingDetailsDto.setTotalAmountSold(amountSold);
-        closingDetailsDto.setTotalOrders(totalOrders);
-
         ClosingDetailsDto savedDetails = closingService.createDetails(closingDetailsDto);
         return new ResponseEntity<>(savedDetails, HttpStatus.CREATED);
     }
 
-    @GetMapping("{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/view/detailId/{id}")
     public ResponseEntity<ClosingDetailsDto> getDetailsById(@PathVariable("id") Long detailsId){
         ClosingDetailsDto detailsDto = closingService.getDetailsById(detailsId);
         return ResponseEntity.ok(detailsDto);
     }
 
-    @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/view/all")
     public ResponseEntity<List<ClosingDetailsDto>> getAllDetails(){
         List<ClosingDetailsDto> details = closingService.getAllDetails();
         return ResponseEntity.ok(details);
     }
 
-    @PutMapping("{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/edit/detailId/{id}")
     public ResponseEntity<ClosingDetailsDto> updateDetails(@PathVariable("id") Long detailsId, @RequestBody ClosingDetailsDto updatedDetails){
         ClosingDetailsDto detailsDto = closingService.updateDetails(detailsId, updatedDetails);
         return ResponseEntity.ok(detailsDto);

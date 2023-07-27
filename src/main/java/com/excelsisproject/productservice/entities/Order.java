@@ -15,16 +15,13 @@ import java.util.List;
 @Entity
 @Table(name = "Orders")
 public class Order {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId;
-    @Column(name = "user")
-    private String orderUserName;
-    @Column(name = "address")
-    private String orderUserAddress;
-    @Column(name = "contact")
-    private String orderContact;
+    @Column(name = "user_id")
+    private Long userId;
+    @OneToOne(cascade = CascadeType.ALL)
+    private UserInfo userInfo;
     @Column(name = "order_date")
     private String dateOrdered;
     @Column(name = "order_time")

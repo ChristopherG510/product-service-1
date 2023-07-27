@@ -1,12 +1,14 @@
 package com.excelsisproject.productservice.services.implementation;
 
 import com.excelsisproject.productservice.dto.ClosingDetailsDto;
+import com.excelsisproject.productservice.dto.OrderDto;
 import com.excelsisproject.productservice.entities.ClosingDetails;
 import com.excelsisproject.productservice.exceptions.ResourceNotFoundException;
 import com.excelsisproject.productservice.mappers.ClosingDetailsMapper;
 import com.excelsisproject.productservice.repositories.ClosingDetailsRepository;
 import com.excelsisproject.productservice.repositories.OrderRepository;
 import com.excelsisproject.productservice.services.ClosingService;
+import com.excelsisproject.productservice.services.OrderService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,10 +20,24 @@ import java.util.stream.Collectors;
 public class ClosingServiceImpl implements ClosingService {
 
     private ClosingDetailsRepository closingDetailsRepository;
-    private OrderRepository orderRepository;
+    private OrderService orderService;
 
     @Override
     public ClosingDetailsDto createDetails(ClosingDetailsDto closingDetailsDto) {
+
+        String date = closingDetailsDto.getDate();
+        List<OrderDto> orderDtoList = orderService.findByDate(date);
+        double amountSold = 0;
+        double totalOrders = 0;
+
+        for(OrderDto order : orderDtoList){
+            amountSold += order.getTotalPrice();
+            totalOrders += 1;
+        }
+
+        closingDetailsDto.setTotalAmountSold(amountSold);
+        closingDetailsDto.setTotalOrders(totalOrders);
+
         ClosingDetails details = ClosingDetailsMapper.mapToClosingDetails(closingDetailsDto);
         ClosingDetails savedDetails = closingDetailsRepository.save(details);
 

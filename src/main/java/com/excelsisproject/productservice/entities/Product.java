@@ -36,3 +36,4 @@ public class Product {
     // @Column(name = "image", columnDefinition = "LONGBLOB")
 
 }
+

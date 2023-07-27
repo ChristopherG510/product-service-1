@@ -7,6 +7,9 @@ import com.excelsisproject.productservice.services.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -18,53 +21,44 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/orders")
 public class OrderController {
-
     private OrderService orderService;
-    private ProductService productService;
-    private ClosingDetailsController detailsController;
 
     // create order
-    @PostMapping
-    public ResponseEntity<OrderDto> orderProduct(@RequestBody OrderDto orderDto){
-        List<Cart> cartItems = orderDto.getCartItems();
-        double totalPrice = 0;
-        for (Cart cart : cartItems){
-            double amountOrdered = cart.getAmount();
-            Long productId = cart.getProductId();
-            productService.updateStock(productId, amountOrdered);
-            cart.setPrice(productService.getPrice(productId));
-            totalPrice += cart.getPrice() * cart.getAmount();
-        }
-        orderDto.setTotalPrice(totalPrice);
-        orderDto.setDateOrdered(LocalDateTime.now(ZoneId.of("America/Asuncion")).format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
-        orderDto.setTimeOrdered(LocalDateTime.now(ZoneId.of("America/Asuncion")).format(DateTimeFormatter.ofPattern("HH:mm:ss")));
-        OrderDto savedOrder = orderService.orderProduct(orderDto);
-
-        return new ResponseEntity<>(savedOrder, HttpStatus.CREATED);
+    // @PreAuthorize("hasRole('CLIENT') or hasRole('ADMIN')")
+    @PostMapping("/order")
+    public OrderDto orderProduct(@RequestBody OrderDto orderDto){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String loggedUser = authentication.getName();
+        System.out.println("Usuario Logueado: " + loggedUser);
+        return orderService.orderProduct(orderDto, loggedUser);
     }
 
     // get order
-    @GetMapping("{id}")
+    @PreAuthorize("hasRole('CLIENT') or hasRole('ADMIN')")
+    @GetMapping("/products/orders/view/orderId/{id}")
     public ResponseEntity<OrderDto> getOrderById(@PathVariable("id") Long orderId){
         OrderDto orderDto = orderService.getOrderById(orderId);
         return ResponseEntity.ok(orderDto);
     }
 
     // get all orders
-    @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/orders/viewAll")
     public ResponseEntity<List<OrderDto>> getAllOrders(){
         List<OrderDto> orders = orderService.getAllOrders();
         return ResponseEntity.ok(orders);
     }
 
     // Update order
-    @PutMapping("{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/orders/edit/orderId/{id}")
     public ResponseEntity<OrderDto> updateOrder(@PathVariable("id") Long orderId, @RequestBody OrderDto updatedOrder){
         OrderDto orderDto = orderService.updateOrder(orderId, updatedOrder);
         return ResponseEntity.ok(orderDto);
     }
 
-    @DeleteMapping("{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/orders/delete/orderId/{id}")
     public ResponseEntity<String> deleteOrder(@PathVariable("id") Long orderId){
         orderService.deleteOrder(orderId);
         return ResponseEntity.ok("Order deleted.");

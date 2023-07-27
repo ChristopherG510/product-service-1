@@ -1,15 +1,22 @@
 package com.excelsisproject.productservice.services.implementation;
 
 import com.excelsisproject.productservice.dto.OrderDto;
-
+import com.excelsisproject.productservice.entities.Cart;
 import com.excelsisproject.productservice.entities.Order;
+import com.excelsisproject.productservice.entities.User;
 import com.excelsisproject.productservice.exceptions.ResourceNotFoundException;
 import com.excelsisproject.productservice.mappers.OrderMapper;
 import com.excelsisproject.productservice.repositories.OrderRepository;
+import com.excelsisproject.productservice.repositories.UserRepository;
 import com.excelsisproject.productservice.services.OrderService;
+import com.excelsisproject.productservice.services.ProductService;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,8 +27,34 @@ public class OrderServiceImpl implements OrderService {
 
 
     private OrderRepository orderRepository;
+    private ProductService productService;
+    private UserRepository userRepository;
     @Override
-    public OrderDto orderProduct(OrderDto orderDto) {
+    public OrderDto orderProduct(OrderDto orderDto, String loggedUser) {
+
+
+        List<Cart> cartItems = orderDto.getCartItems();
+
+        double totalPrice = 0;
+        for (Cart cart : cartItems){
+            double amountOrdered = cart.getAmount();
+            Long productId = cart.getProductId();
+            productService.updateStock(productId, amountOrdered);
+            cart.setPrice(productService.getPrice(productId));
+            totalPrice += cart.getPrice() * cart.getAmount();
+        }
+
+        User user = userRepository.findByLogin(loggedUser)
+                .orElseThrow(() -> new UsernameNotFoundException("El usuario" + loggedUser + "no existe"));
+        Long loggedUserId = user.getId();
+        System.out.println("id: " + loggedUserId);
+
+        orderDto.setUserId(loggedUserId);
+        orderDto.setUserInfo(user.getUserInfo());
+        orderDto.setTotalPrice(totalPrice);
+        orderDto.setDateOrdered(LocalDateTime.now(ZoneId.of("America/Asuncion")).format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+        orderDto.setTimeOrdered(LocalDateTime.now(ZoneId.of("America/Asuncion")).format(DateTimeFormatter.ofPattern("HH:mm:ss")));
+
         Order order = OrderMapper.mapToOrder(orderDto);
         Order savedOrder = orderRepository.save(order);
 
@@ -50,9 +83,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderRepository.findById(orderId).orElseThrow(
                 ()-> new ResourceNotFoundException("order does not exist with given id: " + orderId));
 
-        order.setOrderUserName(updatedOrder.getOrderUserName());
-        order.setOrderUserAddress(updatedOrder.getOrderUserAddress());
-        order.setOrderContact(updatedOrder.getOrderContact());
+
         order.setCartItems(updatedOrder.getCartItems());
 
         Order updatedOrderObj = orderRepository.save(order);
@@ -93,3 +124,4 @@ public class OrderServiceImpl implements OrderService {
         return ordersDto;
     }
 }
+
