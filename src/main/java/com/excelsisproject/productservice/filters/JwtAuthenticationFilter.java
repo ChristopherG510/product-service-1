@@ -12,13 +12,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -115,7 +113,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         // Se crea un mapa para almacenar los datos del error
         Map<String, Object> errorResponse = new HashMap<>();
 
-        // Se obtiene el codigo y el mensaje del error segun el tipo de excepcion
+        // Se obtiene el mensaje del error segun el tipo de excepcion
         String errorMessage = "";
         if (failed instanceof BadCredentialsException) {
             errorMessage = "Nombre de usuario o contraseña inválidos";

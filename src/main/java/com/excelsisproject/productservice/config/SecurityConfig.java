@@ -51,13 +51,12 @@ public class SecurityConfig  {
                 .addFilter(jwtAuthenticationFilter)
                 .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests((requests) ->
-                        requests.requestMatchers(HttpMethod.POST, "/login", "/register", "/api/products").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/api/products").permitAll()
-                                .requestMatchers(HttpMethod.DELETE,"/deleteUser", "/api/products/{id}").permitAll()
+                        requests.requestMatchers(HttpMethod.POST, "/login", "/register").permitAll()
                                 .anyRequest().authenticated());
 
 
         return http.build();
+        // El build() es el encargado de retornar el http como SecurityFilterChain
     }
 
 

@@ -38,7 +38,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             // Se separa la palabra Bearer del token
             String token = tokenHeader.substring(7);
 
-
             if(jwtUtils.isTokenValid(token)){ // Se verifica que el token es valido
                 String login = jwtUtils.getUsernameFromToken(token); // Si el token es valido, se recupera el userName
 

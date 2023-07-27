@@ -29,33 +29,6 @@ public class UserService {
     @Autowired
     private SecurityConfig securityConfig;
 
-    @Autowired
-    private UserDetailsServiceImpl userDetailsService;
-
-    /*
-    public UserDto login(CredentialsDto credentialsDto) {
-        User user = userRepository.findByLogin(credentialsDto.login())
-                .orElseThrow(() -> new AppException("Unknown user", HttpStatus.NOT_FOUND));
-        if (securityConfig.passwordEncoder().matches(CharBuffer.wrap(credentialsDto.password()), user.getPassword())) {
-            return UserMapper.toUserDto(user);
-        }
-        throw new AppException("Invalid password", HttpStatus.BAD_REQUEST);
-    } */
-
-
-    /*
-    public UserDto login(CredentialsDto credentialsDto) {
-        // Se utiliza el método loadUserByUsername para obtener el usuario
-        UserDetails userDetails = userDetailsService.loadUserByUsername(credentialsDto.login());
-        // Se obtiene el usuario de la base de datos a partir del login
-        User user = userRepository.findByLogin(credentialsDto.login()).get();
-        if (securityConfig.passwordEncoder().matches(CharBuffer.wrap(credentialsDto.password()), userDetails.getPassword())) {
-            return UserMapper.toUserDto(user);
-        }
-        throw new AppException("Invalid password", HttpStatus.BAD_REQUEST);
-    }
-    */
-
     public UserDto register(SignUpDto signUpDto) {
         Optional<User> optionalUser = userRepository.findByLogin(signUpDto.login());
 
