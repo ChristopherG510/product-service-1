@@ -50,7 +50,7 @@ public class OrderServiceImpl implements OrderService {
         System.out.println("id: " + loggedUserId);
 
         orderDto.setUserId(loggedUserId);
-        orderDto.setUserInfo(user.getUserInfo());
+        //orderDto.setUserInfo(user.getUserInfo());
         orderDto.setTotalPrice(totalPrice);
         orderDto.setDateOrdered(LocalDateTime.now(ZoneId.of("America/Asuncion")).format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
         orderDto.setTimeOrdered(LocalDateTime.now(ZoneId.of("America/Asuncion")).format(DateTimeFormatter.ofPattern("HH:mm:ss")));

@@ -1,16 +1,12 @@
 package com.excelsisproject.productservice.config;
 
-import com.excelsisproject.productservice.Jwt.JwtUtils;
-import com.excelsisproject.productservice.filters.JwtAuthenticationFilter;
-import com.excelsisproject.productservice.filters.JwtAuthorizationFilter;
-import com.excelsisproject.productservice.services.implementation.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -21,63 +17,54 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-@RequiredArgsConstructor
 @Configuration
-@EnableWebSecurity
 @EnableMethodSecurity
 
 // Configuracion de seguridad
-
 public class SecurityConfig  {
 
-    @Autowired
-    JwtUtils jwtUtils;
+    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Autowired
-    UserDetailsServiceImpl userDetailsService;
-
-    @Autowired
-    JwtAuthorizationFilter jwtAuthorizationFilter;
+    public SecurityConfig(JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
+        this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
+    }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception{
+    AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception{
+        return authenticationConfiguration.getAuthenticationManager();
+    }
 
-        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(jwtUtils);
-        jwtAuthenticationFilter.setAuthenticationManager(authenticationManager);
-        jwtAuthenticationFilter.setFilterProcessesUrl("/login");
+    @Bean
+    public PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    JwtAuthenticationFilter jwtAuthenticationFilter(){
+        return new JwtAuthenticationFilter();
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
 
         http.csrf(AbstractHttpConfigurer::disable)
+                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(customizer -> customizer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilter(jwtAuthenticationFilter)
-                .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests((requests) ->
-                        requests.requestMatchers(HttpMethod.POST, "/login", "/register", "api/products/createNew" ).permitAll()
-                                .requestMatchers(HttpMethod.GET, "/api/products/view/all", "/api/products/view/productId/{id}").permitAll()
+                        requests.requestMatchers(HttpMethod.POST, "/login", "/register", "api/products/createNew").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/products/view/all", "/api/products/view/productId/{id}","/accessAdmin").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.POST,"/deleteUser").hasAuthority("ADMIN")
                                 .requestMatchers(HttpMethod.DELETE,"/deleteUser", "/api/products/delete/productId/{id}").permitAll()
-
                                 .anyRequest().authenticated());
-
-
         return http.build();
         // El build() es el encargado de retornar el http como SecurityFilterChain
     }
 
 
-    //Encriptar las contraseñas
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 
 
-    //El AuthenticationManager es la interfaz principal para la autenticación.
-    //El método authenticationManagerBean devuelve una instancia de AuthenticationManager que se puede usar para autenticar
-    //las solicitudes de los usuarios.
-    @Bean
-    public AuthenticationManager authenticationManagerBean(HttpSecurity http, PasswordEncoder passwordEncoder) throws Exception {
-        AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
-        return authenticationManagerBuilder.build();
-    }
+
+
 
 }

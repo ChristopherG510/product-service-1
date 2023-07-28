@@ -3,18 +3,15 @@ package com.excelsisproject.productservice.services;
 
 
 import com.excelsisproject.productservice.config.SecurityConfig;
-import com.excelsisproject.productservice.dto.CredentialsDto;
 import com.excelsisproject.productservice.dto.SignUpDto;
 import com.excelsisproject.productservice.dto.UserDto;
 import com.excelsisproject.productservice.entities.User;
 import com.excelsisproject.productservice.exceptions.AppException;
 import com.excelsisproject.productservice.mappers.UserMapper;
 import com.excelsisproject.productservice.repositories.UserRepository;
-import com.excelsisproject.productservice.services.implementation.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.nio.CharBuffer;
