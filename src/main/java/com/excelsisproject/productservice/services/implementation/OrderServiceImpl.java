@@ -10,6 +10,7 @@ import com.excelsisproject.productservice.repositories.OrderRepository;
 import com.excelsisproject.productservice.repositories.UserRepository;
 import com.excelsisproject.productservice.services.OrderService;
 import com.excelsisproject.productservice.services.ProductService;
+import com.excelsisproject.productservice.services.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -25,9 +26,9 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
-
     private OrderRepository orderRepository;
     private ProductService productService;
+    private UserService userService;
     private UserRepository userRepository;
     @Override
     public OrderDto orderProduct(OrderDto orderDto, String loggedUser) {
@@ -47,10 +48,13 @@ public class OrderServiceImpl implements OrderService {
         User user = userRepository.findByLogin(loggedUser)
                 .orElseThrow(() -> new UsernameNotFoundException("El usuario" + loggedUser + "no existe"));
         Long loggedUserId = user.getId();
-        System.out.println("id: " + loggedUserId);
 
         orderDto.setUserId(loggedUserId);
-        orderDto.setUserInfo(user.getUserInfo());
+        orderDto.setFirstName(user.getFirstName());
+        orderDto.setLastName(user.getLastName());
+        orderDto.setUserEmail(user.getUserEmail());
+        orderDto.setUserPhoneNumber(user.getUserPhoneNumber());
+        orderDto.setUserAddress(user.getUserAddress());
         orderDto.setTotalPrice(totalPrice);
         orderDto.setDateOrdered(LocalDateTime.now(ZoneId.of("America/Asuncion")).format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
         orderDto.setTimeOrdered(LocalDateTime.now(ZoneId.of("America/Asuncion")).format(DateTimeFormatter.ofPattern("HH:mm:ss")));
@@ -124,4 +128,3 @@ public class OrderServiceImpl implements OrderService {
         return ordersDto;
     }
 }
-

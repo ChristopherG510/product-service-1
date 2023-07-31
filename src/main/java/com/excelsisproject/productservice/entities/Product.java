@@ -19,7 +19,7 @@ public class Product {
     // Se le puede agregar @Column(name ="***") para que en la db se vea diferente
     private Long id;
     private String name;
-    @Column(name = "description", columnDefinition = "TEXT")
+    @Column(name = "description", columnDefinition = "TEXT", length = 2000)
     private String description;
     private double amountInStock;
     private double price;

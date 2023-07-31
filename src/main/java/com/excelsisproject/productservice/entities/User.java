@@ -18,9 +18,20 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false)
+    private String firstName;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    private UserInfo userInfo;
+    @Column(nullable = false)
+    private String lastName;
+
+    @Column(nullable = false)
+    private String userEmail;
+
+    @Column(nullable = false)
+    private String userPhoneNumber;
+
+    @Column(nullable = false)
+    private String userAddress;
 
     @Column(nullable = false)
     private String login;
@@ -28,9 +39,8 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER, targetEntity = RoleEntity.class, cascade = CascadeType.PERSIST)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name ="user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<RoleEntity> roles;
-
+    private Set<Roles> roles;
 }
 

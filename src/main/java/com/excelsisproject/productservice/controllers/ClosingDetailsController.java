@@ -26,28 +26,24 @@ public class ClosingDetailsController {
     private OrderService orderService;
 
 
-    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/new")
     public ResponseEntity<ClosingDetailsDto> createDetails(@RequestBody ClosingDetailsDto closingDetailsDto){
         ClosingDetailsDto savedDetails = closingService.createDetails(closingDetailsDto);
         return new ResponseEntity<>(savedDetails, HttpStatus.CREATED);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/view/detailId/{id}")
     public ResponseEntity<ClosingDetailsDto> getDetailsById(@PathVariable("id") Long detailsId){
         ClosingDetailsDto detailsDto = closingService.getDetailsById(detailsId);
         return ResponseEntity.ok(detailsDto);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/view/all")
     public ResponseEntity<List<ClosingDetailsDto>> getAllDetails(){
         List<ClosingDetailsDto> details = closingService.getAllDetails();
         return ResponseEntity.ok(details);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/edit/detailId/{id}")
     public ResponseEntity<ClosingDetailsDto> updateDetails(@PathVariable("id") Long detailsId, @RequestBody ClosingDetailsDto updatedDetails){
         ClosingDetailsDto detailsDto = closingService.updateDetails(detailsId, updatedDetails);
