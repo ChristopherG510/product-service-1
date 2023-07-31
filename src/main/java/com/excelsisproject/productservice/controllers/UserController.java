@@ -1,21 +1,21 @@
 package com.excelsisproject.productservice.controllers;
 
 
-import com.excelsisproject.productservice.config.JwtGenerator;
+import com.excelsisproject.productservice.jwt.JwtGenerator;
 import com.excelsisproject.productservice.dto.CredentialsDto;
-import com.excelsisproject.productservice.dto.DtoAuthResponse;
 import com.excelsisproject.productservice.dto.SignUpDto;
 import com.excelsisproject.productservice.dto.UserDto;
 import com.excelsisproject.productservice.repositories.UserRepository;
 import com.excelsisproject.productservice.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -40,15 +40,22 @@ public class UserController {
         this.jwtGenerator = jwtGenerator;
     }
 
+
+    // Login de Usuarios
+
     @PostMapping("/login")
-    public ResponseEntity<DtoAuthResponse> login (@RequestBody CredentialsDto credentialsDto){
+    public ResponseEntity<UserDto> login(@RequestBody CredentialsDto credentialsDto){
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 credentialsDto.getLogin(),credentialsDto.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = jwtGenerator.generarToken(authentication);
-        return new ResponseEntity<>(new DtoAuthResponse(token), HttpStatus.OK);
+        UserDto userDto = userService.login(credentialsDto);
+        userDto.setToken(token);
+        return ResponseEntity.ok(userDto);
     }
 
+
+    // Registros de Usuarios
     @PostMapping("/register")
     public ResponseEntity<UserDto> register(@RequestBody SignUpDto singUpDto) {
         UserDto user = userService.register(singUpDto);
@@ -56,6 +63,7 @@ public class UserController {
     }
 
     @DeleteMapping("/deleteUser")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String deleteUser(@RequestParam Long id){
         userRepository.deleteById(id);
         return "Se ha eliminado el user con id " + id;

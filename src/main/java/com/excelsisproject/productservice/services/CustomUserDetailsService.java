@@ -1,4 +1,4 @@
-package com.excelsisproject.productservice.config;
+package com.excelsisproject.productservice.services;
 
 import com.excelsisproject.productservice.entities.Roles;
 import com.excelsisproject.productservice.entities.User;
@@ -21,6 +21,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private UserRepository userRepository;
 
+    //Método para obtener un set de autoridades por medio de un set de roles
     public Collection<GrantedAuthority> mapToAuthorities(Set<Roles> roles){
         return roles.stream().map(role-> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toSet());
     }
@@ -31,6 +32,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         this.userRepository = userRepository;
     }
 
+    //Método para obtener un usuario con todos sus datos por medio de su login
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
         User user = userRepository.findByLogin(login).orElseThrow(()-> new UsernameNotFoundException("User not found"));

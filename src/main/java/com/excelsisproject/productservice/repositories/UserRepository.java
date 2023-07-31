@@ -8,8 +8,10 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 @Repository
  public interface UserRepository extends JpaRepository<User, Long>{
+    //Método para poder buscar un usuario mediante su login
     Optional<User> findByLogin(String login);
 
+    //Método para poder verificar si un usuario existe en la base de datos
     Boolean existsByLogin(String login);
 
 }
