@@ -25,7 +25,7 @@ public class OrderController {
 
     // create order
     // @PreAuthorize("hasRole('CLIENT') or hasRole('ADMIN')")
-    @PostMapping("/order")
+    @GetMapping("/order")
     public OrderDto orderProduct(@RequestBody OrderDto orderDto){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String loggedUser = authentication.getName();
