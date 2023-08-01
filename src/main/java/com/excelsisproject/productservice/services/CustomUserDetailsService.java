@@ -26,7 +26,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         return roles.stream().map(role-> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toSet());
     }
 
-
     @Autowired
     public CustomUserDetailsService(UserRepository userRepository) {
         this.userRepository = userRepository;

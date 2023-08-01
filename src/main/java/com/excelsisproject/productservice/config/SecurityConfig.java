@@ -16,13 +16,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+
 //Le indica al contenedor de spring que esta es una clase de seguridad al momento de arrancar la aplicación
 @Configuration
 //Indicamos que se activa la seguridad web en nuestra aplicación
 @EnableMethodSecurity
 public class SecurityConfig  {
-
-
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Autowired
@@ -61,11 +61,5 @@ public class SecurityConfig  {
         return http.build();
         // El build() es el encargado de retornar el http como SecurityFilterChain
     }
-
-
-
-
-
-
 
 }

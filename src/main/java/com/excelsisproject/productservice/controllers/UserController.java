@@ -42,7 +42,6 @@ public class UserController {
 
 
     // Login de Usuarios
-
     @PostMapping("/login")
     public ResponseEntity<UserDto> login(@RequestBody CredentialsDto credentialsDto){
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
@@ -53,7 +52,6 @@ public class UserController {
         userDto.setToken(token);
         return ResponseEntity.ok(userDto);
     }
-
 
     // Registros de Usuarios
     @PostMapping("/register")

@@ -1,6 +1,5 @@
 package com.excelsisproject.productservice.jwt;
 
-import com.excelsisproject.productservice.exceptions.AppException;
 import com.excelsisproject.productservice.services.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -8,7 +7,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,7 +20,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /*La función de esta clase será validar la información del token y si esto es exitoso,
-establecerá la autenticación de un usuario en la solicitud o en el contexto de seguridad de nuestra aplicación*/
+establecerá la autenticación de un usuario con sus roles en la solicitud o en el contexto de seguridad de nuestra aplicación*/
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
