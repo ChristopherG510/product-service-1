@@ -2,22 +2,20 @@ package com.excelsisproject.productservice.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @Entity
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "roles")
-public class RoleEntity {
+@Data
+@Table(name = "role")
+public class Roles {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
-    @Enumerated(EnumType.STRING)
-    private ERole name;
+    @Column(name = "id_role")
+    private Long idRole;
+    private String name;
 
 }

@@ -1,13 +1,21 @@
 package com.excelsisproject.productservice.controllers;
 
 
+import com.excelsisproject.productservice.dto.CredentialsDto;
 import com.excelsisproject.productservice.dto.SignUpDto;
 import com.excelsisproject.productservice.dto.UserDto;
+import com.excelsisproject.productservice.jwt.JwtGenerator;
 import com.excelsisproject.productservice.repositories.UserRepository;
 import com.excelsisproject.productservice.services.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -20,7 +28,28 @@ public class UserController {
 
     private final UserService userService;
     private final UserRepository userRepository;
+    private AuthenticationManager authenticationManager;
+    private JwtGenerator jwtGenerator;
 
+    @Autowired
+    public UserController(UserService userService, UserRepository userRepository,
+                          AuthenticationManager authenticationManager, JwtGenerator jwtGenerator) {
+        this.userService = userService;
+        this.userRepository = userRepository;
+        this.authenticationManager = authenticationManager;
+        this.jwtGenerator = jwtGenerator;
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<UserDto> login(@RequestBody CredentialsDto credentialsDto){
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                credentialsDto.getLogin(),credentialsDto.getPassword()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String token = jwtGenerator.generarToken(authentication);
+        UserDto userDto = userService.login(credentialsDto);
+        userDto.setToken(token);
+        return ResponseEntity.ok(userDto);
+    }
     @PostMapping("/register")
     public ResponseEntity<UserDto> register(@RequestBody SignUpDto singUpDto) {
         UserDto user = userService.register(singUpDto);

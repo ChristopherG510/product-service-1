@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
 
@@ -16,7 +15,6 @@ import java.util.List;
 @Entity
 @Table(name = "Orders")
 public class Order {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId;
@@ -34,8 +32,7 @@ public class Order {
     @Column(name = "order_time")
     private String timeOrdered;
     @Column(nullable = false)
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, targetEntity = Cart.class)
-    private List<Cart> cartItems;
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, targetEntity = CartItem.class)
+    private List<CartItem> cartItems;
     private double totalPrice;
-
 }

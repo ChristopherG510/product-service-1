@@ -1,6 +1,6 @@
 package com.excelsisproject.productservice.dto;
 
-import com.excelsisproject.productservice.entities.Cart;
+import com.excelsisproject.productservice.entities.CartItem;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,8 +22,9 @@ public class OrderDto {
     private String userAddress;
     private String dateOrdered;
     private String timeOrdered;
-    private List<Cart> cartItems;
+    private List<CartItem> cartItems;
     private double totalPrice;
+
 
 }
 

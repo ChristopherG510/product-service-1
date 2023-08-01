@@ -22,5 +22,4 @@ public class UserDto {
     private String token;
     private Set<String> roles;
 
-
 }

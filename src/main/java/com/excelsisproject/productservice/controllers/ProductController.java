@@ -1,7 +1,9 @@
 package com.excelsisproject.productservice.controllers;
 
+import com.excelsisproject.productservice.dto.CartItemDto;
 import com.excelsisproject.productservice.dto.ProductDto;
 import com.excelsisproject.productservice.entities.ImageModel;
+import com.excelsisproject.productservice.services.CartService;
 import com.excelsisproject.productservice.services.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,13 +20,13 @@ import java.util.Set;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/products")
+@RequestMapping("/api/products")
 public class ProductController {
 
     private ProductService productService;
+    private CartService cartService;
 
     // Add Product
-    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(value = {"/createNew"}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<ProductDto> createProduct(@RequestPart("product") ProductDto productDto, @RequestPart(value = "imageFile", required = false) MultipartFile[] file) {
         try{
@@ -38,7 +40,6 @@ public class ProductController {
     }
 
     // Get product by id
-    @PreAuthorize("hasRole('CLIENT') or hasRole('ADMIN')")
     @GetMapping("/view/productId/{id}")
     public ResponseEntity<ProductDto> getProductById(@PathVariable("id") Long productId){
         ProductDto productDto = productService.getProductById(productId);
@@ -46,7 +47,6 @@ public class ProductController {
     }
 
     // Get all products
-    @PreAuthorize("hasRole('CLIENT') or hasRole('ADMIN')")
     @GetMapping("/view/all")
     public ResponseEntity<List<ProductDto>> getAllProducts(){
         List<ProductDto> products = productService.getAllProducts();
@@ -62,7 +62,6 @@ public class ProductController {
     }
 
     // Delete product
-    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/productId/{id}")
     public void deleteProduct(@PathVariable("id") Long productId){
         productService.deleteProduct(productId);
@@ -74,6 +73,13 @@ public class ProductController {
     public ResponseEntity<List<ProductDto>> searchProducts(@RequestParam String searchKey){
         List<ProductDto> products = productService.searchProducts(searchKey);
         return ResponseEntity.ok(products);
+    }
+
+   // @PreAuthorize("hasRole('CLIENT') or hasRole('ADMIN')")
+    @PostMapping("/addToCart")
+    public ResponseEntity<CartItemDto> addProductToCart(@RequestBody CartItemDto cartItem){
+        cartService.addToCart(cartItem);
+        return ResponseEntity.ok(cartItem);
     }
 
     public Set<ImageModel> uploadImage(MultipartFile[] multipartFiles) throws IOException{
@@ -89,5 +95,4 @@ public class ProductController {
         }
         return imageModels;
     }
-
 }
