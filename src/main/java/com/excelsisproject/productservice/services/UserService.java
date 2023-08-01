@@ -31,9 +31,7 @@ public class UserService {
     @Autowired
     private SecurityConfig securityConfig;
 
-
-
-    public UserDto login(CredentialsDto credentialsDto) {
+    public UserDto login(CredentialsDto credentialsDto){
         User user = userRepository.findByLogin(credentialsDto.getLogin())
                 .orElseThrow(() -> new AppException("Unknown user", HttpStatus.NOT_FOUND));
 
