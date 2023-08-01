@@ -9,6 +9,7 @@ import lombok.NonNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -16,8 +17,11 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.stream.Collectors;
 import java.util.Set;
+import java.util.stream.Collectors;
+
+/*La función de esta clase será validar la información del token y si esto es exitoso,
+establecerá la autenticación de un usuario con sus roles en la solicitud o en el contexto de seguridad de nuestra aplicación*/
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
@@ -38,7 +42,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)
+    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,@NonNull FilterChain filterChain)
             throws ServletException, IOException {
         //Se obtienen los datos del token
         String token = obtenerTokenSolicitud(request);

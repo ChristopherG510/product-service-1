@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 public interface UserMapper {
 
 
-
     // Crear un userDto en base a un User
     public static UserDto toUserDto(User user) {
         if (user == null) {

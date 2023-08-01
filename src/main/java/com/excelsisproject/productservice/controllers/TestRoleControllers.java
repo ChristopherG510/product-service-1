@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
-// Controller de prueba para los roles ADMIN y CLIENT
+// Controllers de prueba para los roles ADMIN y CLIENT
 @RestController
 public class TestRoleControllers {
 

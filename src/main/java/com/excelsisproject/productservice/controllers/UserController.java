@@ -1,6 +1,7 @@
 package com.excelsisproject.productservice.controllers;
 
 
+import com.excelsisproject.productservice.jwt.JwtGenerator;
 import com.excelsisproject.productservice.dto.CredentialsDto;
 import com.excelsisproject.productservice.dto.SignUpDto;
 import com.excelsisproject.productservice.dto.UserDto;
@@ -15,7 +16,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.parameters.P;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -40,6 +41,8 @@ public class UserController {
         this.jwtGenerator = jwtGenerator;
     }
 
+
+    // Login de Usuarios
     @PostMapping("/login")
     public ResponseEntity<UserDto> login(@RequestBody CredentialsDto credentialsDto){
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
@@ -50,6 +53,8 @@ public class UserController {
         userDto.setToken(token);
         return ResponseEntity.ok(userDto);
     }
+
+    // Registros de Usuarios
     @PostMapping("/register")
     public ResponseEntity<UserDto> register(@RequestBody SignUpDto singUpDto) {
         UserDto user = userService.register(singUpDto);
@@ -57,9 +62,11 @@ public class UserController {
     }
 
     @DeleteMapping("/deleteUser")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String deleteUser(@RequestParam Long id){
         userRepository.deleteById(id);
         return "Se ha eliminado el user con id " + id;
     }
+
+
 }
