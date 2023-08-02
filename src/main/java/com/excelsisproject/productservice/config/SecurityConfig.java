@@ -68,6 +68,7 @@ public class SecurityConfig {
                                 .anyRequest().authenticated());
         return http.build();
         // El build() es el encargado de retornar el http como SecurityFilterChain
+
     }
 
 }

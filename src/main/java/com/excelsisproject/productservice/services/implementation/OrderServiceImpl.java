@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
-
     private OrderRepository orderRepository;
     private ProductService productService;
     private UserService userService;
@@ -45,15 +44,14 @@ public class OrderServiceImpl implements OrderService {
             double amountOrdered = cartItem.getAmount();
             Long productId = cartItem.getProductId();
             productService.updateStock(productId, amountOrdered);
-            cartItem.setPrice(productService.getPrice(productId));
-            totalPrice += cartItem.getPrice() * cartItem.getAmount();
+            totalPrice += cartItem.getPrice();
             cartItem.setStatus(ORDER_PLACED);
         }
 
         User user = userRepository.findByLogin(loggedUser)
                 .orElseThrow(() -> new UsernameNotFoundException("El usuario" + loggedUser + "no existe"));
         Long loggedUserId = user.getId();
-        System.out.println("id: " + loggedUserId);
+
 
         orderDto.setUserId(loggedUserId);
         orderDto.setFirstName(user.getFirstName());
@@ -78,8 +76,6 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new ResourceNotFoundException("Order does not exist by given id: " + orderId));
 
         return OrderMapper.mapToOrderDto(order);
-
-
     }
 
     @Override
@@ -87,6 +83,13 @@ public class OrderServiceImpl implements OrderService {
         List<Order> orders = orderRepository.findAll();
         return orders.stream().map((order) -> OrderMapper.mapToOrderDto(order))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<OrderDto> getOrdersByUser() {
+        List<Order> orders = orderRepository.findByUserId(userService.getLoggedUserId());
+
+        return orders.stream().map((order) -> OrderMapper.mapToOrderDto(order)).collect(Collectors.toList());
     }
 
     @Override
@@ -134,5 +137,5 @@ public class OrderServiceImpl implements OrderService {
 
         return ordersDto;
     }
-}
 
+}

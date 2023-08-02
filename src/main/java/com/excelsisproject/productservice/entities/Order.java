@@ -35,5 +35,4 @@ public class Order {
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, targetEntity = CartItem.class)
     private List<CartItem> cartItems;
     private double totalPrice;
-
 }
