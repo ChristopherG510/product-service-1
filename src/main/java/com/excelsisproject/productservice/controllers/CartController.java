@@ -16,9 +16,9 @@ public class CartController {
     private CartService cartService;
 
     @GetMapping("/miCarrito")
-    public ResponseEntity<List<CartItemDto>> getCartItemsByLoggedUser(){
+    public ResponseEntity<List<CartItemDto>> getAllMyCartItems(){
 
-        List<CartItemDto> cartItems = cartService.getCartItemsByLoggedUser();
+        List<CartItemDto> cartItems = cartService.getAllMyCartItems();
 
         return ResponseEntity.ok(cartItems);
     }
