@@ -43,6 +43,12 @@ public class OrderController {
         return ResponseEntity.ok(orders);
     }
 
+    @GetMapping("/view/myOrders")
+    public ResponseEntity<List<OrderDto>> getOrdersByUser(){
+        List<OrderDto> orderDto = orderService.getOrdersByUser();
+        return ResponseEntity.ok(orderDto);
+    }
+
     // Update order
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/edit/orderId/{id}")

@@ -44,8 +44,7 @@ public class OrderServiceImpl implements OrderService {
             double amountOrdered = cartItem.getAmount();
             Long productId = cartItem.getProductId();
             productService.updateStock(productId, amountOrdered);
-            cartItem.setPrice(productService.getPrice(productId));
-            totalPrice += cartItem.getPrice() * cartItem.getAmount();
+            totalPrice += cartItem.getPrice();
             cartItem.setStatus(ORDER_PLACED);
         }
 
@@ -76,8 +75,6 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new ResourceNotFoundException("Order does not exist by given id: " + orderId));
 
         return OrderMapper.mapToOrderDto(order);
-
-
     }
 
     @Override
@@ -85,6 +82,13 @@ public class OrderServiceImpl implements OrderService {
         List<Order> orders = orderRepository.findAll();
         return orders.stream().map((order) -> OrderMapper.mapToOrderDto(order))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<OrderDto> getOrdersByUser() {
+        List<Order> orders = orderRepository.findByUserId(userService.getLoggedUserId());
+
+        return orders.stream().map((order) -> OrderMapper.mapToOrderDto(order)).collect(Collectors.toList());
     }
 
     @Override
