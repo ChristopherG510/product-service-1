@@ -32,8 +32,8 @@ public class Order {
     @Column(name = "order_time")
     private String timeOrdered;
     @Column(nullable = false)
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, targetEntity = Cart.class)
-    private List<Cart> cartItems;
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, targetEntity = CartItem.class)
+    private List<CartItem> cartItems;
     private double totalPrice;
 
 }

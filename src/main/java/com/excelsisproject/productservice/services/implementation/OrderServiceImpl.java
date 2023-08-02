@@ -1,11 +1,12 @@
 package com.excelsisproject.productservice.services.implementation;
 
 import com.excelsisproject.productservice.dto.OrderDto;
-import com.excelsisproject.productservice.entities.Cart;
+import com.excelsisproject.productservice.entities.CartItem;
 import com.excelsisproject.productservice.entities.Order;
 import com.excelsisproject.productservice.entities.User;
 import com.excelsisproject.productservice.exceptions.ResourceNotFoundException;
 import com.excelsisproject.productservice.mappers.OrderMapper;
+import com.excelsisproject.productservice.repositories.CartRepository;
 import com.excelsisproject.productservice.repositories.OrderRepository;
 import com.excelsisproject.productservice.repositories.UserRepository;
 import com.excelsisproject.productservice.services.OrderService;
@@ -29,20 +30,24 @@ public class OrderServiceImpl implements OrderService {
 
     private OrderRepository orderRepository;
     private ProductService productService;
+    private UserService userService;
     private UserRepository userRepository;
+    private CartRepository cartRepository;
+    private static final String ORDER_PLACED = "Placed";
+
     @Override
     public OrderDto orderProduct(OrderDto orderDto, String loggedUser) {
 
-
-        List<Cart> cartItems = orderDto.getCartItems();
+        List<CartItem> cartItems = cartRepository.findAllByUserIdAndStatus(userService.getLoggedUserId(), "In cart");
 
         double totalPrice = 0;
-        for (Cart cart : cartItems){
-            double amountOrdered = cart.getAmount();
-            Long productId = cart.getProductId();
+        for (CartItem cartItem : cartItems){
+            double amountOrdered = cartItem.getAmount();
+            Long productId = cartItem.getProductId();
             productService.updateStock(productId, amountOrdered);
-            cart.setPrice(productService.getPrice(productId));
-            totalPrice += cart.getPrice() * cart.getAmount();
+            cartItem.setPrice(productService.getPrice(productId));
+            totalPrice += cartItem.getPrice() * cartItem.getAmount();
+            cartItem.setStatus(ORDER_PLACED);
         }
 
         User user = userRepository.findByLogin(loggedUser)
@@ -51,10 +56,15 @@ public class OrderServiceImpl implements OrderService {
         System.out.println("id: " + loggedUserId);
 
         orderDto.setUserId(loggedUserId);
-        //orderDto.setUserInfo(user.getUserInfo());
+        orderDto.setFirstName(user.getFirstName());
+        orderDto.setLastName(user.getLastName());
+        orderDto.setUserEmail(user.getUserEmail());
+        orderDto.setUserPhoneNumber(user.getUserPhoneNumber());
+        orderDto.setUserAddress(user.getUserAddress());
         orderDto.setTotalPrice(totalPrice);
         orderDto.setDateOrdered(LocalDateTime.now(ZoneId.of("America/Asuncion")).format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
         orderDto.setTimeOrdered(LocalDateTime.now(ZoneId.of("America/Asuncion")).format(DateTimeFormatter.ofPattern("HH:mm:ss")));
+        orderDto.setCartItems(cartItems);
 
         Order order = OrderMapper.mapToOrder(orderDto);
         Order savedOrder = orderRepository.save(order);
@@ -85,7 +95,7 @@ public class OrderServiceImpl implements OrderService {
                 ()-> new ResourceNotFoundException("order does not exist with given id: " + orderId));
 
 
-        order.setCartItems(updatedOrder.getCartItems());
+        //order.setCartItems(updatedOrder.getCartItems());
 
         Order updatedOrderObj = orderRepository.save(order);
 

@@ -62,12 +62,12 @@ public class SecurityConfig {
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(customizer -> customizer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((requests) ->
-                        requests.requestMatchers(HttpMethod.POST, "/login","/register", "/api/products/createNew").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/api/products/view/all", "/api/products/view/productId/{id}").permitAll()
+                        requests.requestMatchers(HttpMethod.POST, "/login","/register", "/api/products/createNew", "localhost:8080/api/products/addToCart").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/products/view/all", "/api/products/view/productId/{id}","/api/orders/viewAll","/api/orders/view/orderId/{id}").permitAll()
                                 .requestMatchers(HttpMethod.DELETE, "/deleteUser", "/api/products/delete/productId/{id}").permitAll()
                                 .anyRequest().authenticated());
         return http.build();
         // El build() es el encargado de retornar el http como SecurityFilterChain
     }
 
-    }
+}
