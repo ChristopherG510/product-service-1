@@ -70,7 +70,7 @@ public class OrderServiceImpl implements OrderService {
 
             return OrderMapper.mapToOrderDto(savedOrder);
         } else {
-            throw new ResourceNotFoundException("No items in cart");
+            return null;
         }
     }
 
