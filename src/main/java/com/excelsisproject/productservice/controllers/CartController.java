@@ -50,8 +50,6 @@ public class CartController {
         } else {
             return "item with id: " + cartItemId + "does not exist in cart";
         }
-
-
     }
 
 }
