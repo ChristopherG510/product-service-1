@@ -33,15 +33,20 @@ public class CartServiceImpl implements CartService {
 
         ProductDto product = productService.getProductById(cartItemDto.getProductId());
 
-        cartItemDto.setProductName(product.getName());
-        cartItemDto.setStatus(ORDER_IN_CART);
-        cartItemDto.setUserId(userService.getLoggedUserId());
-        cartItemDto.setPrice(cartItemDto.getAmount() * product.getPrice());
+        if(product.getAmountInStock() >= cartItemDto.getAmount()) {
+            cartItemDto.setProductName(product.getName());
+            cartItemDto.setStatus(ORDER_IN_CART);
+            cartItemDto.setUserId(userService.getLoggedUserId());
+            cartItemDto.setPrice(cartItemDto.getAmount() * product.getPrice());
 
-        CartItem cartItem = CartItemMapper.mapToCartItem(cartItemDto);
-        CartItem savedCartItem = cartRepository.save(cartItem);
+            CartItem cartItem = CartItemMapper.mapToCartItem(cartItemDto);
+            CartItem savedCartItem = cartRepository.save(cartItem);
 
-        return CartItemMapper.mapToCartItemDto(savedCartItem);
+            return CartItemMapper.mapToCartItemDto(savedCartItem);
+        } else {
+            return null;
+        }
+
     }
 
     @Override
