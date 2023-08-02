@@ -3,6 +3,7 @@ package com.excelsisproject.productservice.services.implementation;
 import com.excelsisproject.productservice.dto.CartItemDto;
 import com.excelsisproject.productservice.dto.ProductDto;
 import com.excelsisproject.productservice.entities.CartItem;
+import com.excelsisproject.productservice.entities.Product;
 import com.excelsisproject.productservice.exceptions.ResourceNotFoundException;
 import com.excelsisproject.productservice.mappers.CartItemMapper;
 import com.excelsisproject.productservice.repositories.CartRepository;
@@ -14,6 +15,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -55,7 +57,7 @@ public class CartServiceImpl implements CartService {
         CartItem cartItem = cartRepository.findById(cartItemId).orElseThrow(
                 ()-> new ResourceNotFoundException("Cart item does not exist with given id: " + cartItemId));
 
-        if (cartItem.getUserId() == userService.getLoggedUserId()){
+        if (Objects.equals(cartItem.getUserId(), userService.getLoggedUserId())){
             return CartItemMapper.mapToCartItemDto(cartItem);
         } else {
             return null;
@@ -71,15 +73,29 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
+    public List<CartItemDto> getAllMyCartItems() {
+        List<CartItem> cartItemList = cartRepository.findAllByUserIdAndStatus(userService.getLoggedUserId(), "In cart");
+
+        return cartItemList.stream().map((cartItem) -> CartItemMapper.mapToCartItemDto(cartItem))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public CartItemDto updateCartItem(Long cartItemId, CartItemDto updatedCartItem) {
         CartItem cartItem = cartRepository.findById(cartItemId).orElseThrow(
                 ()-> new ResourceNotFoundException("Cart item does not exist with given id: " + cartItemId));
 
-        cartItem.setAmount(updatedCartItem.getAmount());
+        if(cartItem.getUserId() == userService.getLoggedUserId()) {
+            ProductDto product = productService.getProductById(cartItem.getProductId());
+            cartItem.setAmount(updatedCartItem.getAmount());
+            cartItem.setPrice(updatedCartItem.getAmount() * product.getPrice());
 
-        CartItem updatedCartItemObj = cartRepository.save(cartItem);
+            CartItem updatedCartItemObj = cartRepository.save(cartItem);
 
-        return CartItemMapper.mapToCartItemDto(updatedCartItemObj);
+            return CartItemMapper.mapToCartItemDto(updatedCartItemObj);
+        } else {
+            throw  new ResourceNotFoundException("Item does not exist cart of user");
+        }
     }
 
     @Override
