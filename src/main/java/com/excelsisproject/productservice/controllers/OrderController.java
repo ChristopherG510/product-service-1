@@ -28,7 +28,7 @@ public class OrderController {
     }
 
     // get order
-    @PreAuthorize("hasRole('CLIENT') or hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('CLIENT') or hasRole('ADMIN')")
     @GetMapping("/view/orderId/{id}")
     public ResponseEntity<OrderDto> getOrderById(@PathVariable("id") Long orderId){
         OrderDto orderDto = orderService.getOrderById(orderId);
