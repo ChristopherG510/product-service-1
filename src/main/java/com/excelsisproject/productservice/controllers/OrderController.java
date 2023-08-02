@@ -36,7 +36,6 @@ public class OrderController {
     }
 
     // get all orders
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/viewAll")
     public ResponseEntity<List<OrderDto>> getAllOrders(){
         List<OrderDto> orders = orderService.getAllOrders();

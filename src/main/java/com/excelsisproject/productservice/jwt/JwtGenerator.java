@@ -53,8 +53,5 @@ public class JwtGenerator {
     }
 
 
-<<<<<<< HEAD
+
 }
-=======
-}
->>>>>>> 7561cfaf590de84a61d7d2a265997032f35385e5

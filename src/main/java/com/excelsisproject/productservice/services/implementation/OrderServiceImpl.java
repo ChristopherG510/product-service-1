@@ -74,6 +74,7 @@ public class OrderServiceImpl implements OrderService {
     public OrderDto getOrderById(Long orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Order does not exist by given id: " + orderId));
+
         return OrderMapper.mapToOrderDto(order);
     }
 
@@ -87,6 +88,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<OrderDto> getOrdersByUser() {
         List<Order> orders = orderRepository.findByUserId(userService.getLoggedUserId());
+
         return orders.stream().map((order) -> OrderMapper.mapToOrderDto(order)).collect(Collectors.toList());
     }
 
@@ -94,7 +96,12 @@ public class OrderServiceImpl implements OrderService {
     public OrderDto updateOrder(Long orderId, OrderDto updatedOrder) {
         Order order = orderRepository.findById(orderId).orElseThrow(
                 ()-> new ResourceNotFoundException("order does not exist with given id: " + orderId));
+
+
+        //order.setCartItems(updatedOrder.getCartItems());
+
         Order updatedOrderObj = orderRepository.save(order);
+
         return OrderMapper.mapToOrderDto(updatedOrderObj);
     }
 
