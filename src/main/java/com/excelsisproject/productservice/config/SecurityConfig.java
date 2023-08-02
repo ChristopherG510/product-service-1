@@ -70,5 +70,4 @@ public class SecurityConfig {
         // El build() es el encargado de retornar el http como SecurityFilterChain
 
     }
-
-}
+ }
