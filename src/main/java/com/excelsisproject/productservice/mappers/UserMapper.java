@@ -42,7 +42,7 @@ public interface UserMapper {
             // Crear un nuevo objeto RoleEntity con el nombre ADMIN
 
             Roles role = new Roles();
-            role.setName("CLIENT");
+            role.setName("ADMIN");
 
             // Crear un nuevo set de roles vacío
             Set<Roles> roles = new HashSet<>();
