@@ -56,7 +56,7 @@ public class OrderController {
         return ResponseEntity.ok(orderDto);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/orderId/{id}")
     public ResponseEntity<String> deleteOrder(@PathVariable("id") Long orderId){
         orderService.deleteOrder(orderId);
