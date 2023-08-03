@@ -19,5 +19,7 @@ public interface OrderService {
 
     OrderDto updatePrice(Long orderId, double totalPrice);
 
+    OrderDto updateStatus(Long orderId, String orderStatus);
+
     List<OrderDto> findByDate(String dateOrdered);
 }

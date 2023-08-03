@@ -22,6 +22,7 @@ public class OrderDto {
     private String userAddress;
     private String paymentMethod;
     private String orderDescription;
+    private String orderStatus;
     private String dateOrdered;
     private String timeOrdered;
     private List<CartItem> cartItems;

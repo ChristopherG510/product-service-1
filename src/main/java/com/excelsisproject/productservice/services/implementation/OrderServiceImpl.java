@@ -33,6 +33,7 @@ public class OrderServiceImpl implements OrderService {
     private UserRepository userRepository;
     private CartRepository cartRepository;
     private static final String ORDER_PLACED = "Placed";
+    private static final String ORDER_STATUS_PLACED = "order placed";
 
     @Override
     public OrderDto orderProduct(OrderDto orderDto, String loggedUser) {
@@ -42,16 +43,6 @@ public class OrderServiceImpl implements OrderService {
 
         if(!cartItems.isEmpty()) {
             double totalPrice = 0;
-
-//            for (CartItem cartItem : cartItems){
-//                double amountOrdered = cartItem.getAmount();
-//
-//                if (amountOrdered > productService.getProductById(cartItem.getProductId()).getAmountInStock()){
-//                    System.out.println("No existen suficientes productos en stock para completar su pedido.");
-//                    return null;
-//                }
-//            }
-
             for (CartItem cartItem : cartItems) {
                 double amountOrdered = cartItem.getAmount();
                 Long productId = cartItem.getProductId();
@@ -73,6 +64,7 @@ public class OrderServiceImpl implements OrderService {
             orderDto.setDateOrdered(LocalDateTime.now(ZoneId.of("America/Asuncion")).format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
             orderDto.setTimeOrdered(LocalDateTime.now(ZoneId.of("America/Asuncion")).format(DateTimeFormatter.ofPattern("HH:mm:ss")));
             orderDto.setCartItems(cartItems);
+            orderDto.setOrderStatus(ORDER_STATUS_PLACED);
 
             Order order = OrderMapper.mapToOrder(orderDto);
             Order savedOrder = orderRepository.save(order);
@@ -107,6 +99,9 @@ public class OrderServiceImpl implements OrderService {
     public OrderDto updateOrder(Long orderId, OrderDto updatedOrder) {
         Order order = orderRepository.findById(orderId).orElseThrow(
                 ()-> new ResourceNotFoundException("order does not exist with given id: " + orderId));
+
+        order.setOrderStatus(updatedOrder.getOrderStatus());
+
         Order updatedOrderObj = orderRepository.save(order);
         return OrderMapper.mapToOrderDto(updatedOrderObj);
     }
@@ -122,9 +117,21 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto updatePrice(Long orderId, double totalPrice) {
         Order order = orderRepository.findById(orderId).orElseThrow(
-                ()-> new ResourceNotFoundException("Product does not exist with given id: " + orderId));
+                ()-> new ResourceNotFoundException("Order does not exist with given id: " + orderId));
 
         order.setTotalPrice(totalPrice);
+
+        Order updatedOrderObj = orderRepository.save(order);
+
+        return OrderMapper.mapToOrderDto(updatedOrderObj);
+    }
+
+    @Override
+    public OrderDto updateStatus(Long orderId, String orderStatus) {
+        Order order = orderRepository.findById(orderId).orElseThrow(
+                ()-> new ResourceNotFoundException("Order does not exist with given id: " + orderId));
+
+        order.setOrderStatus(orderStatus);
 
         Order updatedOrderObj = orderRepository.save(order);
 

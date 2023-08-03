@@ -30,6 +30,7 @@ public class Order {
     @Column(nullable = false)
     private String paymentMethod;
     private String orderDescription;
+    private String orderStatus;
 
     @Column(name = "order_date")
     private String dateOrdered;
