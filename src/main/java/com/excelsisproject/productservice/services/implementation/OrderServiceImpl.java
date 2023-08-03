@@ -42,13 +42,18 @@ public class OrderServiceImpl implements OrderService {
 
         if(!cartItems.isEmpty()) {
             double totalPrice = 0;
+
+//            for (CartItem cartItem : cartItems){
+//                double amountOrdered = cartItem.getAmount();
+//
+//                if (amountOrdered > productService.getProductById(cartItem.getProductId()).getAmountInStock()){
+//                    System.out.println("No existen suficientes productos en stock para completar su pedido.");
+//                    return null;
+//                }
+//            }
+
             for (CartItem cartItem : cartItems) {
                 double amountOrdered = cartItem.getAmount();
-
-                if (amountOrdered > productService.getProductById(cartItem.getProductId()).getAmountInStock()){
-                    throw new ResourceNotFoundException("No existen suficientes productos en stock para completar su pedido.");
-                }
-
                 Long productId = cartItem.getProductId();
                 productService.updateStock(productId, amountOrdered);
                 totalPrice += cartItem.getPrice();
@@ -64,7 +69,6 @@ public class OrderServiceImpl implements OrderService {
             orderDto.setLastName(user.getLastName());
             orderDto.setUserEmail(user.getUserEmail());
             orderDto.setUserPhoneNumber(user.getUserPhoneNumber());
-            orderDto.setUserAddress(user.getUserAddress());
             orderDto.setTotalPrice(totalPrice);
             orderDto.setDateOrdered(LocalDateTime.now(ZoneId.of("America/Asuncion")).format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
             orderDto.setTimeOrdered(LocalDateTime.now(ZoneId.of("America/Asuncion")).format(DateTimeFormatter.ofPattern("HH:mm:ss")));
