@@ -46,7 +46,7 @@ public class OrderServiceImpl implements OrderService {
                 double amountOrdered = cartItem.getAmount();
 
                 if (amountOrdered > productService.getProductById(cartItem.getProductId()).getAmountInStock()){
-                    throw new ResourceNotFoundException("No existen suficientes productos en stock para completar su pedido.");
+                    return null;
                 }
 
                 Long productId = cartItem.getProductId();

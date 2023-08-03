@@ -99,7 +99,7 @@ public class CartServiceImpl implements CartService {
 
             return CartItemMapper.mapToCartItemDto(updatedCartItemObj);
         } else {
-            throw  new ResourceNotFoundException("Item does not exist cart of user");
+return null;
         }
     }
 
