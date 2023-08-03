@@ -3,7 +3,6 @@ package com.excelsisproject.productservice.services.implementation;
 import com.excelsisproject.productservice.dto.CartItemDto;
 import com.excelsisproject.productservice.dto.ProductDto;
 import com.excelsisproject.productservice.entities.CartItem;
-import com.excelsisproject.productservice.entities.Product;
 import com.excelsisproject.productservice.exceptions.ResourceNotFoundException;
 import com.excelsisproject.productservice.mappers.CartItemMapper;
 import com.excelsisproject.productservice.repositories.CartRepository;
@@ -23,7 +22,6 @@ import java.util.stream.Collectors;
 public class CartServiceImpl implements CartService {
 
     private ProductService productService;
-    private UserRepository userRepository;
     private UserService userService;
     private CartRepository cartRepository;
     private static final String ORDER_IN_CART ="In cart";
@@ -32,6 +30,18 @@ public class CartServiceImpl implements CartService {
     public CartItemDto addToCart(CartItemDto cartItemDto) {
 
         ProductDto product = productService.getProductById(cartItemDto.getProductId());
+        List<CartItem> otherItemsInCart = cartRepository.findAllByUserIdAndStatus(userService.getLoggedUserId(), ORDER_IN_CART);
+
+        for (CartItem cartItem : otherItemsInCart){
+            if(Objects.equals(cartItem.getProductId(), cartItemDto.getProductId())){
+                if(product.getAmountInStock() < cartItemDto.getAmount() + cartItem.getAmount()) { return null;}
+                cartItem.setAmount(cartItem.getAmount() + cartItemDto.getAmount());
+                cartItem.setPrice(cartItem.getAmount() * product.getPrice());
+
+                CartItem savedCartItem = cartRepository.save(cartItem);
+                return CartItemMapper.mapToCartItemDto(savedCartItem);
+            }
+        }
 
         if(product.getAmountInStock() >= cartItemDto.getAmount()) {
             cartItemDto.setProductName(product.getName());

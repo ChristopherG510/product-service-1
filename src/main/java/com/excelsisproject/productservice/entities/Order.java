@@ -25,7 +25,11 @@ public class Order {
     private String lastName;
     private String userEmail;
     private String userPhoneNumber;
+    @Column(nullable = false)
     private String userAddress;
+    @Column(nullable = false)
+    private String paymentMethod;
+    private String orderDescription;
 
     @Column(name = "order_date")
     private String dateOrdered;

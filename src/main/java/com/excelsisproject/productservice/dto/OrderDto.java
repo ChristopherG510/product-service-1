@@ -20,6 +20,8 @@ public class OrderDto {
     private String userEmail;
     private String userPhoneNumber;
     private String userAddress;
+    private String paymentMethod;
+    private String orderDescription;
     private String dateOrdered;
     private String timeOrdered;
     private List<CartItem> cartItems;

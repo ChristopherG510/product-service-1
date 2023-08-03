@@ -31,9 +31,6 @@ public class User {
     private String userPhoneNumber;
 
     @Column(nullable = false)
-    private String userAddress;
-
-    @Column(nullable = false)
     private String login;
 
     @Column(nullable = false)
