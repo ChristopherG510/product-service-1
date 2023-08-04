@@ -33,7 +33,7 @@ public class OrderServiceImpl implements OrderService {
     private UserRepository userRepository;
     private CartRepository cartRepository;
     private static final String ORDER_PLACED = "Placed";
-    private static final String ORDER_STATUS_PLACED = "order placed";
+    private static final String ORDER_STATUS_PLACED = "En espera";
 
     @Override
     public OrderDto orderProduct(OrderDto orderDto, String loggedUser) {
