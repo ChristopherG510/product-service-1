@@ -19,6 +19,6 @@ public class UserDto {
     private String userPhoneNumber;
     private String login;
     private String token;
-    private Set<String> roles;
+    private String role;
 
 }

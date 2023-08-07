@@ -11,6 +11,8 @@ import java.util.Optional;
     //Método para poder buscar un usuario mediante su login
     Optional<User> findByLogin(String login);
 
+    Optional<User> findByLoginOrUserEmail(String login, String email);
+
     //Método para poder verificar si un usuario existe en la base de datos
     Boolean existsByLogin(String login);
 
