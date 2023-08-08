@@ -12,6 +12,7 @@ public class ConfirmationTokenMapper {
                 confirmationToken.getTimeCreated(),
                 confirmationToken.getTimeExpired(),
                 confirmationToken.getTimeConfirmed(),
+                confirmationToken.getStatus(),
                 confirmationToken.getUser()
         );
     }
@@ -23,6 +24,7 @@ public class ConfirmationTokenMapper {
                 confirmationTokenDto.getTimeCreated(),
                 confirmationTokenDto.getTimeExpired(),
                 confirmationTokenDto.getTimeConfirmed(),
+                confirmationTokenDto.getStatus(),
                 confirmationTokenDto.getUser()
         );
     }

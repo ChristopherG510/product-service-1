@@ -108,15 +108,6 @@ public class ProductServiceImpl implements ProductService {
             pageable = PageRequest.of(page,5, Sort.by(sortParam).ascending());
         }
         Page<Product> products;
-
-//        switch (filter){
-//            case "name":
-//                products = productRepository.findAllByNameContainingIgnoreCase(field, pageable);
-//            case "price":
-//                products = productRepository.findAllByPrice(Double.parseDouble(field), pageable);
-//            default:
-//                products = productRepository.findAll(pageable);
-//        }
         if (Objects.equals(filter, "name")){
             products = productRepository.findAllByNameContainingIgnoreCase(field, pageable);
         } else if (Objects.equals(filter, "price")) {

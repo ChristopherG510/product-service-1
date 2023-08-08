@@ -33,7 +33,7 @@ public class EmailServiceImpl implements EmailService {
             message.setSubject("Nueva autenticacion de usuario");
             message.setFrom(fromEmail);
             message.setTo(to);
-            message.setText("Verification link: localhost:8080/confirmar?token=" + token);
+            message.setText("Verification link: http://localhost:8080/confirmar?token=" + token);
             emailSender.send(message);
 
         }catch (Exception exception){

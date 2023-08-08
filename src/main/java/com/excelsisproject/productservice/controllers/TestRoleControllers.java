@@ -16,7 +16,7 @@ public class TestRoleControllers {
     }
 
 
-    @PreAuthorize("hasAuthority('CLIENT')")
+    @PreAuthorize("hasAuthority('CLIENTE')")
     @GetMapping("/accessClient")
     public String accessClient(){
         return "Has accedido con rol de cliente";

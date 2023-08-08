@@ -160,13 +160,21 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<OrderDto> sortOrders(String filter, String direction, int pageNumber) {
         Pageable pageable;
+        if(filter == null){
+            filter = "id";
+        }
+
         if (Objects.equals(direction, "desc")){
             pageable = PageRequest.of(pageNumber,5, Sort.by(filter).descending());
         } else {
             pageable = PageRequest.of(pageNumber,5, Sort.by(filter).ascending());
         }
         Page<Order> orders;
-        orders = orderRepository.findAll(pageable);
+        if (Objects.equals(filter, "orderStatus")){
+            orders = orderRepository.findAllByOrderStatus(filter, pageable);
+        } else {
+            orders = orderRepository.findAll(pageable);
+        }
 
         return orders.stream().map(OrderMapper::mapToOrderDto)
                 .collect(Collectors.toList());

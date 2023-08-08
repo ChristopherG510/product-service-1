@@ -20,6 +20,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 // Controlador para el registro y login de usuarios
 
@@ -61,8 +62,8 @@ public class UserController {
         return ResponseEntity.created(URI.create("/users/" + user.getId())).body(user);
     }
 
-    @PostMapping("/confirmar")
-    public String confirmToken(@RequestParam("token") String token){
+    @RequestMapping(value = "/confirmar", method = RequestMethod.POST, consumes = "text/plain")
+    public String confirmToken(@RequestBody String token){
         return userService.confirmToken(token);
     }
 
@@ -72,4 +73,9 @@ public class UserController {
         userRepository.deleteById(id);
         return "Se ha eliminado el user con id " + id;
     }
+
+//    @GetMapping("/getUsers")
+//    public List<UserDto> getAllUsers(@RequestBody  ){
+//
+//    }
 }
