@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -37,6 +38,8 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
         User user = userRepository.findByLogin(login).orElseThrow(()-> new UsernameNotFoundException("User not found"));
-        return new org.springframework.security.core.userdetails.User(user.getLogin(), user.getPassword(), mapToAuthorities(user.getRoles()));
+        Set<Roles> roles = new HashSet<>();
+        roles.add(user.getRole());
+        return new org.springframework.security.core.userdetails.User(user.getLogin(), user.getPassword(), mapToAuthorities(roles));
     }
 }

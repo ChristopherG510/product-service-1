@@ -48,8 +48,8 @@ public class ProductController {
 
     // Get all products
     @GetMapping("/view/all")
-    public ResponseEntity<List<ProductDto>> getAllProducts(){
-        List<ProductDto> products = productService.getAllProducts();
+    public ResponseEntity<List<ProductDto>> getAllProducts(@RequestParam(defaultValue = "0") int pageNumber){
+        List<ProductDto> products = productService.getAllProducts(pageNumber);
         return ResponseEntity.ok(products);
     }
 
@@ -72,6 +72,12 @@ public class ProductController {
     @GetMapping("/search")
     public ResponseEntity<List<ProductDto>> searchProducts(@RequestParam String searchKey){
         List<ProductDto> products = productService.searchProducts(searchKey);
+        return ResponseEntity.ok(products);
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity<List<ProductDto>> filterProducts(@RequestParam String filter, String direction, int page){
+        List<ProductDto> products = productService.filterProducts(filter, direction, page);
         return ResponseEntity.ok(products);
     }
 
