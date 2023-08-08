@@ -61,11 +61,6 @@ public class UserController {
         return ResponseEntity.created(URI.create("/users/" + user.getId())).body(user);
     }
 
-    @PostMapping("/confirmar")
-    public String confirmToken(@RequestParam("token") String token){
-        return userService.confirmToken(token);
-    }
-
     @DeleteMapping("/deleteUser")
     @PreAuthorize("hasAuthority('ADMIN')")
     public String deleteUser(@RequestParam Long id){

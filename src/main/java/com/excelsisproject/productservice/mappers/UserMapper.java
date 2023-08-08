@@ -28,7 +28,7 @@ public interface UserMapper {
             userDto.userEmail(user.getUserEmail());
             userDto.userPhoneNumber(user.getUserPhoneNumber());
             userDto.login(user.getLogin());
-            userDto.role(user.getRole().getName());
+            userDto.roles(user.getRoles().stream().map(Roles::getName).collect(Collectors.toSet()));
             return userDto.build();
         }
     }
@@ -39,19 +39,23 @@ public interface UserMapper {
         if (signUpDto == null) {
             return null;
         } else {
-
             // Crear un nuevo objeto RoleEntity con el nombre ADMIN
 
             Roles role = new Roles();
-            role.setName("PENDIENTE");
+            role.setName("ADMIN");
 
+            // Crear un nuevo set de roles vacío
+            Set<Roles> roles = new HashSet<>();
+
+            // Añadir el rol admin al set
+            roles.add(role);
             User.UserBuilder user = User.builder();
             user.firstName(signUpDto.firstName());
             user.lastName(signUpDto.lastName());
             user.userEmail(signUpDto.userEmail());
             user.userPhoneNumber(signUpDto.userPhoneNumber());
             user.login(signUpDto.login());
-            user.role(role);
+            user.roles(roles);
             return user.build();
         }
     }

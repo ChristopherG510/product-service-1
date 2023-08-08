@@ -10,7 +10,7 @@ public interface ProductService {
 
     ProductDto getProductById(Long productId); // Obtener un producto por id
 
-    List<ProductDto> getAllProducts(int pageNumber); // Obtener todos los productos
+    List<ProductDto> getAllProducts(); // Obtener todos los productos
 
     ProductDto updateProduct(Long productId, ProductDto updatedProduct); // Modificar un producto
 
@@ -21,7 +21,5 @@ public interface ProductService {
     double getPrice(Long productId);
 
     List<ProductDto> searchProducts(String searchKey);
-
-    List<ProductDto> filterProducts(String filter, String direction, int pageNumber);
 
 }

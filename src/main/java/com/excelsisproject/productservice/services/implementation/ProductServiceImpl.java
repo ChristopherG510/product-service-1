@@ -1,20 +1,17 @@
 package com.excelsisproject.productservice.services.implementation;
 
+import com.excelsisproject.productservice.dto.CartItemDto;
 import com.excelsisproject.productservice.dto.ProductDto;
 import com.excelsisproject.productservice.entities.Product;
 import com.excelsisproject.productservice.exceptions.ResourceNotFoundException;
 import com.excelsisproject.productservice.mappers.ProductMapper;
 import com.excelsisproject.productservice.repositories.ProductRepository;
+import com.excelsisproject.productservice.services.CartService;
 import com.excelsisproject.productservice.services.ProductService;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,10 +37,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDto> getAllProducts(int pageNumber) {
-        Pageable pageable = PageRequest.of(pageNumber,9);
-        Page<Product> products = productRepository.findAll(pageable);
-
+    public List<ProductDto> getAllProducts() {
+        List<Product> products = productRepository.findAll();
         return products.stream().map((product) -> ProductMapper.mapToProductDto(product))
                 .collect(Collectors.toList());
     }
@@ -95,23 +90,6 @@ public class ProductServiceImpl implements ProductService {
     public List<ProductDto> searchProducts(String searchKey) {
         List<Product> products = productRepository.findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(searchKey, searchKey);
         return products.stream().map((product) -> ProductMapper.mapToProductDto(product))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<ProductDto> filterProducts(String filter,String direction, int pageNumber) {
-        Pageable pageable;
-        System.out.println(direction);
-
-        if (Objects.equals(direction, "desc")){
-            pageable = PageRequest.of(pageNumber,5, Sort.by(filter).descending());
-        } else {
-            pageable = PageRequest.of(pageNumber,5, Sort.by(filter).ascending());
-        }
-        Page<Product> products;
-        products = productRepository.findAll(pageable);
-
-        return products.stream().map(ProductMapper::mapToProductDto)
                 .collect(Collectors.toList());
     }
 }
