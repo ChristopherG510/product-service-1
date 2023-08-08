@@ -62,8 +62,8 @@ public class UserController {
         return ResponseEntity.created(URI.create("/users/" + user.getId())).body(user);
     }
 
-    @RequestMapping(value = "/confirmar", method = RequestMethod.POST, consumes = "text/plain")
-    public String confirmToken(@RequestBody String token){
+    @GetMapping("/confirmar")
+    public String confirmToken(@RequestParam("token") String token){
         return userService.confirmToken(token);
     }
 

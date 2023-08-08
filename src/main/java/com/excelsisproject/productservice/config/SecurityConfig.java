@@ -62,8 +62,8 @@ public class SecurityConfig {
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(customizer -> customizer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((requests) ->
-                        requests.requestMatchers(HttpMethod.POST, "/login","/register","/confirmar", "/api/products/createNew", "localhost:8080/api/products/addToCart").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/api/products/view/all", "/api/products/view/productId/{id}","/api/orders/viewAll","/api/orders/view/orderId/{id}", "http://localhost:8080/api/products/filter").permitAll()
+                        requests.requestMatchers(HttpMethod.POST, "/login","/register", "/api/products/createNew", "localhost:8080/api/products/addToCart").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/products/view/all","/confirmar", "/api/products/view/productId/{id}","/api/orders/viewAll","/api/orders/view/orderId/{id}", "http://localhost:8080/api/products/filter").permitAll()
                                 .requestMatchers(HttpMethod.DELETE, "/deleteUser", "/api/products/delete/productId/{id}").permitAll()
                                 .anyRequest().authenticated());
         return http.build();
