@@ -18,6 +18,9 @@ import com.excelsisproject.productservice.repositories.UserRepository;
 import com.excelsisproject.productservice.entities.ConfirmationToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,9 +29,8 @@ import org.springframework.stereotype.Service;
 
 import java.nio.CharBuffer;
 import java.time.LocalDateTime;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -39,11 +41,15 @@ public class UserService {
     private RolesRepository rolesRepository;
     private final EmailService emailService;
 
+    private static final String TOKEN_EXPIRED = "EXPIRED";
+    private static final String TOKEN_VERIFIED = "VERIFIED";
+    private static final String TOKEN_SENT = "SENT";
+    private static final String TOKEN_INVALID = "INVALID";
+
     @Autowired
     private ConfirmationTokenService confirmationTokenService;
     @Autowired
     private ConfirmationTokenRepository confirmationTokenRepository;
-
     @Autowired
     private SecurityConfig securityConfig;
 
@@ -75,6 +81,7 @@ public class UserService {
         confirmationTokenDto.setTimeExpired(LocalDateTime.now().plusMinutes(15));
         confirmationTokenDto.setTimeConfirmed(null);
         confirmationTokenDto.setUser(user);
+        confirmationTokenDto.setStatus(TOKEN_SENT);
         confirmationTokenRepository.save(ConfirmationTokenMapper.mapToConfirmationToken(confirmationTokenDto));
 
 
@@ -87,18 +94,28 @@ public class UserService {
         ConfirmationToken confirmationToken = confirmationTokenRepository.findByConfirmationToken(token);
         User user = confirmationToken.getUser();
 
-        Set<Roles> roles = user.getRoles();
-        // Cambiar el rol PENDIENTE a CLIENTE
-        for( Roles role : roles){
-            role.setName("ADMIN");
+        if(LocalDateTime.now().isAfter(confirmationToken.getTimeExpired()) || (confirmationToken.getStatus() == TOKEN_EXPIRED)){
+            confirmationToken.setStatus(TOKEN_EXPIRED);
+            return TOKEN_EXPIRED;
+        } else if (Objects.equals(confirmationToken.getStatus(), TOKEN_VERIFIED)) {
+            return TOKEN_VERIFIED;
+        } else if (Objects.equals(confirmationToken.getStatus(), TOKEN_SENT)){
+            confirmationToken.setStatus(TOKEN_VERIFIED);
+            Set<Roles> roles = user.getRoles();
+            // Cambiar el rol PENDIENTE a CLIENTE
+            for (Roles role : roles) {
+                role.setName("CLIENTE");
+            }
+            user.setRoles(roles);
+
+            confirmationToken.setTimeConfirmed(LocalDateTime.now());
+            confirmationTokenRepository.save(confirmationToken);
+            userRepository.save(user);
+
+            return "Usuario " + user.getLogin() + " Registrado";
+        } else {
+            return TOKEN_INVALID;
         }
-        user.setRoles(roles);
-
-        confirmationToken.setTimeConfirmed(LocalDateTime.now());
-        confirmationTokenRepository.save(confirmationToken);
-        userRepository.save(user);
-
-        return "Usuario " + user.getLogin() +" Registrado";
     }
 
     public Long getLoggedUserId(){
@@ -110,6 +127,14 @@ public class UserService {
         Long loggedUserId = user.getId();
 
         return loggedUserId;
+    }
+
+    public List<UserDto> getAllUsers(int pageNumber, int pageSize){
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<User> users = userRepository.findAll(pageable);
+
+        return users.stream().map(UserMapper::toUserDto)
+                .collect(Collectors.toList());
     }
 
 }

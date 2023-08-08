@@ -19,7 +19,7 @@ public class OrderController {
     private OrderService orderService;
 
     // create order
-    @PreAuthorize("hasRole('CLIENT') or hasRole('ADMIN')")
+    //@PreAuthorize("hasAuthority('CLIENTE') or hasAuthority('ADMIN')")
     @PostMapping("/order")
     public OrderDto orderProduct(@RequestBody OrderDto orderDto){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -29,7 +29,7 @@ public class OrderController {
     }
 
     // get order
-    @PreAuthorize("hasRole('CLIENT') or hasRole('ADMIN')")
+    //@PreAuthorize("hasAuthority('CLIENTE') or hasAuthority('ADMIN')")
     @GetMapping("/view/orderId/{id}")
     public ResponseEntity<OrderDto> getOrderById(@PathVariable("id") Long orderId){
         OrderDto orderDto = orderService.getOrderById(orderId);
@@ -37,14 +37,14 @@ public class OrderController {
     }
 
     // get all orders
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/viewAll")
     public ResponseEntity<List<OrderDto>> getAllOrders(){
         List<OrderDto> orders = orderService.getAllOrders();
         return ResponseEntity.ok(orders);
     }
 
-    @PreAuthorize("hasRole('CLIENT') or hasRole('ADMIN')")
+    //@PreAuthorize("hasAuthority('CLIENTE') or hasAuthority('ADMIN')")
     @GetMapping("/view/myOrders")
     public ResponseEntity<List<OrderDto>> getOrdersByUser(){
         List<OrderDto> orderDto = orderService.getOrdersByUser();
@@ -52,21 +52,21 @@ public class OrderController {
     }
 
     // Update order
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/edit/orderId/{id}")
     public ResponseEntity<OrderDto> updateOrder(@PathVariable("id") Long orderId, @RequestBody OrderDto updatedOrder){
         OrderDto orderDto = orderService.updateOrder(orderId, updatedOrder);
         return ResponseEntity.ok(orderDto);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/delete/orderId/{id}")
     public ResponseEntity<String> deleteOrder(@PathVariable("id") Long orderId){
         orderService.deleteOrder(orderId);
         return ResponseEntity.ok("Order deleted.");
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/filter")
     public ResponseEntity<List<OrderDto>> sortOrders(@RequestParam String filter, String direction, int page){
         List<OrderDto> orders = orderService.sortOrders(filter, direction, page);

@@ -27,7 +27,7 @@ public class ProductController {
     private CartService cartService;
 
     // Add Product
-    //@PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping(value = {"/createNew"}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<ProductDto> createProduct(@RequestPart("product") ProductDto productDto, @RequestPart(value = "imageFile", required = false) MultipartFile[] file) {
         try{
@@ -41,7 +41,7 @@ public class ProductController {
     }
 
     // Get product by id
-    //@PreAuthorize("hasRole('CLIENT') or hasRole('ADMIN')")
+    //@PreAuthorize("hasAuthority('CLIENTE') or hasAuthority('ADMIN')")
     @GetMapping("/view/productId/{id}")
     public ResponseEntity<ProductDto> getProductById(@PathVariable("id") Long productId){
         ProductDto productDto = productService.getProductById(productId);
@@ -49,7 +49,7 @@ public class ProductController {
     }
 
     // Get all products
-    //@PreAuthorize("hasRole('CLIENT') or hasRole('ADMIN')")
+    //@PreAuthorize("hasAuthority('CLIENTE') or hasAuthority('ADMIN')")
     @GetMapping("/view/all")
     public ResponseEntity<List<ProductDto>> getAllProducts(@RequestParam(defaultValue = "0") int pageNumber){
         List<ProductDto> products = productService.getAllProducts(pageNumber);
@@ -57,7 +57,7 @@ public class ProductController {
     }
 
     // Update product
-    //@PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/edit/productId/{id}")
     public ResponseEntity<ProductDto> updateProduct(@PathVariable("id") Long productId, @RequestBody ProductDto updatedProduct){
         ProductDto productDto = productService.updateProduct(productId, updatedProduct);
@@ -65,27 +65,27 @@ public class ProductController {
     }
 
     // Delete product
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/delete/productId/{id}")
     public void deleteProduct(@PathVariable("id") Long productId){
         productService.deleteProduct(productId);
     }
 
     // search products
-    @PreAuthorize("hasRole('CLIENT') or hasRole('ADMIN')")
+    //@PreAuthorize("hasAuthority('CLIENTE') or hasAuthority('ADMIN')")
     @GetMapping("/search")
     public ResponseEntity<List<ProductDto>> searchProducts(@RequestParam String searchKey){
         List<ProductDto> products = productService.searchProducts(searchKey);
         return ResponseEntity.ok(products);
     }
 
-    @GetMapping("/filter")
+    //@GetMapping("/filter")
     public ResponseEntity<List<ProductDto>> filterProducts(@RequestParam String filter, String field, String sortParam, String direction, int page){
         List<ProductDto> products = productService.filterProducts(filter, field,sortParam, direction, page);
         return ResponseEntity.ok(products);
     }
 
-    @PreAuthorize("hasRole('CLIENT') or hasRole('ADMIN')")
+    //@PreAuthorize("hasAuthority('CLIENTE') or hasAuthority('ADMIN')")
     @PostMapping("/addToCart")
     public ResponseEntity<CartItemDto> addProductToCart(@RequestBody CartItemDto cartItem){
         cartService.addToCart(cartItem);

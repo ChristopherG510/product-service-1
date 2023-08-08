@@ -20,5 +20,6 @@ public class ConfirmationTokenDto {
     private LocalDateTime timeCreated;
     private LocalDateTime timeExpired;
     private LocalDateTime timeConfirmed;
+    private String status;
     private User user;
 }

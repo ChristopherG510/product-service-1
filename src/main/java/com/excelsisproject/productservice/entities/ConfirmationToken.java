@@ -24,6 +24,7 @@ public class ConfirmationToken {
     private LocalDateTime timeCreated;
     private LocalDateTime timeExpired;
     private LocalDateTime timeConfirmed;
+    private String status;
     @ManyToOne
     @JoinColumn(
             name = "user_id"
