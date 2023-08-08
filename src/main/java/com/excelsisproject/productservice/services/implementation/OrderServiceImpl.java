@@ -3,9 +3,11 @@ package com.excelsisproject.productservice.services.implementation;
 import com.excelsisproject.productservice.dto.OrderDto;
 import com.excelsisproject.productservice.entities.CartItem;
 import com.excelsisproject.productservice.entities.Order;
+import com.excelsisproject.productservice.entities.Product;
 import com.excelsisproject.productservice.entities.User;
 import com.excelsisproject.productservice.exceptions.ResourceNotFoundException;
 import com.excelsisproject.productservice.mappers.OrderMapper;
+import com.excelsisproject.productservice.mappers.ProductMapper;
 import com.excelsisproject.productservice.repositories.CartRepository;
 import com.excelsisproject.productservice.repositories.OrderRepository;
 import com.excelsisproject.productservice.repositories.UserRepository;
@@ -13,6 +15,10 @@ import com.excelsisproject.productservice.services.OrderService;
 import com.excelsisproject.productservice.services.ProductService;
 import com.excelsisproject.productservice.services.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +27,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,8 +39,7 @@ public class OrderServiceImpl implements OrderService {
     private UserService userService;
     private UserRepository userRepository;
     private CartRepository cartRepository;
-    private static final String ORDER_PLACED = "Placed";
-    private static final String ORDER_STATUS_PLACED = "order placed";
+    private static final String ORDER_PLACED = "puesta";
 
     @Override
     public OrderDto orderProduct(OrderDto orderDto, String loggedUser) {
@@ -64,7 +70,7 @@ public class OrderServiceImpl implements OrderService {
             orderDto.setDateOrdered(LocalDateTime.now(ZoneId.of("America/Asuncion")).format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
             orderDto.setTimeOrdered(LocalDateTime.now(ZoneId.of("America/Asuncion")).format(DateTimeFormatter.ofPattern("HH:mm:ss")));
             orderDto.setCartItems(cartItems);
-            orderDto.setOrderStatus(ORDER_STATUS_PLACED);
+            orderDto.setOrderStatus(ORDER_PLACED);
 
             Order order = OrderMapper.mapToOrder(orderDto);
             Order savedOrder = orderRepository.save(order);
@@ -149,5 +155,20 @@ public class OrderServiceImpl implements OrderService {
         }
 
         return ordersDto;
+    }
+
+    @Override
+    public List<OrderDto> sortOrders(String filter, String direction, int pageNumber) {
+        Pageable pageable;
+        if (Objects.equals(direction, "desc")){
+            pageable = PageRequest.of(pageNumber,5, Sort.by(filter).descending());
+        } else {
+            pageable = PageRequest.of(pageNumber,5, Sort.by(filter).ascending());
+        }
+        Page<Order> orders;
+        orders = orderRepository.findAll(pageable);
+
+        return orders.stream().map(OrderMapper::mapToOrderDto)
+                .collect(Collectors.toList());
     }
 }

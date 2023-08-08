@@ -13,6 +13,7 @@ import com.excelsisproject.productservice.exceptions.AppException;
 import com.excelsisproject.productservice.mappers.ConfirmationTokenMapper;
 import com.excelsisproject.productservice.mappers.UserMapper;
 import com.excelsisproject.productservice.repositories.ConfirmationTokenRepository;
+import com.excelsisproject.productservice.repositories.RolesRepository;
 import com.excelsisproject.productservice.repositories.UserRepository;
 import com.excelsisproject.productservice.entities.ConfirmationToken;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,6 @@ import org.springframework.stereotype.Service;
 
 import java.nio.CharBuffer;
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -36,6 +36,7 @@ import java.util.UUID;
 public class UserService {
 
     private final UserRepository userRepository;
+    private RolesRepository rolesRepository;
     private final EmailService emailService;
 
     @Autowired
@@ -77,7 +78,7 @@ public class UserService {
         confirmationTokenRepository.save(ConfirmationTokenMapper.mapToConfirmationToken(confirmationTokenDto));
 
 
-        emailService.sendSimpleMailMessage(user.getFirstName(), user.getUserEmail(), confirmationToken);
+        //emailService.sendSimpleMailMessage(user.getFirstName(), user.getUserEmail(), confirmationToken);
 
         return UserMapper.toUserDto(savedUser);
     }
@@ -86,10 +87,12 @@ public class UserService {
         ConfirmationToken confirmationToken = confirmationTokenRepository.findByConfirmationToken(token);
         User user = confirmationToken.getUser();
 
-        Roles role = user.getRole();
+        Set<Roles> roles = user.getRoles();
         // Cambiar el rol PENDIENTE a CLIENTE
-        role.setName("ADMIN");
-        user.setRole(role);
+        for( Roles role : roles){
+            role.setName("ADMIN");
+        }
+        user.setRoles(roles);
 
         confirmationToken.setTimeConfirmed(LocalDateTime.now());
         confirmationTokenRepository.save(confirmationToken);

@@ -22,6 +22,6 @@ public interface ProductService {
 
     List<ProductDto> searchProducts(String searchKey);
 
-    List<ProductDto> filterProducts(String filter, String direction, int pageNumber);
+    List<ProductDto> filterProducts(String filter, String field, String sortParam, String direction, int page);
 
 }

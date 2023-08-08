@@ -22,4 +22,6 @@ public interface OrderService {
     OrderDto updateStatus(Long orderId, String orderStatus);
 
     List<OrderDto> findByDate(String dateOrdered);
+
+    List<OrderDto> sortOrders(String filter, String direction, int pageNumber);
 }

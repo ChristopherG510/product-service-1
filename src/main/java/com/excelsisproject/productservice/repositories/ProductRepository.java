@@ -13,17 +13,10 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     List<Product> findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(String name, String description);
 
+    Page<Product> findAllByNameContainingIgnoreCase(String name, Pageable pageable);
 
+    Page<Product> findAllByPrice(double price, Pageable pageable);
 
-//    Page<Product> getProductsByIdIsTrueOrderByAmountInStock(Pageable pageable);
-//
-//    Page<Product> getProductsByIdIsTrueOrderByPriceAsc(Pageable pageable);
-//
-//    Page<Product> getProductsByIdIsTrueOrderByPriceDesc(Pageable pageable);
-//
-//    Page<Product> getProductsByIdIsTrueOrderByNameAsc(Pageable pageable);
-//
-//    Page<Product> getProductsByIdIsTrueOrderByNameDesc(Pageable pageable);
-
+    Page<Product> findAllByDescriptionContainingIgnoreCase(String name, Pageable pageable);
 
 }

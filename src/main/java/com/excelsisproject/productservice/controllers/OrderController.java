@@ -19,7 +19,7 @@ public class OrderController {
     private OrderService orderService;
 
     // create order
-    // @PreAuthorize("hasRole('CLIENT') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('CLIENT') or hasRole('ADMIN')")
     @PostMapping("/order")
     public OrderDto orderProduct(@RequestBody OrderDto orderDto){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -44,6 +44,7 @@ public class OrderController {
         return ResponseEntity.ok(orders);
     }
 
+    @PreAuthorize("hasRole('CLIENT') or hasRole('ADMIN')")
     @GetMapping("/view/myOrders")
     public ResponseEntity<List<OrderDto>> getOrdersByUser(){
         List<OrderDto> orderDto = orderService.getOrdersByUser();
@@ -63,5 +64,12 @@ public class OrderController {
     public ResponseEntity<String> deleteOrder(@PathVariable("id") Long orderId){
         orderService.deleteOrder(orderId);
         return ResponseEntity.ok("Order deleted.");
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/filter")
+    public ResponseEntity<List<OrderDto>> sortOrders(@RequestParam String filter, String direction, int page){
+        List<OrderDto> orders = orderService.sortOrders(filter, direction, page);
+        return ResponseEntity.ok(orders);
     }
 }

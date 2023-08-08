@@ -99,17 +99,32 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDto> filterProducts(String filter,String direction, int pageNumber) {
+    public List<ProductDto> filterProducts(String filter, String field, String sortParam,String direction, int page) {
         Pageable pageable;
-        System.out.println(direction);
 
         if (Objects.equals(direction, "desc")){
-            pageable = PageRequest.of(pageNumber,5, Sort.by(filter).descending());
+            pageable = PageRequest.of(page,5, Sort.by(sortParam).descending());
         } else {
-            pageable = PageRequest.of(pageNumber,5, Sort.by(filter).ascending());
+            pageable = PageRequest.of(page,5, Sort.by(sortParam).ascending());
         }
         Page<Product> products;
-        products = productRepository.findAll(pageable);
+
+//        switch (filter){
+//            case "name":
+//                products = productRepository.findAllByNameContainingIgnoreCase(field, pageable);
+//            case "price":
+//                products = productRepository.findAllByPrice(Double.parseDouble(field), pageable);
+//            default:
+//                products = productRepository.findAll(pageable);
+//        }
+        if (Objects.equals(filter, "name")){
+            products = productRepository.findAllByNameContainingIgnoreCase(field, pageable);
+        } else if (Objects.equals(filter, "price")) {
+            products = productRepository.findAllByPrice(Double.parseDouble(field), pageable);
+        } else {
+            products = productRepository.findAll(pageable);
+        }
+        //products = productRepository.findAll(pageable);
 
         return products.stream().map(ProductMapper::mapToProductDto)
                 .collect(Collectors.toList());

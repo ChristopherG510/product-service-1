@@ -72,6 +72,4 @@ public class UserController {
         userRepository.deleteById(id);
         return "Se ha eliminado el user con id " + id;
     }
-
-
 }
