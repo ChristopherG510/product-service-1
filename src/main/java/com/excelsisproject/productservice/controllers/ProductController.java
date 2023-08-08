@@ -54,7 +54,7 @@ public class ProductController {
     }
 
     // Update product
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/edit/productId/{id}")
     public ResponseEntity<ProductDto> updateProduct(@PathVariable("id") Long productId, @RequestBody ProductDto updatedProduct){
         ProductDto productDto = productService.updateProduct(productId, updatedProduct);

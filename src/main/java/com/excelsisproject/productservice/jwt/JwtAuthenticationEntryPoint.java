@@ -32,9 +32,9 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         if (exceptionClass == BadCredentialsException.class) {
-            OBJECT_MAPPER.writeValue(response.getOutputStream(), new ErrorDto("Invalid Credentials"));
+            OBJECT_MAPPER.writeValue(response.getOutputStream(), new ErrorDto("Credenciales incorrectas"));
         } else {
-            OBJECT_MAPPER.writeValue(response.getOutputStream(), new ErrorDto("Unauthorized access"));
+            OBJECT_MAPPER.writeValue(response.getOutputStream(), new ErrorDto("Acceso no autorizado"));
         }
     }
 }
