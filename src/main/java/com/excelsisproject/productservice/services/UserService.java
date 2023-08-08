@@ -78,7 +78,7 @@ public class UserService {
         confirmationTokenRepository.save(ConfirmationTokenMapper.mapToConfirmationToken(confirmationTokenDto));
 
 
-        //emailService.sendSimpleMailMessage(user.getFirstName(), user.getUserEmail(), confirmationToken);
+        emailService.sendSimpleMailMessage(user.getFirstName(), user.getUserEmail(), confirmationToken);
 
         return UserMapper.toUserDto(savedUser);
     }
