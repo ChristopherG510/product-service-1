@@ -130,9 +130,8 @@ public class UserService {
         return loggedUserId;
     }
 
-    public List<UserDto> getAllUsers(int pageNumber, int pageSize){
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        Page<User> users = userRepository.findAll(pageable);
+    public List<UserDto> getAllUsers(){
+        List<User> users = userRepository.findAll();
 
         return users.stream().map(UserMapper::toUserDto)
                 .collect(Collectors.toList());
