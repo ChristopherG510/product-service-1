@@ -12,6 +12,7 @@ import com.excelsisproject.productservice.entities.User;
 import com.excelsisproject.productservice.exceptions.AppException;
 import com.excelsisproject.productservice.exceptions.ResourceNotFoundException;
 import com.excelsisproject.productservice.mappers.ConfirmationTokenMapper;
+import com.excelsisproject.productservice.mappers.ProductMapper;
 import com.excelsisproject.productservice.mappers.UserMapper;
 import com.excelsisproject.productservice.repositories.ConfirmationTokenRepository;
 import com.excelsisproject.productservice.repositories.RolesRepository;
@@ -86,7 +87,7 @@ public class UserService {
         confirmationTokenRepository.save(ConfirmationTokenMapper.mapToConfirmationToken(confirmationTokenDto));
 
 
-        emailService.sendSimpleMailMessage(user.getFirstName(), user.getUserEmail(), confirmationToken);
+        //emailService.sendSimpleMailMessage(user.getFirstName(), user.getUserEmail(), confirmationToken);
 
         return UserMapper.toUserDto(savedUser);
     }
@@ -105,7 +106,7 @@ public class UserService {
             Set<Roles> roles = user.getRoles();
             // Cambiar el rol PENDIENTE a CLIENTE
             for (Roles role : roles) {
-                role.setName("ADMIN");
+                role.setName("CLIENTE");
             }
             user.setRoles(roles);
 
@@ -137,9 +138,9 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    public UserDto editMyUser(Long userId, UserDto updatedUser){
-        User user = userRepository.findById(userId).stream().findFirst().orElseThrow(
-                () -> new ResourceNotFoundException("User does not exists with given id: " + userId));
+    public UserDto editMyUser(UserDto updatedUser){
+        User user = userRepository.findById(getLoggedUserId()).stream().findFirst().orElseThrow(
+                () -> new ResourceNotFoundException("User does not exists with given id: " + getLoggedUserId()));
 
         user.setFirstName(updatedUser.getFirstName());
         user.setLastName(updatedUser.getLastName());
@@ -152,4 +153,26 @@ public class UserService {
         return UserMapper.toUserDto(updatedUserObj);
     }
 
+    public UserDto editUserRoleOrStatus(UserDto updatedUser){
+        User user = userRepository.findById(updatedUser.getId()).stream().findFirst().orElseThrow(
+                () -> new ResourceNotFoundException("User does not exists with given id: " + updatedUser.getId()));
+        Roles roleObject = updatedUser.getRoles().stream().findFirst().get();
+        String role = roleObject.getName();
+
+        System.out.println("user: " + user.getLogin() + " id: " + user.getId());
+
+        if(Objects.equals(role, "ADMIN") || Objects.equals(role, "CLIENTE") || Objects.equals(role, "BLOQUEADO")) {
+
+            Set<Roles> roles = user.getRoles();
+            for (Roles roles1 : roles) {
+                roles1.setName(role);
+            }
+            user.setRoles(roles);
+
+            User savedUser = userRepository.save(user);
+            return UserMapper.toUserDto(savedUser);
+        }else {
+            throw new AppException("Rol o Status invalido", HttpStatus.BAD_REQUEST);
+        }
+    }
 }

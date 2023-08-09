@@ -27,7 +27,7 @@ public class ProductController {
     private CartService cartService;
 
     // Add Product
-    //@PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping(value = {"/createNew"}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<ProductDto> createProduct(@RequestPart("product") ProductDto productDto, @RequestPart(value = "imageFile", required = false) MultipartFile[] file) {
         try{

@@ -23,6 +23,11 @@ public class CartController {
         return ResponseEntity.ok(cartItems);
     }
 
+    @GetMapping("/precioMiCarrito")
+    public double getMyCartPrice(){
+        return cartService.getMyCartPrice();
+    }
+
     @GetMapping("/admin/allCartItems")
     public ResponseEntity<List<CartItemDto>> getAllCartItems(){
 

@@ -12,6 +12,8 @@ public interface CartService {
 
     CartItemDto getMyCartItem(Long cartItemId);
 
+    double getMyCartPrice();
+
     List<CartItemDto> getAllCartItems();
 
     List<CartItemDto> getAllMyCartItems();

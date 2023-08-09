@@ -28,7 +28,7 @@ public interface UserMapper {
             userDto.userEmail(user.getUserEmail());
             userDto.userPhoneNumber(user.getUserPhoneNumber());
             userDto.login(user.getLogin());
-            userDto.roles(user.getRoles().stream().map(Roles::getName).collect(Collectors.toSet()));
+            userDto.roles(user.getRoles());
             return userDto.build();
         }
     }

@@ -1,6 +1,7 @@
 package com.excelsisproject.productservice.controllers;
 
 
+import com.excelsisproject.productservice.entities.User;
 import com.excelsisproject.productservice.jwt.JwtGenerator;
 import com.excelsisproject.productservice.dto.CredentialsDto;
 import com.excelsisproject.productservice.dto.SignUpDto;
@@ -46,9 +47,9 @@ public class UserController {
 
     // Login de Usuarios
     @PostMapping("/login")
-    public ResponseEntity<UserDto> login(@RequestBody CredentialsDto credentialsDto){
+    public ResponseEntity<UserDto> login(@RequestBody CredentialsDto credentialsDto) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                credentialsDto.getLogin(),credentialsDto.getPassword()));
+                credentialsDto.getLogin(), credentialsDto.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = jwtGenerator.generarToken(authentication);
         UserDto userDto = userService.login(credentialsDto);
@@ -64,25 +65,37 @@ public class UserController {
     }
 
     @GetMapping("/confirmar")
-    public String confirmToken(@RequestParam("token") String token){
+    public String confirmToken(@RequestParam("token") String token) {
         return userService.confirmToken(token);
     }
 
     @GetMapping("/newToken")
-    public String newToken(@RequestParam("token") String token){
+    public String newToken(@RequestParam("token") String token) {
         return confirmationTokenService.createNewToken(token);
     }
 
     @DeleteMapping("/deleteUser")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public String deleteUser(@RequestParam Long id){
+    public String deleteUser(@RequestParam Long id) {
         userRepository.deleteById(id);
         return "Se ha eliminado el user con id " + id;
     }
 
     @GetMapping("/getUsers")
-    public ResponseEntity<List<UserDto>> getAllUsers(){
+    public ResponseEntity<List<UserDto>> getAllUsers() {
         List<UserDto> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/editMyUser")
+    public ResponseEntity<UserDto> editMyUser(@RequestBody UserDto userDto) {
+        UserDto user = userService.editMyUser(userDto);
+        return ResponseEntity.ok(user);
+    }
+
+    @PostMapping ("/editUserStatus")
+    public ResponseEntity<UserDto> editUserRoleOrStatus(@RequestBody UserDto userDto){
+        UserDto user = userService.editUserRoleOrStatus(userDto);
+        return ResponseEntity.ok(user);
     }
 }

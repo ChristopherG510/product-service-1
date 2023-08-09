@@ -3,6 +3,7 @@ package com.excelsisproject.productservice.services.implementation;
 import com.excelsisproject.productservice.dto.CartItemDto;
 import com.excelsisproject.productservice.dto.ProductDto;
 import com.excelsisproject.productservice.entities.CartItem;
+import com.excelsisproject.productservice.exceptions.AppException;
 import com.excelsisproject.productservice.exceptions.ResourceNotFoundException;
 import com.excelsisproject.productservice.mappers.CartItemMapper;
 import com.excelsisproject.productservice.repositories.CartRepository;
@@ -11,6 +12,7 @@ import com.excelsisproject.productservice.services.CartService;
 import com.excelsisproject.productservice.services.ProductService;
 import com.excelsisproject.productservice.services.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,7 +36,7 @@ public class CartServiceImpl implements CartService {
 
         for (CartItem cartItem : otherItemsInCart){
             if(Objects.equals(cartItem.getProductId(), cartItemDto.getProductId())){
-                if(product.getAmountInStock() < cartItemDto.getAmount() + cartItem.getAmount()) { return null;}
+                if(product.getAmountInStock() < cartItemDto.getAmount() + cartItem.getAmount()) { throw new AppException("No existen suficientes productos en stock", HttpStatus.BAD_REQUEST);}
                 cartItem.setAmount(cartItem.getAmount() + cartItemDto.getAmount());
                 cartItem.setPrice(cartItem.getAmount() * product.getPrice());
 
@@ -54,7 +56,7 @@ public class CartServiceImpl implements CartService {
 
             return CartItemMapper.mapToCartItemDto(savedCartItem);
         } else {
-            return null;
+            throw new AppException("No existen suficientes productos en stock", HttpStatus.BAD_REQUEST);
         }
 
     }
@@ -70,13 +72,23 @@ public class CartServiceImpl implements CartService {
     @Override
     public CartItemDto getMyCartItem(Long cartItemId) {
         CartItem cartItem = cartRepository.findById(cartItemId).orElseThrow(
-                ()-> new ResourceNotFoundException("Cart item does not exist with given id: " + cartItemId));
+                ()-> new AppException("No existe item de carrito con id: "+ cartItemId, HttpStatus.NOT_FOUND));
 
         if (Objects.equals(cartItem.getUserId(), userService.getLoggedUserId())){
             return CartItemMapper.mapToCartItemDto(cartItem);
         } else {
             return null;
         }
+    }
+
+    @Override
+    public double getMyCartPrice() {
+        List<CartItem> cartItemList = cartRepository.findAllByUserIdAndStatus(userService.getLoggedUserId(), "In cart");
+        double price = 0;
+        for (CartItem cartItem : cartItemList){
+            price += cartItem.getPrice();
+        }
+        return price;
     }
 
     @Override
@@ -98,7 +110,7 @@ public class CartServiceImpl implements CartService {
     @Override
     public CartItemDto updateCartItem(Long cartItemId, CartItemDto updatedCartItem) {
         CartItem cartItem = cartRepository.findById(cartItemId).orElseThrow(
-                ()-> new ResourceNotFoundException("Cart item does not exist with given id: " + cartItemId));
+                ()-> new AppException("No existe item de carrito con id: "+ cartItemId, HttpStatus.NOT_FOUND));
 
         if(cartItem.getUserId() == userService.getLoggedUserId()) {
             ProductDto product = productService.getProductById(cartItem.getProductId());
@@ -109,14 +121,14 @@ public class CartServiceImpl implements CartService {
 
             return CartItemMapper.mapToCartItemDto(updatedCartItemObj);
         } else {
-            throw  new ResourceNotFoundException("Item does not exist cart of user");
+            throw  new AppException("Item does not exist cart of user", HttpStatus.NOT_FOUND);
         }
     }
 
     @Override
     public void removeFromCart(Long itemId) {
         CartItem cartItem = cartRepository.findById(itemId).orElseThrow(
-                ()-> new ResourceNotFoundException("Item does not exist with given id: " + itemId));
+                ()-> new AppException("No existe item de carrito con id: "+ itemId, HttpStatus.NOT_FOUND));
 
         cartRepository.deleteById(itemId);
     }
