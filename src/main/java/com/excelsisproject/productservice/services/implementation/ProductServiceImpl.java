@@ -40,9 +40,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDto> getAllProducts(int pageNumber) {
-        Pageable pageable = PageRequest.of(pageNumber,9);
-        Page<Product> products = productRepository.findAll(pageable);
+    public List<ProductDto> getAllProducts() {
+        List<Product> products = productRepository.findAll();
 
         return products.stream().map((product) -> ProductMapper.mapToProductDto(product))
                 .collect(Collectors.toList());

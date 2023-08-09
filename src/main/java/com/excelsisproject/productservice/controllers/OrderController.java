@@ -65,11 +65,4 @@ public class OrderController {
         orderService.deleteOrder(orderId);
         return ResponseEntity.ok("Order deleted.");
     }
-
-    //@PreAuthorize("hasAuthority('ADMIN')")
-    @GetMapping("/filter")
-    public ResponseEntity<List<OrderDto>> sortOrders(@RequestParam String filter, String direction, int page){
-        List<OrderDto> orders = orderService.sortOrders(filter, direction, page);
-        return ResponseEntity.ok(orders);
-    }
 }
