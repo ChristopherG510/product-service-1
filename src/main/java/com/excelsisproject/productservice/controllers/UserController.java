@@ -5,8 +5,8 @@ import com.excelsisproject.productservice.jwt.JwtGenerator;
 import com.excelsisproject.productservice.dto.CredentialsDto;
 import com.excelsisproject.productservice.dto.SignUpDto;
 import com.excelsisproject.productservice.dto.UserDto;
-import com.excelsisproject.productservice.jwt.JwtGenerator;
 import com.excelsisproject.productservice.repositories.UserRepository;
+import com.excelsisproject.productservice.services.ConfirmationTokenService;
 import com.excelsisproject.productservice.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -32,14 +31,16 @@ public class UserController {
     private final UserRepository userRepository;
     private AuthenticationManager authenticationManager;
     private JwtGenerator jwtGenerator;
+    private final ConfirmationTokenService confirmationTokenService;
 
     @Autowired
     public UserController(UserService userService, UserRepository userRepository,
-                          AuthenticationManager authenticationManager, JwtGenerator jwtGenerator) {
+                          AuthenticationManager authenticationManager, JwtGenerator jwtGenerator, ConfirmationTokenService confirmationTokenService) {
         this.userService = userService;
         this.userRepository = userRepository;
         this.authenticationManager = authenticationManager;
         this.jwtGenerator = jwtGenerator;
+        this.confirmationTokenService = confirmationTokenService;
     }
 
 
@@ -62,9 +63,14 @@ public class UserController {
         return ResponseEntity.created(URI.create("/users/" + user.getId())).body(user);
     }
 
-    @RequestMapping(value = "/confirmar", method = RequestMethod.POST, consumes = "text/plain")
-    public String confirmToken(@RequestBody String token){
+    @GetMapping("/confirmar")
+    public String confirmToken(@RequestParam("token") String token){
         return userService.confirmToken(token);
+    }
+
+    @GetMapping("/newToken")
+    public String newToken(@RequestParam("token") String token){
+        return confirmationTokenService.createNewToken(token);
     }
 
     @DeleteMapping("/deleteUser")
@@ -75,7 +81,8 @@ public class UserController {
     }
 
 //    @GetMapping("/getUsers")
-//    public List<UserDto> getAllUsers(@RequestBody  ){
+//    public ResponseEntity<List<UserDto>> getAllUsers(@RequestParam int pageNumber, int pageSize){
 //
+//        return null;
 //    }
 }
