@@ -65,7 +65,7 @@ public class ProductController {
     }
 
     // Delete product
-    @PreAuthorize("hasAuthority('ADMIN')")
+    //@PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/delete/productId/{id}")
     public void deleteProduct(@PathVariable("id") Long productId){
         productService.deleteProduct(productId);

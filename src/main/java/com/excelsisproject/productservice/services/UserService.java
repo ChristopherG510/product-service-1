@@ -104,7 +104,7 @@ public class UserService {
             Set<Roles> roles = user.getRoles();
             // Cambiar el rol PENDIENTE a CLIENTE
             for (Roles role : roles) {
-                role.setName("CLIENTE");
+                role.setName("ADMIN");
             }
             user.setRoles(roles);
 
