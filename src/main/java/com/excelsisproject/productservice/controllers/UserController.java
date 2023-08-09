@@ -80,9 +80,4 @@ public class UserController {
         return "Se ha eliminado el user con id " + id;
     }
 
-//    @GetMapping("/getUsers")
-//    public ResponseEntity<List<UserDto>> getAllUsers(@RequestParam int pageNumber, int pageSize){
-//
-//        return null;
-//    }
 }
