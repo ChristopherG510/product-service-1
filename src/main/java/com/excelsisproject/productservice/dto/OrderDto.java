@@ -27,8 +27,6 @@ public class OrderDto {
     private String timeOrdered;
     private List<CartItem> cartItems;
     private double totalPrice;
-
-
 }
 
 

@@ -7,7 +7,6 @@ import com.excelsisproject.productservice.services.ConfirmationTokenService;
 import com.excelsisproject.productservice.services.EmailService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import com.excelsisproject.productservice.exceptions.ResourceNotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -20,7 +19,7 @@ public class ConfirmationTokenServiceImpl implements ConfirmationTokenService{
     private EmailService emailService;
 
     @Override
-    public String createNewToken(String oldToken) {
+    public String createNewToken(String oldToken) { // crea nuevo token si el del usuario ya ha expirado
         ConfirmationToken confirmationToken = confirmationTokenRepository.findByConfirmationToken(oldToken);
         User user = confirmationToken.getUser();
 
@@ -47,7 +46,7 @@ public class ConfirmationTokenServiceImpl implements ConfirmationTokenService{
     }
 
     @Override
-    public void setConfirmedAt(String token) {
+    public void setConfirmedAt(String token) {  // agrega la fecha de confirmacion del token
         ConfirmationToken confirmationToken = confirmationTokenRepository.findByConfirmationToken(token);
         confirmationToken.setTimeConfirmed(LocalDateTime.now());
     }

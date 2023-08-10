@@ -43,16 +43,16 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDto orderProduct(OrderDto orderDto, String loggedUser) {
+        // Agrega todos los productos en carrito a una orden
 
-        List<CartItem> cartItems = cartRepository.findAllByUserIdAndStatus(userService.getLoggedUserId(), "In cart");
+        List<CartItem> cartItems = cartRepository.findAllByUserIdAndStatus(userService.getLoggedUserId(), "In cart"); // solo trae los cartItems sin comprar a una lista
 
-
-        if(!cartItems.isEmpty()) {
+        if(!cartItems.isEmpty()) {  // Si el carrito esta vacío devuelve excepción
             double totalPrice = 0;
-            for (CartItem cartItem : cartItems) {
+            for (CartItem cartItem : cartItems) {   // itera por los cartItems, va acumulando los precios para el precio total, y cambia el status del cartItem a comprado
                 double amountOrdered = cartItem.getAmount();
                 Long productId = cartItem.getProductId();
-                productService.updateStock(productId, amountOrdered);
+                productService.updateStock(productId, amountOrdered);   // actualiza el stock del producto
                 totalPrice += cartItem.getPrice();
                 cartItem.setStatus(ORDER_PLACED);
             }
@@ -61,6 +61,7 @@ public class OrderServiceImpl implements OrderService {
                     .orElseThrow(() -> new UsernameNotFoundException("El usuario" + loggedUser + "no existe"));
             Long loggedUserId = user.getId();
 
+            // Se genera la informacion de la orden
             orderDto.setUserId(loggedUserId);
             orderDto.setFirstName(user.getFirstName());
             orderDto.setLastName(user.getLastName());

@@ -46,7 +46,6 @@ public class UserService {
     private static final String TOKEN_VERIFIED = "VERIFIED";
     private static final String TOKEN_SENT = "SENT";
     private static final String TOKEN_INVALID = "INVALID";
-    //private static final String NEW_TOKEN_MSG = "<HTML><body> <a href=\"http://localhost:8080/newToken?token=" + token + "\">Su token ha expirado. Haga clic aqui para crear uno nuevo.</a></body></HTML>";
 
     @Autowired
     private ConfirmationTokenService confirmationTokenService;
@@ -96,7 +95,7 @@ public class UserService {
         ConfirmationToken confirmationToken = confirmationTokenRepository.findByConfirmationToken(token);
         User user = confirmationToken.getUser();
 
-        if(LocalDateTime.now().isAfter(confirmationToken.getTimeExpired()) || (confirmationToken.getStatus() == TOKEN_EXPIRED)){
+        if(LocalDateTime.now().isAfter(confirmationToken.getTimeExpired()) && (!Objects.equals(confirmationToken.getStatus(), TOKEN_VERIFIED))){
             confirmationToken.setStatus(TOKEN_EXPIRED);
             return "<HTML><body> <a href=\"http://localhost:8080/newToken?token=" + token + "\">Su token ha expirado. Haga clic aqui para crear uno nuevo.</a></body></HTML>";
         } else if (Objects.equals(confirmationToken.getStatus(), TOKEN_VERIFIED)) {

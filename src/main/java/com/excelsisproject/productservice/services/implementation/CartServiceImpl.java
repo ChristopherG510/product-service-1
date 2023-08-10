@@ -34,9 +34,15 @@ public class CartServiceImpl implements CartService {
         ProductDto product = productService.getProductById(cartItemDto.getProductId());
         List<CartItem> otherItemsInCart = cartRepository.findAllByUserIdAndStatus(userService.getLoggedUserId(), ORDER_IN_CART);
 
+        // Iterar en la lista de items del carrito para verificar si el producto ya existe en el carrito
         for (CartItem cartItem : otherItemsInCart){
+            // verificar si ya existe el producto en el carrito
             if(Objects.equals(cartItem.getProductId(), cartItemDto.getProductId())){
-                if(product.getAmountInStock() < cartItemDto.getAmount() + cartItem.getAmount()) { throw new AppException("No existen suficientes productos en stock", HttpStatus.BAD_REQUEST);}
+                // si hay mas productos en el carrito que en el stock se tira una excepcion, y no se agrega al carrito
+                if(product.getAmountInStock() < cartItemDto.getAmount() + cartItem.getAmount()) {
+                    throw new AppException("No existen suficientes productos en stock", HttpStatus.BAD_REQUEST);
+                }
+                // Agregar la cantidad del producto al cartItem
                 cartItem.setAmount(cartItem.getAmount() + cartItemDto.getAmount());
                 cartItem.setPrice(cartItem.getAmount() * product.getPrice());
 
@@ -45,6 +51,7 @@ public class CartServiceImpl implements CartService {
             }
         }
 
+        // Si el producto no esta en el carrito, se crea un nuevo cartItem
         if(product.getAmountInStock() >= cartItemDto.getAmount()) {
             cartItemDto.setProductName(product.getName());
             cartItemDto.setStatus(ORDER_IN_CART);
@@ -56,6 +63,7 @@ public class CartServiceImpl implements CartService {
 
             return CartItemMapper.mapToCartItemDto(savedCartItem);
         } else {
+            // Si no hay suficientes productos en stock, se tira excepcion
             throw new AppException("No existen suficientes productos en stock", HttpStatus.BAD_REQUEST);
         }
 
@@ -77,12 +85,12 @@ public class CartServiceImpl implements CartService {
         if (Objects.equals(cartItem.getUserId(), userService.getLoggedUserId())){
             return CartItemMapper.mapToCartItemDto(cartItem);
         } else {
-            return null;
+            throw new AppException("No existe el item en su carrito", HttpStatus.NOT_FOUND);
         }
     }
 
     @Override
-    public double getMyCartPrice() {
+    public double getMyCartPrice() {    // Suma el precio total del carrito para el checkout
         List<CartItem> cartItemList = cartRepository.findAllByUserIdAndStatus(userService.getLoggedUserId(), "In cart");
         double price = 0;
         for (CartItem cartItem : cartItemList){
@@ -91,8 +99,9 @@ public class CartServiceImpl implements CartService {
         return price;
     }
 
+
     @Override
-    public List<CartItemDto> getAllCartItems() {
+    public List<CartItemDto> getAllCartItems() {    // Trae todos los items de carrito para el Admin
         List<CartItem> cartItemList = cartRepository.findAll();
 
         return cartItemList.stream().map((cartItem) -> CartItemMapper.mapToCartItemDto(cartItem))
@@ -100,7 +109,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public List<CartItemDto> getAllMyCartItems() {
+    public List<CartItemDto> getAllMyCartItems() {  // Trae los items del carrito del usuario
         List<CartItem> cartItemList = cartRepository.findAllByUserIdAndStatus(userService.getLoggedUserId(), "In cart");
 
         return cartItemList.stream().map((cartItem) -> CartItemMapper.mapToCartItemDto(cartItem))
@@ -112,7 +121,7 @@ public class CartServiceImpl implements CartService {
         CartItem cartItem = cartRepository.findById(cartItemId).orElseThrow(
                 ()-> new AppException("No existe item de carrito con id: "+ cartItemId, HttpStatus.NOT_FOUND));
 
-        if(cartItem.getUserId() == userService.getLoggedUserId()) {
+        if(cartItem.getUserId() == userService.getLoggedUserId()) { // Si la id del usuario no coincide con la del item de carrito, no puede editarlo
             ProductDto product = productService.getProductById(cartItem.getProductId());
             cartItem.setAmount(updatedCartItem.getAmount());
             cartItem.setPrice(updatedCartItem.getAmount() * product.getPrice());

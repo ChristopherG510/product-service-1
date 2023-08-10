@@ -97,6 +97,7 @@ public class ProductServiceImpl implements ProductService {
                 .collect(Collectors.toList());
     }
 
+    // Terminamos haciendo los filtros desde el front, pero guardo igual acá el codigo. Porque? Y pq no?
     @Override
     public List<ProductDto> filterProducts(String filter, String field, String sortParam,String direction, int page) {
         Pageable pageable;
