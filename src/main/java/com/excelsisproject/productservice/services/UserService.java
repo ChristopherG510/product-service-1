@@ -87,7 +87,7 @@ public class UserService {
         confirmationTokenRepository.save(ConfirmationTokenMapper.mapToConfirmationToken(confirmationTokenDto));
 
 
-        //emailService.sendSimpleMailMessage(user.getFirstName(), user.getUserEmail(), confirmationToken);
+        emailService.sendSimpleMailMessage(user.getFirstName(), user.getUserEmail(), confirmationToken);
 
         return UserMapper.toUserDto(savedUser);
     }
@@ -106,7 +106,7 @@ public class UserService {
             Set<Roles> roles = user.getRoles();
             // Cambiar el rol PENDIENTE a CLIENTE
             for (Roles role : roles) {
-                role.setName("CLIENTE");
+                role.setName("ADMIN");
             }
             user.setRoles(roles);
 
@@ -156,17 +156,19 @@ public class UserService {
     public UserDto editUserRoleOrStatus(UserDto updatedUser){
         User user = userRepository.findById(updatedUser.getId()).stream().findFirst().orElseThrow(
                 () -> new ResourceNotFoundException("User does not exists with given id: " + updatedUser.getId()));
-        Roles roleObject = updatedUser.getRoles().stream().findFirst().get();
+        // Roles roleObject = updatedUser.getRoles().stream().findFirst().get();
+
+
+        Roles roleObject = user.getRoles().iterator().next();
+        roleObject.setName(updatedUser.getRoles().iterator().next());
         String role = roleObject.getName();
 
         System.out.println("user: " + user.getLogin() + " id: " + user.getId());
 
         if(Objects.equals(role, "ADMIN") || Objects.equals(role, "CLIENTE") || Objects.equals(role, "BLOQUEADO")) {
 
-            Set<Roles> roles = user.getRoles();
-            for (Roles roles1 : roles) {
-                roles1.setName(role);
-            }
+            Set<Roles> roles = new HashSet<>();
+            roles.add(roleObject);
             user.setRoles(roles);
 
             User savedUser = userRepository.save(user);

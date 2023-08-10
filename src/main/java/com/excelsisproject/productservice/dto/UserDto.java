@@ -1,13 +1,12 @@
 package com.excelsisproject.productservice.dto;
 
 import com.excelsisproject.productservice.entities.Roles;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Set;
 
+@Getter
+@Setter
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,6 +19,6 @@ public class UserDto {
     private String userPhoneNumber;
     private String login;
     private String token;
-    private Set<Roles> roles;
+    private Set<String> roles;
 
 }
