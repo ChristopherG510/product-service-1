@@ -63,7 +63,7 @@ public class SecurityConfig {
                 .sessionManagement(customizer -> customizer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((requests) ->
                         requests.requestMatchers(HttpMethod.POST, "/login","/register", "/api/products/createNew", "/api/products/addToCart", "/editUserStatus").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/api/products/view/all","/confirmar", "/api/products/view/productId/{id}","/api/orders/viewAll","/api/orders/view/orderId/{id}", "http://localhost:8080/api/products/filter", "/newToken","/precioMiCarrito").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/products/view/all","/confirmar", "/api/products/view/productId/{id}","/api/orders/viewAll","/api/orders/view/orderId/{id}", "/api/products/filter", "/newToken","/precioMiCarrito","/api/JReport/productPdf/export").permitAll()
                                 .requestMatchers(HttpMethod.DELETE, "/deleteUser", "/api/products/delete/productId/{id}").permitAll()
                                 .anyRequest().authenticated());
         return http.build();
