@@ -2,6 +2,7 @@ package com.excelsisproject.productservice.services;
 
 import com.excelsisproject.productservice.dto.CartItemDto;
 import com.excelsisproject.productservice.dto.ProductDto;
+import com.excelsisproject.productservice.dto.RequestDto;
 
 import java.util.List;
 
@@ -22,6 +23,10 @@ public interface ProductService {
 
     List<ProductDto> searchProducts(String searchKey);
 
-    List<ProductDto> filterProducts(String filter, String field, String sortParam, String direction, int page);
+    List<ProductDto> filterProducts(String filter, String field, String sortParam, String direction, int page, int pageSize);
+
+    List<ProductDto> productsSpecification(RequestDto requestDto);
+
+    List<ProductDto> productFilter(RequestDto requestDto);
 
 }

@@ -2,10 +2,12 @@ package com.excelsisproject.productservice.controllers;
 
 import com.excelsisproject.productservice.dto.CartItemDto;
 import com.excelsisproject.productservice.dto.ProductDto;
+import com.excelsisproject.productservice.dto.RequestDto;
 import com.excelsisproject.productservice.entities.ImageModel;
 import com.excelsisproject.productservice.services.CartService;
 import com.excelsisproject.productservice.services.ProductService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -79,11 +81,23 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
+    @GetMapping("/filter")
+    public ResponseEntity<List<ProductDto>> filterProducts(@RequestParam String filter, String field, String sortParam, String direction, int page, int pageSize){
+        List<ProductDto> products = productService.filterProducts(filter, field, sortParam, direction, page, pageSize);
+        return ResponseEntity.ok(products);
+    }
+
     //@PreAuthorize("hasAuthority('CLIENTE') or hasAuthority('ADMIN')")
     @PostMapping("/addToCart")
     public ResponseEntity<CartItemDto> addProductToCart(@RequestBody CartItemDto cartItem){
         cartService.addToCart(cartItem);
         return ResponseEntity.ok(cartItem);
+    }
+
+    @PostMapping("/filterProducts")
+    public ResponseEntity<List<ProductDto>> productFilter(@RequestBody RequestDto requestDto){
+        List<ProductDto> products = productService.productFilter(requestDto);
+        return ResponseEntity.ok(products);
     }
 
     public Set<ImageModel> uploadImage(MultipartFile[] multipartFiles) throws IOException{

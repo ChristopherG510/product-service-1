@@ -89,4 +89,9 @@ public class OrderController {
 
         return ResponseEntity.ok(facturaDto);
     }
+
+    @GetMapping("/filterOrders")
+    public ResponseEntity<List<OrderDto>> filterOrders(){
+        return null;
+    }
 }

@@ -23,5 +23,5 @@ public interface OrderService {
 
     List<OrderDto> findByDate(String dateOrdered);
 
-    List<OrderDto> sortOrders(String filter, String direction, int pageNumber);
+    List<OrderDto> sortOrders(String filter, String direction, int pageNumber, int pageSize);
 }
