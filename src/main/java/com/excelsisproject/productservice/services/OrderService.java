@@ -1,6 +1,7 @@
 package com.excelsisproject.productservice.services;
 
 import com.excelsisproject.productservice.dto.OrderDto;
+import com.excelsisproject.productservice.dto.RequestDto;
 
 import java.util.List;
 
@@ -24,4 +25,6 @@ public interface OrderService {
     List<OrderDto> findByDate(String dateOrdered);
 
     List<OrderDto> sortOrders(String filter, String direction, int pageNumber, int pageSize);
+
+    List<OrderDto> orderFilter(RequestDto requestDto);
 }

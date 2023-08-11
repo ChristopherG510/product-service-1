@@ -2,6 +2,7 @@ package com.excelsisproject.productservice.controllers;
 
 import com.excelsisproject.productservice.dto.FacturaDto;
 import com.excelsisproject.productservice.dto.OrderDto;
+import com.excelsisproject.productservice.dto.RequestDto;
 import com.excelsisproject.productservice.services.FacturaService;
 import com.excelsisproject.productservice.services.OrderService;
 import lombok.AllArgsConstructor;
@@ -90,8 +91,9 @@ public class OrderController {
         return ResponseEntity.ok(facturaDto);
     }
 
-    @GetMapping("/filterOrders")
-    public ResponseEntity<List<OrderDto>> filterOrders(){
-        return null;
+    @PostMapping("/filterOrders")
+    public ResponseEntity<List<OrderDto>> orderFilter(@RequestBody RequestDto requestDto){
+        List<OrderDto> orders = orderService.orderFilter(requestDto);
+        return ResponseEntity.ok(orders);
     }
 }

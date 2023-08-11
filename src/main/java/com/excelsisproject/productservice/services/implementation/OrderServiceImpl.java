@@ -1,6 +1,8 @@
 package com.excelsisproject.productservice.services.implementation;
 
 import com.excelsisproject.productservice.dto.OrderDto;
+import com.excelsisproject.productservice.dto.PageRequestDto;
+import com.excelsisproject.productservice.dto.RequestDto;
 import com.excelsisproject.productservice.entities.CartItem;
 import com.excelsisproject.productservice.entities.Order;
 import com.excelsisproject.productservice.entities.Product;
@@ -11,6 +13,7 @@ import com.excelsisproject.productservice.mappers.ProductMapper;
 import com.excelsisproject.productservice.repositories.CartRepository;
 import com.excelsisproject.productservice.repositories.OrderRepository;
 import com.excelsisproject.productservice.repositories.UserRepository;
+import com.excelsisproject.productservice.services.FilterSpecification;
 import com.excelsisproject.productservice.services.OrderService;
 import com.excelsisproject.productservice.services.ProductService;
 import com.excelsisproject.productservice.services.UserService;
@@ -19,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -39,6 +43,7 @@ public class OrderServiceImpl implements OrderService {
     private UserService userService;
     private UserRepository userRepository;
     private CartRepository cartRepository;
+    private FilterSpecification<Order> orderFilterSpecification;
     private static final String ORDER_PLACED = "puesta";
 
     @Override
@@ -177,6 +182,19 @@ public class OrderServiceImpl implements OrderService {
             orders = orderRepository.findAll(pageable);
         }
 
+        return orders.stream().map(OrderMapper::mapToOrderDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<OrderDto> orderFilter(RequestDto requestDto) {
+        Specification<Order> searchSpecification = orderFilterSpecification
+                .getSearchSpecification(requestDto.getSearchRequestDto(), requestDto.getGlobalOperator());
+
+        Pageable pageable = new PageRequestDto().getPageable(requestDto.getPageDto());
+        System.out.println(pageable);
+
+        Page<Order> orders = orderRepository.findAll(searchSpecification, pageable);
         return orders.stream().map(OrderMapper::mapToOrderDto)
                 .collect(Collectors.toList());
     }
