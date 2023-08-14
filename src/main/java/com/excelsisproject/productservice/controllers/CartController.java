@@ -1,6 +1,7 @@
 package com.excelsisproject.productservice.controllers;
 
 import com.excelsisproject.productservice.dto.CartItemDto;
+import com.excelsisproject.productservice.exceptions.ResourceNotFoundException;
 import com.excelsisproject.productservice.services.CartService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -53,7 +54,7 @@ public class CartController {
             cartService.removeFromCart(cartItemId);
             return "item with id: " + cartItemId +" deleted from cart";
         } else {
-            return "item with id: " + cartItemId + "does not exist in cart";
+            throw new ResourceNotFoundException("item con id: " + cartItemId + "no existe en el carrito");
         }
     }
 

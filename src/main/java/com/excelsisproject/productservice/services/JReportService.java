@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.excelsisproject.productservice.entities.Order;
 import com.excelsisproject.productservice.entities.Product;
 import com.excelsisproject.productservice.repositories.ProductRepository;
 import jakarta.servlet.http.HttpServletResponse;
@@ -28,12 +29,24 @@ public class JReportService {
     @Autowired
     private ProductRepository repository;
 
-    public void exportProductJReport(HttpServletResponse response) throws JRException, IOException {
-        List<Product> products = repository.findAll();
+    public void exportProductJReport(HttpServletResponse response, List<Product> products) throws JRException, IOException {
         //Get file and compile it
-        File file = ResourceUtils.getFile("classpath:ecommerce-web.jrxml");
+        File file = ResourceUtils.getFile("classpath:product-report.jrxml");
         JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
         JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(products);
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("createdBy", "sample text");
+        //Fill Jasper report
+        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
+        //Export report
+        JasperExportManager.exportReportToPdfStream(jasperPrint,response.getOutputStream());
+    }
+
+    public void exportOrderJReport(HttpServletResponse response, List<Order> orders) throws JRException, IOException {
+        //Get file and compile it
+        File file = ResourceUtils.getFile("classpath:order_report.jrxml");
+        JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
+        JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(orders);
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("createdBy", "sample text");
         //Fill Jasper report
