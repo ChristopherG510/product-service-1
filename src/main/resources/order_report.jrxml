@@ -3,53 +3,23 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="order-report" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="db1278dc-3b99-43f9-840c-f27292e610a5">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Sample DB"/>
-	<queryString language="SQL">
-		<![CDATA[SELECT * FROM ORDERS]]>
-	</queryString>
 	<field name="orderId" class="java.lang.Long">
-		<property name="com.jaspersoft.studio.field.name" value="orderId"/>
-		<property name="com.jaspersoft.studio.field.label" value="orderId"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="ORDERS"/>
 	</field>
 	<field name="userId" class="java.lang.Long">
-		<property name="com.jaspersoft.studio.field.name" value="userId"/>
-		<property name="com.jaspersoft.studio.field.label" value="userId"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="ORDERS"/>
 	</field>
 	<field name="dateOrdered" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.name" value="dateOrdered"/>
-		<property name="com.jaspersoft.studio.field.label" value="dateOrdered"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="ORDERS"/>
 	</field>
 	<field name="timeOrdered" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.name" value="timeOrdered"/>
-		<property name="com.jaspersoft.studio.field.label" value="timeOrdered"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="ORDERS"/>
 	</field>
 	<field name="firstName" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.name" value="firstName"/>
-		<property name="com.jaspersoft.studio.field.label" value="firstName"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="ORDERS"/>
 	</field>
 	<field name="lastName" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.name" value="lastName"/>
-		<property name="com.jaspersoft.studio.field.label" value="lastName"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="ORDERS"/>
 	</field>
 	<field name="userAddress" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.name" value="userAddress"/>
-		<property name="com.jaspersoft.studio.field.label" value="userAddress"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="ORDERS"/>
 	</field>
 	<field name="orderStatus" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.name" value="orderStatus"/>
-		<property name="com.jaspersoft.studio.field.label" value="FREIGHT"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="ORDERS"/>
 	</field>
 	<field name="totalPrice" class="java.lang.Double">
-		<property name="com.jaspersoft.studio.field.name" value="totalPrice"/>
-		<property name="com.jaspersoft.studio.field.label" value="totalPrice"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="ORDERS"/>
 	</field>
 	<title>
 		<band height="24">

@@ -1,6 +1,5 @@
 package com.excelsisproject.productservice.entities;
 
-import com.excelsisproject.productservice.entities.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,5 +29,6 @@ public class ConfirmationToken {
             name = "user_id"
     )
     private User user;
+    private String newPassword;
 
 }

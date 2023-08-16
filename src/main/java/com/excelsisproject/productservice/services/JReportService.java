@@ -26,12 +26,10 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 @Service
 public class JReportService {
 
-    @Autowired
-    private ProductRepository repository;
 
     public void exportProductJReport(HttpServletResponse response, List<Product> products) throws JRException, IOException {
         //Get file and compile it
-        File file = ResourceUtils.getFile("classpath:product-report.jrxml");
+        File file = ResourceUtils.getFile("classpath:product_report.jrxml");
         JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
         JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(products);
         Map<String, Object> parameters = new HashMap<>();

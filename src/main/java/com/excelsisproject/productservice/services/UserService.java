@@ -12,17 +12,12 @@ import com.excelsisproject.productservice.entities.User;
 import com.excelsisproject.productservice.exceptions.AppException;
 import com.excelsisproject.productservice.exceptions.ResourceNotFoundException;
 import com.excelsisproject.productservice.mappers.ConfirmationTokenMapper;
-import com.excelsisproject.productservice.mappers.ProductMapper;
 import com.excelsisproject.productservice.mappers.UserMapper;
 import com.excelsisproject.productservice.repositories.ConfirmationTokenRepository;
-import com.excelsisproject.productservice.repositories.RolesRepository;
 import com.excelsisproject.productservice.repositories.UserRepository;
 import com.excelsisproject.productservice.entities.ConfirmationToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -75,18 +70,10 @@ public class UserService {
         user.setPassword(securityConfig.passwordEncoder().encode(CharBuffer.wrap(signUpDto.password())));
         User savedUser = userRepository.save(user);
 
-        String confirmationToken = UUID.randomUUID().toString();
-        ConfirmationTokenDto confirmationTokenDto = new ConfirmationTokenDto();
-        confirmationTokenDto.setConfirmationToken(confirmationToken);
-        confirmationTokenDto.setTimeCreated(LocalDateTime.now());
-        confirmationTokenDto.setTimeExpired(LocalDateTime.now().plusMinutes(15));
-        confirmationTokenDto.setTimeConfirmed(null);
-        confirmationTokenDto.setUser(user);
-        confirmationTokenDto.setStatus(TOKEN_SENT);
+        ConfirmationTokenDto confirmationTokenDto = confirmationTokenService.createToken(savedUser);
         confirmationTokenRepository.save(ConfirmationTokenMapper.mapToConfirmationToken(confirmationTokenDto));
 
-
-        emailService.sendSimpleMailMessage(user.getFirstName(), user.getUserEmail(), confirmationToken);
+        emailService.registrationConfirmationEmail(user.getFirstName(), user.getUserEmail(), confirmationTokenDto.getConfirmationToken());
 
         return UserMapper.toUserDto(savedUser);
     }
@@ -152,11 +139,53 @@ public class UserService {
         return UserMapper.toUserDto(updatedUserObj);
     }
 
+    public void requestPasswordChange(CredentialsDto credentialsDto, SignUpDto newSignUpDto){
+        User user = userRepository.findByLogin(credentialsDto.getLogin())
+                .orElseThrow(() -> new AppException("Usuario no existe", HttpStatus.NOT_FOUND));
+
+        if (securityConfig.passwordEncoder().matches(CharBuffer.wrap(credentialsDto.getPassword()), user.getPassword())) {
+
+            String newPassword = securityConfig.passwordEncoder().encode(CharBuffer.wrap(newSignUpDto.password()));
+
+            ConfirmationTokenDto  confirmationTokenDto = confirmationTokenService.createNewPasswordToken(user, newPassword);
+            confirmationTokenRepository.save(ConfirmationTokenMapper.mapToConfirmationToken(confirmationTokenDto));
+
+            emailService.passwordChangeEmail(user.getFirstName(), user.getUserEmail(), confirmationTokenDto.getConfirmationToken());
+        } else {
+            throw new AppException("Contraseña invalida", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    public String changePassword(String token){
+
+        ConfirmationToken confirmationToken = confirmationTokenRepository.findByConfirmationToken(token);
+        User user = confirmationToken.getUser();
+
+        if(LocalDateTime.now().isAfter(confirmationToken.getTimeExpired()) && (!Objects.equals(confirmationToken.getStatus(), TOKEN_VERIFIED))){
+            confirmationToken.setStatus(TOKEN_EXPIRED);
+            return "Su token ha expirado";
+        } else if (Objects.equals(confirmationToken.getStatus(), TOKEN_VERIFIED)) {
+            return TOKEN_VERIFIED;
+        } else if (Objects.equals(confirmationToken.getStatus(), TOKEN_SENT)){
+            confirmationToken.setStatus(TOKEN_VERIFIED);
+
+            user.setPassword(confirmationToken.getNewPassword());
+
+            confirmationToken.setTimeConfirmed(LocalDateTime.now());
+            confirmationToken.setNewPassword(null);
+            confirmationTokenRepository.save(confirmationToken);
+            userRepository.save(user);
+
+            return "Contraseña actualizada";
+        } else {
+            return TOKEN_INVALID;
+        }
+    }
+
     public UserDto editUserRoleOrStatus(UserDto updatedUser){
         User user = userRepository.findById(updatedUser.getId()).stream().findFirst().orElseThrow(
                 () -> new ResourceNotFoundException("User does not exists with given id: " + updatedUser.getId()));
         // Roles roleObject = updatedUser.getRoles().stream().findFirst().get();
-
 
         Roles roleObject = user.getRoles().iterator().next();
         roleObject.setName(updatedUser.getRoles().iterator().next());

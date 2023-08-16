@@ -93,9 +93,22 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-    @PostMapping ("/editUserStatus")
+    @PostMapping("/editUserStatus")
     public ResponseEntity<UserDto> editUserRoleOrStatus(@RequestBody UserDto userDto){
         UserDto user = userService.editUserRoleOrStatus(userDto);
         return ResponseEntity.ok(user);
+    }
+
+    @PostMapping("/changePasswordRequest")
+    public String  requestPasswordChange(@RequestPart("login") CredentialsDto credentialsDto,@RequestPart("password") SignUpDto signUpDto){
+        userService.requestPasswordChange(credentialsDto, signUpDto);
+
+        return "Confirmation request sent";
+    }
+
+    @GetMapping("/changePassword")
+    public String changePassword(@RequestParam("token") String token){
+
+        return userService.changePassword(token);
     }
 }

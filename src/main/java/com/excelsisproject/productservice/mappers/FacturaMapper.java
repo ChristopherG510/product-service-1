@@ -9,7 +9,7 @@ public class FacturaMapper {
         return new FacturaDto(
                 factura.getId(),
                 factura.getUserId(),
-                factura.getNombre(),
+                factura.getName(),
                 factura.getRuc(),
                 factura.getOrder()
         );
@@ -19,8 +19,8 @@ public class FacturaMapper {
         return new Factura(
                 facturaDto.getId(),
                 facturaDto.getUserId(),
-                facturaDto.getNombre(),
-                facturaDto.getNombre(),
+                facturaDto.getName(),
+                facturaDto.getName(),
                 facturaDto.getOrder()
         );
     }
