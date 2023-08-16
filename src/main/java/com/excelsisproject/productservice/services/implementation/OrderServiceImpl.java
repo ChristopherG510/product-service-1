@@ -44,7 +44,7 @@ public class OrderServiceImpl implements OrderService {
     private UserRepository userRepository;
     private CartRepository cartRepository;
     private FilterSpecification<Order> orderFilterSpecification;
-    private static final String ORDER_PLACED = "puesta";
+    private static final String ORDER_PLACED = "Pendiente";
 
     @Override
     public OrderDto orderProduct(OrderDto orderDto, String loggedUser) {
