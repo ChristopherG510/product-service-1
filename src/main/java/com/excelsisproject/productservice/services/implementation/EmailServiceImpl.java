@@ -20,20 +20,34 @@ public class EmailServiceImpl implements EmailService {
 
 
     @Override
-    public void sendSimpleMailMessage(String name, String to, String token) {
+    public void registrationConfirmationEmail(String name, String to, String token) {
 
         try {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setSubject("Nueva autenticacion de usuario");
             message.setFrom(fromEmail);
             message.setTo(to);
-            message.setText("Verification link: http://localhost:8080/confirmar?token=" + token);
+            message.setText("Link de verificación: http://localhost:8080/confirmar?token=" + token);
             emailSender.send(message);
 
         } catch (Exception exception){
             System.out.println(exception.getMessage());
             throw new RuntimeException(exception.getMessage());
         }
+    }
 
+    @Override
+    public void passwordChangeEmail(String name, String to, String token){
+
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setSubject("Solicitud de cambio de contraseña");
+            message.setFrom(fromEmail);
+            message.setTo(to);
+            message.setText("Link de Verificación de contraseña: http://localhost:8080/nuevaContrasena?token=" + token);
+        } catch (Exception exception){
+            System.out.println(exception.getMessage());
+            throw new RuntimeException(exception.getMessage());
+        }
     }
 }

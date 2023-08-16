@@ -1,7 +1,6 @@
 package com.excelsisproject.productservice.dto;
 
 import com.excelsisproject.productservice.entities.User;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,4 +21,5 @@ public class ConfirmationTokenDto {
     private LocalDateTime timeConfirmed;
     private String status;
     private User user;
+    private String newPassword;
 }

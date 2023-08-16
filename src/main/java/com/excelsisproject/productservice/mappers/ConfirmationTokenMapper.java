@@ -13,7 +13,8 @@ public class ConfirmationTokenMapper {
                 confirmationToken.getTimeExpired(),
                 confirmationToken.getTimeConfirmed(),
                 confirmationToken.getStatus(),
-                confirmationToken.getUser()
+                confirmationToken.getUser(),
+                confirmationToken.getNewPassword()
         );
     }
 
@@ -25,7 +26,8 @@ public class ConfirmationTokenMapper {
                 confirmationTokenDto.getTimeExpired(),
                 confirmationTokenDto.getTimeConfirmed(),
                 confirmationTokenDto.getStatus(),
-                confirmationTokenDto.getUser()
+                confirmationTokenDto.getUser(),
+                confirmationTokenDto.getNewPassword()
         );
     }
 }

@@ -14,7 +14,7 @@ public class FacturaDto {
 
     private Long id;
     private Long userId;
-    private String nombre;
+    private String name;
     private String ruc;
     private Order order;
 

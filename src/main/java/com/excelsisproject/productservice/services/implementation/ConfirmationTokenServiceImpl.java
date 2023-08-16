@@ -1,5 +1,6 @@
 package com.excelsisproject.productservice.services.implementation;
 
+import com.excelsisproject.productservice.dto.ConfirmationTokenDto;
 import com.excelsisproject.productservice.entities.ConfirmationToken;
 import com.excelsisproject.productservice.entities.User;
 import com.excelsisproject.productservice.repositories.ConfirmationTokenRepository;
@@ -17,6 +18,38 @@ public class ConfirmationTokenServiceImpl implements ConfirmationTokenService{
 
     private ConfirmationTokenRepository confirmationTokenRepository;
     private EmailService emailService;
+    private static final String TOKEN_EXPIRED = "EXPIRED";
+    private static final String TOKEN_VERIFIED = "VERIFIED";
+    private static final String TOKEN_SENT = "SENT";
+    private static final String TOKEN_INVALID = "INVALID";
+
+    @Override
+    public ConfirmationTokenDto createToken(User user) {
+
+        ConfirmationTokenDto confirmationTokenDto = new ConfirmationTokenDto();
+        confirmationTokenDto.setConfirmationToken(UUID.randomUUID().toString());
+        confirmationTokenDto.setTimeCreated(LocalDateTime.now());
+        confirmationTokenDto.setTimeExpired(LocalDateTime.now().plusMinutes(15));
+        confirmationTokenDto.setTimeConfirmed(null);
+        confirmationTokenDto.setUser(user);
+        confirmationTokenDto.setStatus(TOKEN_SENT);
+
+        return confirmationTokenDto;
+    }
+
+    @Override
+    public ConfirmationTokenDto createNewPasswordToken(User user, String newPassword) {
+
+        ConfirmationTokenDto confirmationTokenDto = new ConfirmationTokenDto();
+        confirmationTokenDto.setConfirmationToken(UUID.randomUUID().toString());
+        confirmationTokenDto.setTimeCreated(LocalDateTime.now());
+        confirmationTokenDto.setTimeExpired(LocalDateTime.now().plusMinutes(15));
+        confirmationTokenDto.setTimeConfirmed(null);
+        confirmationTokenDto.setUser(user);
+        confirmationTokenDto.setStatus(TOKEN_SENT);
+        confirmationTokenDto.setNewPassword(newPassword);
+        return confirmationTokenDto;
+    }
 
     @Override
     public String createNewToken(String oldToken) { // crea nuevo token si el del usuario ya ha expirado
@@ -30,7 +63,7 @@ public class ConfirmationTokenServiceImpl implements ConfirmationTokenService{
         confirmationToken.setTimeConfirmed(null);
         saveConfirmationToken(confirmationToken);
 
-        emailService.sendSimpleMailMessage(user.getFirstName(), user.getUserEmail(), confirmationToken.getConfirmationToken());
+        emailService.registrationConfirmationEmail(user.getFirstName(), user.getUserEmail(), confirmationToken.getConfirmationToken());
 
         return "Nuevo token generado";
     }

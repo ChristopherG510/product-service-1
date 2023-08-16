@@ -17,7 +17,7 @@ public class Factura {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long userId;
-    private String nombre;
+    private String name;
     private String ruc;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "order_id")
