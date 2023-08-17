@@ -8,9 +8,7 @@ import java.util.Map;
 
 import com.excelsisproject.productservice.entities.Order;
 import com.excelsisproject.productservice.entities.Product;
-import com.excelsisproject.productservice.repositories.ProductRepository;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 

@@ -30,6 +30,8 @@ public class User {
     @Column(nullable = false)
     private String userPhoneNumber;
 
+    private String ruc;
+
     @Column(nullable = false)
     private String login;
 
