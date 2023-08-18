@@ -27,6 +27,7 @@ public interface UserMapper {
             userDto.lastName(user.getLastName());
             userDto.userEmail(user.getUserEmail());
             userDto.userPhoneNumber(user.getUserPhoneNumber());
+            userDto.ruc(user.getRuc());
             userDto.login(user.getLogin());
             userDto.roles(user.getRoles().stream().map(Roles::getName).collect(Collectors.toSet()));
             return userDto.build();
@@ -53,6 +54,7 @@ public interface UserMapper {
             user.lastName(signUpDto.lastName());
             user.userEmail(signUpDto.userEmail());
             user.userPhoneNumber(signUpDto.userPhoneNumber());
+            user.ruc(null);
             user.login(signUpDto.login());
             user.roles(roles);
             return user.build();

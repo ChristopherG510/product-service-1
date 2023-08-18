@@ -133,6 +133,7 @@ public class UserService {
         user.setUserEmail(updatedUser.getUserEmail());
         user.setUserPhoneNumber(updatedUser.getUserPhoneNumber());
         user.setLogin(updatedUser.getLogin());
+        user.setRuc(updatedUser.getRuc());
 
         User updatedUserObj = userRepository.save(user);
 

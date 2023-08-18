@@ -1,9 +1,7 @@
 package com.excelsisproject.productservice.controllers;
 
-import com.excelsisproject.productservice.dto.FacturaDto;
 import com.excelsisproject.productservice.dto.OrderDto;
 import com.excelsisproject.productservice.dto.RequestDto;
-import com.excelsisproject.productservice.services.FacturaService;
 import com.excelsisproject.productservice.services.OrderService;
 import lombok.AllArgsConstructor;
 import org.aspectj.weaver.ast.Or;
@@ -20,7 +18,6 @@ import java.util.List;
 @RequestMapping("/api/orders")
 public class OrderController {
     private OrderService orderService;
-    private FacturaService facturaService;
 
     // create order
     //@PreAuthorize("hasAuthority('CLIENTE') or hasAuthority('ADMIN')")
@@ -68,27 +65,6 @@ public class OrderController {
     public ResponseEntity<String> deleteOrder(@PathVariable("id") Long orderId){
         orderService.deleteOrder(orderId);
         return ResponseEntity.ok("Order deleted.");
-    }
-
-    @PutMapping("/facturar")
-    public ResponseEntity<FacturaDto> facturarOrden(@RequestBody FacturaDto facturaDto, Long orderId){
-        FacturaDto savedFactura = facturaService.facturar(facturaDto, orderId);
-
-        return ResponseEntity.ok(savedFactura);
-    }
-
-    @GetMapping("/misFacturas")
-    public ResponseEntity<List<FacturaDto>> getMisFacturas(){
-        List<FacturaDto> facturaDto = facturaService.getMisFacturas();
-
-        return ResponseEntity.ok(facturaDto);
-    }
-
-    @GetMapping("/facturas")
-    public ResponseEntity<List<FacturaDto>> getAllFacturas(){
-        List<FacturaDto> facturaDto = facturaService.getAllFacturas();
-
-        return ResponseEntity.ok(facturaDto);
     }
 
     @PostMapping("/filterOrders")
