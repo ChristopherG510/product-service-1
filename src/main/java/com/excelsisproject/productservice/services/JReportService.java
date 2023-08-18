@@ -26,6 +26,11 @@ import javax.sql.DataSource;
 @Service
 public class JReportService {
 
+    private static final String URL = "jdbc:postgresql://localhost:5432/ecommerce_web";
+    private static final String USER = "postgres";
+    private static final String PASSWORD = "postgresql";
+
+
 
     public void exportProductJReport(HttpServletResponse response, List<Product> products) throws JRException, IOException {
         //Get file and compile it
@@ -55,7 +60,7 @@ public class JReportService {
 
     public void exportInvoice(HttpServletResponse response, OrderDto orderDto) throws JRException, IOException, SQLException {
 
-        Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/ecommerce_web", "postgres", "postgresql");
+        Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
 
         File file = ResourceUtils.getFile("classpath:factura.jrxml");
         JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
@@ -68,7 +73,6 @@ public class JReportService {
         parameters.put("orderDate", orderDto.getDateOrdered());
         parameters.put("userPhoneNumber", orderDto.getUserPhoneNumber());
         parameters.put("userAddress", orderDto.getUserAddress());
-        parameters.put("totalPrice", orderDto.getTotalPrice());
         //Fill Jasper report
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, connection);
         //Export report

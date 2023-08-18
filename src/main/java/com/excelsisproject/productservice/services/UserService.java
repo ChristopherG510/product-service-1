@@ -112,9 +112,8 @@ public class UserService {
 
         User user = userRepository.findByLogin(loggedUser)
                 .orElseThrow(() -> new UsernameNotFoundException("El usuario" + loggedUser + "no existe"));
-        Long loggedUserId = user.getId();
 
-        return loggedUserId;
+        return user.getId();
     }
 
     public List<UserDto> getAllUsers(){
@@ -144,17 +143,12 @@ public class UserService {
         User user = userRepository.findByLogin(credentialsDto.getLogin())
                 .orElseThrow(() -> new AppException("Usuario no existe", HttpStatus.NOT_FOUND));
 
-        if (securityConfig.passwordEncoder().matches(CharBuffer.wrap(credentialsDto.getPassword()), user.getPassword())) {
-
             String newPassword = securityConfig.passwordEncoder().encode(CharBuffer.wrap(newSignUpDto.password()));
 
             ConfirmationTokenDto  confirmationTokenDto = confirmationTokenService.createNewPasswordToken(user, newPassword);
             confirmationTokenRepository.save(ConfirmationTokenMapper.mapToConfirmationToken(confirmationTokenDto));
 
             emailService.passwordChangeEmail(user.getFirstName(), user.getUserEmail(), confirmationTokenDto.getConfirmationToken());
-        } else {
-            throw new AppException("Contraseña invalida", HttpStatus.BAD_REQUEST);
-        }
     }
 
     public String changePassword(String token){
