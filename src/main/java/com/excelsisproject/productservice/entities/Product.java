@@ -21,6 +21,7 @@ public class Product {
     private String name;
     @Column(name = "description", columnDefinition = "TEXT", length = 2000)
     private String description;
+    private String category;
     private double amountInStock;
     private double price;
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

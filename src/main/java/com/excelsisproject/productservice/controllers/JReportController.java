@@ -1,5 +1,6 @@
 package com.excelsisproject.productservice.controllers;
 
+import com.excelsisproject.productservice.dto.OrderDto;
 import com.excelsisproject.productservice.dto.ProductDto;
 import com.excelsisproject.productservice.dto.RequestDto;
 import com.excelsisproject.productservice.entities.Order;
@@ -19,6 +20,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -80,5 +82,20 @@ public class JReportController {
 
         jReportService.exportOrderJReport(response, orders);
 
+    }
+
+    @PostMapping("/facturar")
+    public void facturar(HttpServletResponse response, @RequestParam Long orderId) throws IOException, JRException, SQLException {
+        OrderDto orderDto = orderService.getOrderById(orderId);
+
+        response.setContentType("application/pdf");
+        DateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+        String currentDateTime = dateFormatter.format(new Date());
+
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=pdf_" + currentDateTime + ".pdf";
+        response.setHeader(headerKey, headerValue);
+
+        jReportService.exportInvoice(response, orderDto);
     }
 }

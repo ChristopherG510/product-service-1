@@ -9,6 +9,7 @@ public class ProductMapper {
                 product.getId(),
                 product.getName(),
                 product.getDescription(),
+                product.getCategory(),
                 product.getAmountInStock(),
                 product.getPrice(),
                 product.getImageFiles()
@@ -20,6 +21,7 @@ public class ProductMapper {
                 productDto.getId(),
                 productDto.getName(),
                 productDto.getDescription(),
+                productDto.getCategory(),
                 productDto.getAmountInStock(),
                 productDto.getPrice(),
                 productDto.getImageFiles()
