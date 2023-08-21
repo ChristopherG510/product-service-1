@@ -1,16 +1,20 @@
 package com.excelsisproject.productservice.controllers;
 
 
+import com.excelsisproject.productservice.entities.ResetPasswordData;
 import com.excelsisproject.productservice.entities.User;
+import com.excelsisproject.productservice.exceptions.AppException;
 import com.excelsisproject.productservice.jwt.JwtGenerator;
 import com.excelsisproject.productservice.dto.CredentialsDto;
 import com.excelsisproject.productservice.dto.SignUpDto;
 import com.excelsisproject.productservice.dto.UserDto;
+import com.excelsisproject.productservice.repositories.ConfirmationTokenRepository;
 import com.excelsisproject.productservice.repositories.UserRepository;
 import com.excelsisproject.productservice.services.ConfirmationTokenService;
 import com.excelsisproject.productservice.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -33,15 +37,18 @@ public class UserController {
     private AuthenticationManager authenticationManager;
     private JwtGenerator jwtGenerator;
     private final ConfirmationTokenService confirmationTokenService;
+    private final ConfirmationTokenRepository confirmationTokenRepository;
 
     @Autowired
     public UserController(UserService userService, UserRepository userRepository,
-                          AuthenticationManager authenticationManager, JwtGenerator jwtGenerator, ConfirmationTokenService confirmationTokenService) {
+                          AuthenticationManager authenticationManager, JwtGenerator jwtGenerator,
+                          ConfirmationTokenService confirmationTokenService, ConfirmationTokenRepository confirmationTokenRepository) {
         this.userService = userService;
         this.userRepository = userRepository;
         this.authenticationManager = authenticationManager;
         this.jwtGenerator = jwtGenerator;
         this.confirmationTokenService = confirmationTokenService;
+        this.confirmationTokenRepository = confirmationTokenRepository;
     }
 
 
@@ -66,7 +73,7 @@ public class UserController {
 
     @GetMapping("/confirmar")
     public String confirmToken(@RequestParam("token") String token) {
-        return userService.confirmToken(token);
+        return confirmationTokenService.verifyToken(token);
     }
 
     @GetMapping("/newToken")
@@ -100,15 +107,22 @@ public class UserController {
     }
 
     @PostMapping("/changePasswordRequest")
-    public String  requestPasswordChange(@RequestPart("login") CredentialsDto credentialsDto,@RequestPart("password") SignUpDto signUpDto){
-        userService.requestPasswordChange(credentialsDto, signUpDto);
-
+    public String  requestPasswordChange(@RequestBody CredentialsDto credentialsDto){
+        userService.forgotPassword(credentialsDto.getLogin());
         return "Confirmation request sent";
     }
 
-    @GetMapping("/changePassword")
-    public String changePassword(@RequestParam("token") String token){
+    @GetMapping("/resetPassword")
+    public String resetPassword(@RequestParam("token") String token, @RequestBody ResetPasswordData resetPasswordData){
+        resetPasswordData.setToken(token);
+        return userService.resetPassword(resetPasswordData);
+    }
 
-        return userService.changePassword(token);
+    @GetMapping("/newPasswordToken")
+    public String newResetPasswordToken(@RequestParam("token") String token){
+        User user = confirmationTokenRepository.findByConfirmationToken(token)
+                .orElseThrow(() -> new AppException("Token not found", HttpStatus.NOT_FOUND)).getUser();
+        confirmationTokenService.createPasswordToken(user);
+        return "";
     }
 }

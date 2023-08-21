@@ -67,7 +67,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/products/view/all","/confirmar", "/api/products/view/productId/{id}","/api/orders/viewAll",
                                 "/api/orders/view/orderId/{id}", "/api/products/filter", "/newToken","/precioMiCarrito","/api/JReport/productPdf/export",
                                 "/api/products/filter", "/api/products/customFilter", "/api/products/filterProducts", "/api/JReport/orderPdf/export",
-                                "/changePassword").permitAll()
+                                "/changePassword", "/resetPassword", "/newPasswordToken").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/deleteUser", "/api/products/delete/productId/{id}").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/orders/edit/orderId/{id}").permitAll()
                         .anyRequest().authenticated());

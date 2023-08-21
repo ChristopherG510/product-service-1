@@ -8,9 +8,13 @@ public interface ConfirmationTokenService {
 
     ConfirmationTokenDto createToken(User user);
 
-    ConfirmationTokenDto createNewPasswordToken(User user, String newPassword);
-
     String createNewToken(String oldToken);
+
+    ConfirmationTokenDto createPasswordToken(User user);
+
+    String createNewPasswordToken(String oldToken);
+
+    String verifyToken(String token);
 
     void saveConfirmationToken(ConfirmationToken token);
 
