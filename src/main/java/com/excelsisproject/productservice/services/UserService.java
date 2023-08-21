@@ -7,6 +7,7 @@ import com.excelsisproject.productservice.dto.ConfirmationTokenDto;
 import com.excelsisproject.productservice.dto.CredentialsDto;
 import com.excelsisproject.productservice.dto.SignUpDto;
 import com.excelsisproject.productservice.dto.UserDto;
+import com.excelsisproject.productservice.entities.ResetPasswordData;
 import com.excelsisproject.productservice.entities.Roles;
 import com.excelsisproject.productservice.entities.User;
 import com.excelsisproject.productservice.exceptions.AppException;
@@ -41,6 +42,7 @@ public class UserService {
     private static final String TOKEN_VERIFIED = "VERIFIED";
     private static final String TOKEN_SENT = "SENT";
     private static final String TOKEN_INVALID = "INVALID";
+    private static final String PSW_RESET_SENT = "PASSWORD RESET SENT";
 
     @Autowired
     private ConfirmationTokenService confirmationTokenService;
@@ -78,34 +80,6 @@ public class UserService {
         return UserMapper.toUserDto(savedUser);
     }
 
-    public String confirmToken(String token){
-        ConfirmationToken confirmationToken = confirmationTokenRepository.findByConfirmationToken(token);
-        User user = confirmationToken.getUser();
-
-        if(LocalDateTime.now().isAfter(confirmationToken.getTimeExpired()) && (!Objects.equals(confirmationToken.getStatus(), TOKEN_VERIFIED))){
-            confirmationToken.setStatus(TOKEN_EXPIRED);
-            return "<HTML><body> <a href=\"http://localhost:8080/newToken?token=" + token + "\">Su token ha expirado. Haga clic aqui para crear uno nuevo.</a></body></HTML>";
-        } else if (Objects.equals(confirmationToken.getStatus(), TOKEN_VERIFIED)) {
-            return TOKEN_VERIFIED;
-        } else if (Objects.equals(confirmationToken.getStatus(), TOKEN_SENT)){
-            confirmationToken.setStatus(TOKEN_VERIFIED);
-            Set<Roles> roles = user.getRoles();
-            // Cambiar el rol PENDIENTE a CLIENTE
-            for (Roles role : roles) {
-                role.setName("ADMIN");
-            }
-            user.setRoles(roles);
-
-            confirmationToken.setTimeConfirmed(LocalDateTime.now());
-            confirmationTokenRepository.save(confirmationToken);
-            userRepository.save(user);
-
-            return "Usuario " + user.getLogin() + " Registrado";
-        } else {
-            return TOKEN_INVALID;
-        }
-    }
-
     public Long getLoggedUserId(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String loggedUser = authentication.getName();
@@ -133,47 +107,31 @@ public class UserService {
         user.setUserPhoneNumber(updatedUser.getUserPhoneNumber());
         user.setLogin(updatedUser.getLogin());
         user.setRuc(updatedUser.getRuc());
-
         User updatedUserObj = userRepository.save(user);
 
         return UserMapper.toUserDto(updatedUserObj);
     }
 
-    public void requestPasswordChange(CredentialsDto credentialsDto, SignUpDto newSignUpDto){
-        User user = userRepository.findByLogin(credentialsDto.getLogin())
-                .orElseThrow(() -> new AppException("Usuario no existe", HttpStatus.NOT_FOUND));
-
-            String newPassword = securityConfig.passwordEncoder().encode(CharBuffer.wrap(newSignUpDto.password()));
-
-            ConfirmationTokenDto  confirmationTokenDto = confirmationTokenService.createNewPasswordToken(user, newPassword);
-            confirmationTokenRepository.save(ConfirmationTokenMapper.mapToConfirmationToken(confirmationTokenDto));
-
-            emailService.passwordChangeEmail(user.getFirstName(), user.getUserEmail(), confirmationTokenDto.getConfirmationToken());
+    public void  forgotPassword(String login){
+        User user = userRepository.findByLoginOrUserEmail(login,login).stream().findFirst().orElseThrow(() -> new AppException("El Usuario o Email no existe.", HttpStatus.NOT_FOUND));
+        ConfirmationTokenDto token = confirmationTokenService.createPasswordToken(user);
+        confirmationTokenRepository.save(ConfirmationTokenMapper.mapToConfirmationToken(token));
+        emailService.changePasswordEmail(user.getUserEmail(), token.getConfirmationToken());
     }
 
-    public String changePassword(String token){
-
-        ConfirmationToken confirmationToken = confirmationTokenRepository.findByConfirmationToken(token);
+    public String resetPassword(ResetPasswordData resetPasswordData){
+        ConfirmationToken confirmationToken = confirmationTokenRepository.findByConfirmationToken(resetPasswordData.getToken())
+                .orElseThrow(() -> new AppException("Token no valido", HttpStatus.BAD_REQUEST));
         User user = confirmationToken.getUser();
-
-        if(LocalDateTime.now().isAfter(confirmationToken.getTimeExpired()) && (!Objects.equals(confirmationToken.getStatus(), TOKEN_VERIFIED))){
-            confirmationToken.setStatus(TOKEN_EXPIRED);
-            return "Su token ha expirado";
-        } else if (Objects.equals(confirmationToken.getStatus(), TOKEN_VERIFIED)) {
-            return TOKEN_VERIFIED;
-        } else if (Objects.equals(confirmationToken.getStatus(), TOKEN_SENT)){
-            confirmationToken.setStatus(TOKEN_VERIFIED);
-
-            user.setPassword(confirmationToken.getNewPassword());
-
-            confirmationToken.setTimeConfirmed(LocalDateTime.now());
-            confirmationToken.setNewPassword(null);
-            confirmationTokenRepository.save(confirmationToken);
+        if (Objects.equals(resetPasswordData.getPassword(), resetPasswordData.getRepeatPassword())){
+            user.setPassword(securityConfig.passwordEncoder().encode(CharBuffer.wrap(resetPasswordData.getPassword())));
             userRepository.save(user);
-
-            return "Contraseña actualizada";
+            confirmationToken.setTimeConfirmed(LocalDateTime.now());
+            confirmationToken.setStatus(TOKEN_VERIFIED);
+            confirmationTokenRepository.save(confirmationToken);
+            return "Contraseña cambiada correctamente.";
         } else {
-            return TOKEN_INVALID;
+            throw new AppException("Las contraseñas no coinciden", HttpStatus.BAD_REQUEST);
         }
     }
 

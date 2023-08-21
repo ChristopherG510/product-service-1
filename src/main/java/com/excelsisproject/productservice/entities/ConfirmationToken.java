@@ -29,6 +29,5 @@ public class ConfirmationToken {
             name = "user_id"
     )
     private User user;
-    private String newPassword;
 
 }
