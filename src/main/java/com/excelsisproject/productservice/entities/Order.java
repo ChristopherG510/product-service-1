@@ -1,11 +1,18 @@
 package com.excelsisproject.productservice.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Getter
@@ -32,9 +39,9 @@ public class Order {
     private String orderDescription;
     private String orderStatus;
     @Column(name = "order_date")
-    private String dateOrdered;
+    private LocalDate dateOrdered;
     @Column(name = "order_time")
-    private String timeOrdered;
+    private LocalTime timeOrdered;
     @Column(nullable = false)
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, targetEntity = CartItem.class)
     @JoinColumn(name = "order_id", referencedColumnName = "orderId")

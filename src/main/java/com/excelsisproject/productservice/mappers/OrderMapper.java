@@ -3,7 +3,13 @@ package com.excelsisproject.productservice.mappers;
 import com.excelsisproject.productservice.dto.OrderDto;
 import com.excelsisproject.productservice.entities.Order;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+
 public class OrderMapper {
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
     public static OrderDto mapToOrderDto(Order order){
         return new OrderDto(
                 order.getOrderId(),
@@ -17,8 +23,8 @@ public class OrderMapper {
                 order.getPaymentMethod(),
                 order.getOrderDescription(),
                 order.getOrderStatus(),
-                order.getDateOrdered(),
-                order.getTimeOrdered(),
+                order.getDateOrdered().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")),
+                order.getTimeOrdered().format(DateTimeFormatter.ofPattern("HH:mm:ss")),
                 order.getCartItems(),
                 order.getTotalPrice()
         );
@@ -38,8 +44,8 @@ public class OrderMapper {
                 orderDto.getPaymentMethod(),
                 orderDto.getOrderDescription(),
                 orderDto.getOrderStatus(),
-                orderDto.getDateOrdered(),
-                orderDto.getTimeOrdered(),
+                LocalDate.parse(orderDto.getDateOrdered(), DateTimeFormatter.ofPattern("dd-MM-yyyy")),
+                LocalTime.parse(orderDto.getTimeOrdered(), DateTimeFormatter.ofPattern("HH:mm:ss")),
                 orderDto.getCartItems(),
                 orderDto.getTotalPrice()
         );

@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     //Método para obtener un set de autoridades por medio de un set de roles
     public Collection<GrantedAuthority> mapToAuthorities(Set<Roles> roles){

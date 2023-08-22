@@ -12,6 +12,6 @@ public class SearchRequestDto {
     Operation operation;
 
     public enum Operation{
-        IGUAL, CONTIENE, EN, MAYOR_QUE, MENOR_QUE, ENTRE;
+        IGUAL, CONTIENE, EN, MAYOR_QUE, MENOR_QUE, ENTRE, FECHA_ENTRE, FECHA_DESPUES, FECHA_ANTES;
     }
 }
