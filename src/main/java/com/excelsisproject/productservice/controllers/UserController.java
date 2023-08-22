@@ -112,9 +112,8 @@ public class UserController {
         return "Confirmation request sent";
     }
 
-    @GetMapping("/resetPassword")
-    public String resetPassword(@RequestParam("token") String token, @RequestBody ResetPasswordData resetPasswordData){
-        resetPasswordData.setToken(token);
+    @PostMapping("/resetPassword")
+    public String resetPassword(@RequestBody ResetPasswordData resetPasswordData){
         return userService.resetPassword(resetPasswordData);
     }
 
