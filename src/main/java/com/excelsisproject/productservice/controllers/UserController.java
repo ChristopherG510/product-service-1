@@ -107,9 +107,8 @@ public class UserController {
     }
 
     @PostMapping("/changePasswordRequest")
-    public String  requestPasswordChange(@RequestBody CredentialsDto credentialsDto){
+    public void  requestPasswordChange(@RequestBody CredentialsDto credentialsDto){
         userService.forgotPassword(credentialsDto.getLogin());
-        return "Confirmation request sent";
     }
 
     @GetMapping("/resetPassword")

@@ -23,6 +23,9 @@ public class EmailServiceImpl implements EmailService {
     @Value("${spring.mail.username}")
     private String fromEmail;
 
+    @Value("${mail.urlFront}")
+    private String urlFront;
+
     private final JavaMailSender emailSender;
 
     private ConfirmationTokenService tokenService;
@@ -53,7 +56,7 @@ public class EmailServiceImpl implements EmailService {
             message.setSubject("Solicitud de cambio de contraseña");
             message.setFrom(fromEmail);
             message.setTo(to);
-            message.setText("Link de Verificación de contraseña: http://localhost:8080/resetPassword?token=" + token);
+            message.setText(urlFront + token);
             emailSender.send(message);
         } catch (Exception exception){
             System.out.println(exception.getMessage());
