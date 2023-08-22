@@ -5,11 +5,9 @@ import com.excelsisproject.productservice.dto.PageRequestDto;
 import com.excelsisproject.productservice.dto.RequestDto;
 import com.excelsisproject.productservice.entities.CartItem;
 import com.excelsisproject.productservice.entities.Order;
-import com.excelsisproject.productservice.entities.Product;
 import com.excelsisproject.productservice.entities.User;
 import com.excelsisproject.productservice.exceptions.ResourceNotFoundException;
 import com.excelsisproject.productservice.mappers.OrderMapper;
-import com.excelsisproject.productservice.mappers.ProductMapper;
 import com.excelsisproject.productservice.repositories.CartRepository;
 import com.excelsisproject.productservice.repositories.OrderRepository;
 import com.excelsisproject.productservice.repositories.UserRepository;
@@ -26,6 +24,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -44,7 +43,8 @@ public class OrderServiceImpl implements OrderService {
     private UserRepository userRepository;
     private CartRepository cartRepository;
     private FilterSpecification<Order> orderFilterSpecification;
-    private static final String ORDER_PLACED = "Pendiente";
+
+    private static final String ORDER_PLACED = "pendiente";
 
     @Override
     public OrderDto orderProduct(OrderDto orderDto, String loggedUser) {
@@ -98,14 +98,14 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<OrderDto> getAllOrders() {
         List<Order> orders = orderRepository.findAll();
-        return orders.stream().map((order) -> OrderMapper.mapToOrderDto(order))
+        return orders.stream().map(OrderMapper::mapToOrderDto)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<OrderDto> getOrdersByUser() {
         List<Order> orders = orderRepository.findByUserId(userService.getLoggedUserId());
-        return orders.stream().map((order) -> OrderMapper.mapToOrderDto(order)).collect(Collectors.toList());
+        return orders.stream().map(OrderMapper::mapToOrderDto).collect(Collectors.toList());
     }
 
     @Override
@@ -120,7 +120,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void deleteOrder(Long orderId) {
+    public void deleteOrder(Long orderId){
         Order order = orderRepository.findById(orderId).orElseThrow(
                 ()-> new ResourceNotFoundException("Order does not exist with given id: " + orderId));
 
@@ -153,8 +153,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderDto> findByDate(String dateOrdered) {
-        System.out.println(orderRepository.findByDateOrdered(dateOrdered));
-        List<Order> orders = orderRepository.findByDateOrdered(dateOrdered);
+        List<Order> orders = orderRepository.findByDateOrdered(LocalDate.parse(dateOrdered, DateTimeFormatter.ofPattern("dd-MM-yyyy")));
         List<OrderDto> ordersDto = new ArrayList<>();
 
         for (Order orderList : orders){
@@ -192,8 +191,9 @@ public class OrderServiceImpl implements OrderService {
         Specification<Order> searchSpecification = orderFilterSpecification
                 .getSearchSpecification(requestDto.getSearchRequestDto(), requestDto.getGlobalOperator());
 
+
+
         Pageable pageable = new PageRequestDto().getPageable(requestDto.getPageDto());
-        System.out.println(pageable);
 
         Page<Order> orders = orderRepository.findAll(searchSpecification, pageable);
         return orders.stream().map(OrderMapper::mapToOrderDto)

@@ -9,9 +9,13 @@ import jakarta.persistence.criteria.Root;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class FilterSpecification<T> {
@@ -32,12 +36,19 @@ public class FilterSpecification<T> {
 
             List<Predicate> predicates = new ArrayList<>();
 
+            Object value;
+
             for(SearchRequestDto requestDto : searchRequestDto){
 
+                if (Objects.equals(requestDto.getColumn(), "dateOrdered") && !(Objects.equals(requestDto.getOperation(), SearchRequestDto.Operation.FECHA_ENTRE))){
+                    value = LocalDate.parse(requestDto.getValue(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                } else {
+                    value = requestDto.getValue();
+                }
 
                 switch (requestDto.getOperation()){
                     case IGUAL:
-                        Predicate equal = criteriaBuilder.equal(root.get(requestDto.getColumn()), requestDto.getValue());
+                        Predicate equal = criteriaBuilder.equal(root.get(requestDto.getColumn()), value);
                         predicates.add(equal);
                         break;
 
@@ -53,7 +64,7 @@ public class FilterSpecification<T> {
                         break;
 
                     case MENOR_QUE:
-                        Predicate lessThan = criteriaBuilder.lessThan(root.get(requestDto.getColumn()),requestDto.getValue());
+                        Predicate lessThan = criteriaBuilder.lessThan(root.get(requestDto.getColumn()), requestDto.getValue());
                         predicates.add(lessThan);
                         break;
 
@@ -67,6 +78,24 @@ public class FilterSpecification<T> {
                         Predicate between = criteriaBuilder.between(root.get(requestDto.getColumn()), Long.parseLong(split1[0]), Long.parseLong(split1[1]));
                         predicates.add(between);
                         break;
+
+                    case FECHA_ENTRE:
+                        String[] split2 = requestDto.getValue().split(",");
+                        Predicate dateBetween =criteriaBuilder.between(root.get(requestDto.getColumn()), LocalDate.parse(split2[0], DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+                                LocalDate.parse(split2[1], DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+                        predicates.add(dateBetween);
+                        break;
+
+                    case FECHA_DESPUES:
+                        Predicate dateAfter = criteriaBuilder.greaterThan(root.get(requestDto.getColumn()),LocalDate.parse(requestDto.getValue(), DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+                        predicates.add(dateAfter);
+                        break;
+
+                    case FECHA_ANTES:
+                        Predicate dateBefore = criteriaBuilder.lessThan(root.get(requestDto.getColumn()),LocalDate.parse(requestDto.getValue(), DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+                        predicates.add(dateBefore);
+                        break;
+
 //                    case JOIN:
 //                        criteriaBuilder.equal(root.join("joinTable").get("attribute from join table"),requestDto.getValue());
 //                        break;
@@ -82,7 +111,5 @@ public class FilterSpecification<T> {
                 return criteriaBuilder.or(predicates.toArray(new Predicate[0]));
             }
         };
-
     }
-
 }

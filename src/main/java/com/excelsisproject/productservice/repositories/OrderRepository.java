@@ -9,12 +9,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long>, JpaSpecificationExecutor<Order> {
 
-    List<Order> findByDateOrdered(String dateOrdered);
+    List<Order> findByDateOrdered(LocalDate dateOrdered);
 
     List<Order> findByUserId(Long userId);
 
