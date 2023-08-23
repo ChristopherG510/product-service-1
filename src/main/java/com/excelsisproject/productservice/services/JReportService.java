@@ -1,11 +1,11 @@
 package com.excelsisproject.productservice.services;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,15 +13,15 @@ import java.util.Map;
 import com.excelsisproject.productservice.dto.OrderDto;
 import com.excelsisproject.productservice.entities.Order;
 import com.excelsisproject.productservice.entities.Product;
+import jakarta.mail.util.ByteArrayDataSource;
 import jakarta.servlet.http.HttpServletResponse;
 import net.sf.jasperreports.engine.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
 
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-
-import javax.sql.DataSource;
 
 @Service
 public class JReportService {
@@ -30,6 +30,8 @@ public class JReportService {
     private static final String USER = "postgres";
     private static final String PASSWORD = "postgresql";
 
+    @Autowired
+    private EmailService emailService;
 
 
     public void exportProductJReport(HttpServletResponse response, List<Product> products) throws JRException, IOException {
@@ -76,6 +78,12 @@ public class JReportService {
         //Fill Jasper report
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, connection);
         //Export report
-        JasperExportManager.exportReportToPdfStream(jasperPrint,response.getOutputStream());
+        //JasperExportManager.exportReportToPdfStream(jasperPrint,response.getOutputStream());
+
+        // send to mail
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        JasperExportManager.exportReportToPdfStream(jasperPrint, baos);
+        ByteArrayDataSource attachment = new ByteArrayDataSource(baos.toByteArray(), "application/pdf");
+        emailService.sendInvoiceEmail(orderDto.getUserEmail(), attachment);
     }
 }

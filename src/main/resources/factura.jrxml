@@ -12,9 +12,20 @@
 	<parameter name="userAddress" class="java.lang.String"/>
 	<parameter name="totalPrice" class="java.lang.Double"/>
 	<queryString>
-		<![CDATA[SELECT product_name, amount, price FROM cart_items WHERE 
-cart_items.order_id = $P{orderId}]]>
+		<![CDATA[SELECT cart_items.price,
+	cart_items.product_name,
+	cart_items.amount,
+	products.price
+FROM products
+	INNER JOIN cart_items ON
+	 cart_items.product_id = products.id
+WHERE cart_items.order_id = $P{orderId}]]>
 	</queryString>
+	<field name="price" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="price"/>
+		<property name="com.jaspersoft.studio.field.label" value="price"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="cart_items"/>
+	</field>
 	<field name="product_name" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.name" value="product_name"/>
 		<property name="com.jaspersoft.studio.field.label" value="product_name"/>
@@ -25,10 +36,10 @@ cart_items.order_id = $P{orderId}]]>
 		<property name="com.jaspersoft.studio.field.label" value="amount"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="cart_items"/>
 	</field>
-	<field name="price" class="java.lang.Double">
+	<field name="COLUMN_4" class="java.lang.Double">
 		<property name="com.jaspersoft.studio.field.name" value="price"/>
 		<property name="com.jaspersoft.studio.field.label" value="price"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="cart_items"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="products"/>
 	</field>
 	<variable name="subtotal_3" class="java.lang.Double" calculation="Sum">
 		<variableExpression><![CDATA[$F{price}]]></variableExpression>
@@ -38,7 +49,7 @@ cart_items.order_id = $P{orderId}]]>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="105" splitType="Stretch">
+		<band height="109" splitType="Stretch">
 			<staticText>
 				<reportElement x="198" y="0" width="170" height="100" uuid="4ed53410-62de-46a7-a84c-b36acd490e3f"/>
 				<box>
@@ -377,7 +388,7 @@ UNITARIO]]></text>
 	</columnHeader>
 	<detail>
 		<band height="20" splitType="Stretch">
-			<textField>
+			<textField pattern="#,###.###;(#,###.###-)">
 				<reportElement x="0" y="0" width="40" height="20" uuid="d65e7270-e2c6-49e3-8459-5cd77b0d33c1"/>
 				<box>
 					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -403,7 +414,7 @@ UNITARIO]]></text>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{product_name}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField pattern="#,###.###;(#,###.###-)">
 				<reportElement x="270" y="0" width="70" height="20" uuid="dd5fa5a3-c7fd-423c-8dcc-8a7761c96577">
 					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
 				</reportElement>
@@ -416,6 +427,7 @@ UNITARIO]]></text>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<paragraph rightIndent="4"/>
 				</textElement>
+				<textFieldExpression><![CDATA[$F{COLUMN_4}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="340" y="0" width="70" height="20" uuid="39a1c831-c273-4fe3-9f51-cdd794716a17">
@@ -430,6 +442,7 @@ UNITARIO]]></text>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<paragraph rightIndent="4"/>
 				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="410" y="0" width="70" height="20" uuid="723409ee-b366-49f5-9def-f247353bf654">
@@ -444,8 +457,9 @@ UNITARIO]]></text>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<paragraph rightIndent="4"/>
 				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField pattern="#,###.###;(#,###.###-)">
 				<reportElement x="480" y="0" width="70" height="20" uuid="849d2adc-305d-429a-993d-88c59bc35f7c">
 					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
 				</reportElement>
@@ -463,7 +477,7 @@ UNITARIO]]></text>
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="45" splitType="Stretch">
+		<band height="40" splitType="Stretch">
 			<staticText>
 				<reportElement x="0" y="0" width="340" height="20" uuid="98f6f114-84d9-4a16-8ac0-37ce6402c8c5">
 					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
@@ -494,6 +508,7 @@ UNITARIO]]></text>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<paragraph rightIndent="4"/>
 				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="410" y="0" width="70" height="20" uuid="98dd3b81-abbc-4a3d-b638-835dfc2f3495">
@@ -508,8 +523,9 @@ UNITARIO]]></text>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<paragraph rightIndent="4"/>
 				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField pattern="#,###.###;(#,###.###-)">
 				<reportElement x="480" y="0" width="70" height="20" uuid="bc5672e9-22cb-47ce-babd-eb61d06d4ad4">
 					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
 				</reportElement>
@@ -541,7 +557,7 @@ UNITARIO]]></text>
 				</textElement>
 				<text><![CDATA[TOTAL A PAGAR]]></text>
 			</staticText>
-			<textField>
+			<textField pattern="#,###.###;(#,###.###-)">
 				<reportElement x="340" y="20" width="210" height="20" uuid="a91dc018-3b97-4efb-b141-b98b5966039a">
 					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
 				</reportElement>
@@ -554,7 +570,7 @@ UNITARIO]]></text>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<paragraph rightIndent="4"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{totalPrice}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{subtotal_3}]]></textFieldExpression>
 			</textField>
 		</band>
 	</columnFooter>
