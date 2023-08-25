@@ -10,7 +10,7 @@ import java.util.Set;
 
 @Getter @Setter // Para los getters y setters
 @NoArgsConstructor // Constructor vacio
-@AllArgsConstructor // Contructor con todos los atributos
+@AllArgsConstructor // Constructor con todos los atributos
 @Entity
 @Table(name = "Products")
 public class Product {
@@ -18,12 +18,8 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     // Se le puede agregar @Column(name ="***") para que en la db se vea diferente
     private Long id;
-    private String name;
-    @Column(name = "description", columnDefinition = "TEXT", length = 2000)
-    private String description;
-    private String category;
+    private String color;
     private double amountInStock;
-    private double price;
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "product_images",
             joinColumns = {
@@ -34,7 +30,6 @@ public class Product {
             }
     )
     private Set<ImageModel> imageFiles;
-    // @Column(name = "image", columnDefinition = "LONGBLOB")
+    private Long productClassId;
 
 }
-

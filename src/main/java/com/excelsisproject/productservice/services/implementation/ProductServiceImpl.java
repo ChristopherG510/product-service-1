@@ -9,12 +9,7 @@ import com.excelsisproject.productservice.mappers.ProductMapper;
 import com.excelsisproject.productservice.repositories.ProductRepository;
 import com.excelsisproject.productservice.services.FilterSpecification;
 import com.excelsisproject.productservice.services.ProductService;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -31,11 +26,10 @@ import java.util.stream.Collectors;
 public class ProductServiceImpl implements ProductService {
 
     private ProductRepository productRepository;
-
     private FilterSpecification<Product> productFilterSpecification;
 
     @Override
-    public ProductDto createProduct(ProductDto productDto) {
+    public ProductDto createProduct(ProductDto productDto){
 
         Product product = ProductMapper.mapToProduct(productDto);
         Product savedProduct = productRepository.save(product);
@@ -59,15 +53,19 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<ProductDto> getProductsByClass(Long classId) {
+        List<Product> products = productRepository.getAllByProductClassId(classId);
+        return products.stream().map(ProductMapper::mapToProductDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public ProductDto updateProduct(Long productId, ProductDto updatedProduct) {
         Product product = productRepository.findById(productId).orElseThrow(
                 ()-> new ResourceNotFoundException("Product does not exist with given id: " + productId));
 
-        product.setName(updatedProduct.getName());
-        product.setDescription(updatedProduct.getDescription());
-        product.setCategory(updatedProduct.getCategory());
+        product.setColor(updatedProduct.getColor());
         product.setAmountInStock(updatedProduct.getAmountInStock());
-        product.setPrice(updatedProduct.getPrice());
 
         Product updatedProductObj = productRepository.save(product);
 
@@ -99,54 +97,9 @@ public class ProductServiceImpl implements ProductService {
     public double getPrice(Long productId) {
         Product product = productRepository.findById(productId).orElseThrow(
                 () -> new ResourceNotFoundException("Product does not exists with given id: " + productId));
-        return product.getPrice();
+//        return product.getPrice();
+        return 0;
     }
-
-    @Override
-    public List<ProductDto> searchProducts(String searchKey) {
-        List<Product> products = productRepository.findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(searchKey, searchKey);
-        return products.stream().map((product) -> ProductMapper.mapToProductDto(product))
-                .collect(Collectors.toList());
-    }
-
-    // Terminamos haciendo los filtros desde el front, pero guardo igual acá el codigo. Porque? Y pq no?
-    // Al final si terminamos usando xd.
-    @Override
-    public List<ProductDto> filterProducts(String filter, String field, String sortParam,String direction, int page, int pageSize) {
-        Pageable pageable;
-
-        if (Objects.equals(direction, "desc")){
-            pageable = PageRequest.of(page,pageSize, Sort.by(sortParam).descending());
-        } else {
-            pageable = PageRequest.of(page,pageSize, Sort.by(sortParam).ascending());
-        }
-        Page<Product> products;
-        if (Objects.equals(filter, "name")){
-            products = productRepository.findAllByNameContainingIgnoreCase(field, pageable);
-        } else if (Objects.equals(filter, "price")) {
-            products = productRepository.findAllByPrice(Double.parseDouble(field), pageable);
-        } else {
-            products = productRepository.findAll(pageable);
-        }
-        //products = productRepository.findAll(pageable);
-
-        return products.stream().map(ProductMapper::mapToProductDto)
-                .collect(Collectors.toList());
-    }
-
-//    @Override
-//    public List<ProductDto> productsSpecification() {
-//
-//        Specification<Product> specification = new Specification<>() {
-//            @Override
-//            public Predicate toPredicate(Root<Product> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-//                return criteriaBuilder.equal(root.get("name"),"Azul");
-//            }
-//        };
-//
-//        List<Product> all = productRepository.findAll(specification);
-//        return null;
-//    }
 
     @Override
     public List<ProductDto> productsSpecification(RequestDto requestDto) {
@@ -171,3 +124,6 @@ public class ProductServiceImpl implements ProductService {
                 .collect(Collectors.toList());
     }
 }
+
+//   |  |l
+//   || |_

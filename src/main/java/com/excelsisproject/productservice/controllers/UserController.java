@@ -100,6 +100,12 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
+    @GetMapping("/getMyUser")
+    public ResponseEntity<UserDto> getMyUser() {
+        return ResponseEntity.ok(userService.getUser());
+    }
+
+
     @PostMapping("/editUserStatus")
     public ResponseEntity<UserDto> editUserRoleOrStatus(@RequestBody UserDto userDto){
         UserDto user = userService.editUserRoleOrStatus(userDto);

@@ -13,6 +13,8 @@ public interface ProductService {
 
     List<ProductDto> getAllProducts(); // Obtener todos los productos
 
+    List<ProductDto> getProductsByClass(Long classId);
+
     ProductDto updateProduct(Long productId, ProductDto updatedProduct); // Modificar un producto
 
     void deleteProduct(Long productId); // Eliminar un producto
@@ -21,9 +23,6 @@ public interface ProductService {
 
     double getPrice(Long productId);
 
-    List<ProductDto> searchProducts(String searchKey);
-
-    List<ProductDto> filterProducts(String filter, String field, String sortParam, String direction, int page, int pageSize);
 
     List<ProductDto> productsSpecification(RequestDto requestDto);
 
