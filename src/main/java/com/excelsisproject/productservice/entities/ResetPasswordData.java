@@ -12,6 +12,7 @@ import lombok.Setter;
 public class ResetPasswordData {
 
     private String token;
+    private String oldPassword;
     private String password;
     private String repeatPassword;
 

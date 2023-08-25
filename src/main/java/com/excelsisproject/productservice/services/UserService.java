@@ -20,6 +20,7 @@ import com.excelsisproject.productservice.entities.ConfirmationToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -122,8 +123,27 @@ public class UserService {
         return UserMapper.toUserDto(updatedUserObj);
     }
 
+    public String changePassword(ResetPasswordData resetPasswordData){
+
+        User user = userRepository.findByLogin(getUser().getLogin()).orElseThrow(
+                () -> new AppException("El Usuario o Email no existe.", HttpStatus.NOT_FOUND));
+
+        if(securityConfig.passwordEncoder().matches(CharBuffer.wrap(resetPasswordData.getOldPassword()), user.getPassword())){
+            if (Objects.equals(resetPasswordData.getPassword(), resetPasswordData.getRepeatPassword())){
+                user.setPassword(securityConfig.passwordEncoder().encode(CharBuffer.wrap(resetPasswordData.getPassword())));
+                userRepository.save(user);
+                return "Contraseña cambiada correctamente.";
+            } else {
+                throw new AppException("Las contraseñas no coinciden", HttpStatus.BAD_REQUEST);
+            }
+        } else {
+            throw new AppException("Contraseña actual incorrecta", HttpStatus.BAD_REQUEST);
+        }
+    }
+
     public void  forgotPassword(String login){
-        User user = userRepository.findByLoginOrUserEmail(login,login).stream().findFirst().orElseThrow(() -> new AppException("El Usuario o Email no existe.", HttpStatus.NOT_FOUND));
+        User user = userRepository.findByLoginOrUserEmail(login,login).stream().findFirst().orElseThrow(
+                () -> new AppException("El Usuario o Email no existe.", HttpStatus.NOT_FOUND));
         ConfirmationTokenDto token = confirmationTokenService.createPasswordToken(user);
         confirmationTokenRepository.save(ConfirmationTokenMapper.mapToConfirmationToken(token));
         emailService.changePasswordEmail(user.getUserEmail(), token.getConfirmationToken());

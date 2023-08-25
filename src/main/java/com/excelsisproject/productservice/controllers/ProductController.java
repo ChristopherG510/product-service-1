@@ -46,11 +46,6 @@ public class ProductController {
     }
 
 
-    @PostMapping("/createProductClass")
-    public ResponseEntity<ProductClassDto> createProductClass(@RequestBody ProductClassDto productClassDto){
-        return ResponseEntity.ok(productClassService.createProductClass(productClassDto));
-    }
-
     @PostMapping("/addProduct")
     public ResponseEntity<ProductClassDto> addProduct(@RequestBody ProductDto productDto){
         return ResponseEntity.ok(productClassService.addProduct(productDto));
@@ -79,20 +74,6 @@ public class ProductController {
     public ResponseEntity<List<ProductDto>> getProductByClass(@PathVariable("classId") Long productClassId){
         List<ProductDto> products = productService.getProductsByClass(productClassId);
         return ResponseEntity.ok(products);
-    }
-
-    // Get la clase de producto
-    @GetMapping("/view/Product/{id}")
-    public ResponseEntity<ProductClassDto> getProductClassById(@PathVariable("id") Long productClassId){
-        ProductClassDto productClass = productClassService.getProductClassById(productClassId);
-        return ResponseEntity.ok(productClass);
-    }
-
-    // Get TODAS las CLASES de producto
-    @GetMapping("/view/allProducts")
-    public ResponseEntity<List<ProductClassDto>> getAllProductClasses(){
-        List<ProductClassDto> productClasses = productClassService.getAllProductClasses();
-        return ResponseEntity.ok(productClasses);
     }
 
     // Update product

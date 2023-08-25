@@ -105,11 +105,15 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-
     @PostMapping("/editUserStatus")
     public ResponseEntity<UserDto> editUserRoleOrStatus(@RequestBody UserDto userDto){
         UserDto user = userService.editUserRoleOrStatus(userDto);
         return ResponseEntity.ok(user);
+    }
+
+    @PostMapping("/changePassword")
+    public String changePassword(@RequestBody ResetPasswordData resetPasswordData){
+        return userService.changePassword(resetPasswordData);
     }
 
     @PostMapping("/changePasswordRequest")
