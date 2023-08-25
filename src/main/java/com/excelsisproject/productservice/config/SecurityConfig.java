@@ -63,7 +63,7 @@ public class SecurityConfig {
                 .sessionManagement(customizer -> customizer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers(HttpMethod.POST, "/login","/register", "/api/products/createNew", "/api/products/addToCart", "/editUserStatus",
-                                "/changePasswordRequest", "/resetPassword").permitAll()
+                                "/changePasswordRequest", "/resetPassword", "/createProductClass").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/products/view/all","/confirmar", "/api/products/view/productId/{id}","/api/orders/viewAll",
                                 "/api/orders/view/orderId/{id}", "/api/products/filter", "/newToken","/precioMiCarrito","/api/JReport/productPdf/export",
                                 "/api/products/filter", "/api/products/customFilter", "/api/products/filterProducts", "/api/JReport/orderPdf/export",
@@ -72,8 +72,5 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/api/orders/edit/orderId/{id}", "/editMyUser").permitAll()
                         .anyRequest().authenticated());
         return http.build();
-        // El build() es el encargado de retornar el http como SecurityFilterChain
-
-
     }
 }

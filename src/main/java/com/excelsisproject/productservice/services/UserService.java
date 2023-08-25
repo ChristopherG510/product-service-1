@@ -90,6 +90,16 @@ public class UserService {
         return user.getId();
     }
 
+    public UserDto getUser(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String loggedUser = authentication.getName();
+
+        User user = userRepository.findByLogin(loggedUser)
+                .orElseThrow(() -> new UsernameNotFoundException("El usuario" + loggedUser + "no existe"));
+        UserDto loggedUserDto = UserMapper.toUserDto(user);
+        return loggedUserDto;
+    }
+
     public List<UserDto> getAllUsers(){
         List<User> users = userRepository.findAll();
 

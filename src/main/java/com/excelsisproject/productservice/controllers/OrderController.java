@@ -4,9 +4,7 @@ import com.excelsisproject.productservice.dto.OrderDto;
 import com.excelsisproject.productservice.dto.RequestDto;
 import com.excelsisproject.productservice.services.OrderService;
 import lombok.AllArgsConstructor;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +23,6 @@ public class OrderController {
     public OrderDto orderProduct(@RequestBody OrderDto orderDto){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String loggedUser = authentication.getName();
-        System.out.println("Usuario Logueado: " + loggedUser);
         return orderService.orderProduct(orderDto, loggedUser);
     }
 

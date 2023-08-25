@@ -1,10 +1,12 @@
 package com.excelsisproject.productservice.controllers;
 
 import com.excelsisproject.productservice.dto.CartItemDto;
+import com.excelsisproject.productservice.dto.ProductClassDto;
 import com.excelsisproject.productservice.dto.ProductDto;
 import com.excelsisproject.productservice.dto.RequestDto;
 import com.excelsisproject.productservice.entities.ImageModel;
 import com.excelsisproject.productservice.services.CartService;
+import com.excelsisproject.productservice.services.ProductClassService;
 import com.excelsisproject.productservice.services.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
@@ -26,23 +28,36 @@ import java.util.Set;
 public class ProductController {
 
     private ProductService productService;
+    private ProductClassService productClassService;
     private CartService cartService;
 
     // Add Product
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping(value = {"/createNew"}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<ProductDto> createProduct(@RequestPart("product") ProductDto productDto, @RequestPart(value = "imageFile", required = false) MultipartFile[] file) {
+    public ResponseEntity<ProductClassDto> createProduct(@RequestPart("product") ProductDto productDto, @RequestPart(value = "imageFile", required = false) MultipartFile[] file) {
         try{
             Set<ImageModel> images = uploadImage(file);
             productDto.setImageFiles(images);
-        } catch(Exception e){
+        } catch(Exception e) {
             System.out.println(e.getMessage());
         }
-        ProductDto savedProduct = productService.createProduct(productDto);
+        ProductClassDto savedProduct = productClassService.addProduct(productDto);
         return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
     }
 
-    // Get product by id
+
+    @PostMapping("/createProductClass")
+    public ResponseEntity<ProductClassDto> createProductClass(@RequestBody ProductClassDto productClassDto){
+        return ResponseEntity.ok(productClassService.createProductClass(productClassDto));
+    }
+
+    @PostMapping("/addProduct")
+    public ResponseEntity<ProductClassDto> addProduct(@RequestBody ProductDto productDto){
+        return ResponseEntity.ok(productClassService.addProduct(productDto));
+    }
+
+    // Get variacion de producto
+    // El que vamos a usar para seleccionar el estock
     //@PreAuthorize("hasAuthority('CLIENTE') or hasAuthority('ADMIN')")
     @GetMapping("/view/productId/{id}")
     public ResponseEntity<ProductDto> getProductById(@PathVariable("id") Long productId){
@@ -50,12 +65,34 @@ public class ProductController {
         return ResponseEntity.ok(productDto);
     }
 
-    // Get all products
+    // Get todas las variaciones de los producto ESTE NO VAMO A USAR
     //@PreAuthorize("hasAuthority('CLIENTE') or hasAuthority('ADMIN')")
     @GetMapping("/view/all")
     public ResponseEntity<List<ProductDto>> getAllProducts(){
         List<ProductDto> products = productService.getAllProducts();
         return ResponseEntity.ok(products);
+    }
+
+    // Get las variaciones por clase de producto (mandar la id de la clase)
+    // El que vamos a usar para ver todas las variaciones de la clase de producto
+    @GetMapping("/view/productByClass/{classId}")
+    public ResponseEntity<List<ProductDto>> getProductByClass(@PathVariable("classId") Long productClassId){
+        List<ProductDto> products = productService.getProductsByClass(productClassId);
+        return ResponseEntity.ok(products);
+    }
+
+    // Get la clase de producto
+    @GetMapping("/view/Product/{id}")
+    public ResponseEntity<ProductClassDto> getProductClassById(@PathVariable("id") Long productClassId){
+        ProductClassDto productClass = productClassService.getProductClassById(productClassId);
+        return ResponseEntity.ok(productClass);
+    }
+
+    // Get TODAS las CLASES de producto
+    @GetMapping("/view/allProducts")
+    public ResponseEntity<List<ProductClassDto>> getAllProductClasses(){
+        List<ProductClassDto> productClasses = productClassService.getAllProductClasses();
+        return ResponseEntity.ok(productClasses);
     }
 
     // Update product
@@ -71,20 +108,6 @@ public class ProductController {
     @DeleteMapping("/delete/productId/{id}")
     public void deleteProduct(@PathVariable("id") Long productId){
         productService.deleteProduct(productId);
-    }
-
-    // search products
-    //@PreAuthorize("hasAuthority('CLIENTE') or hasAuthority('ADMIN')")
-    @GetMapping("/search")
-    public ResponseEntity<List<ProductDto>> searchProducts(@RequestParam String searchKey){
-        List<ProductDto> products = productService.searchProducts(searchKey);
-        return ResponseEntity.ok(products);
-    }
-
-    @GetMapping("/filter")
-    public ResponseEntity<List<ProductDto>> filterProducts(@RequestParam String filter, String field, String sortParam, String direction, int page, int pageSize){
-        List<ProductDto> products = productService.filterProducts(filter, field, sortParam, direction, page, pageSize);
-        return ResponseEntity.ok(products);
     }
 
     //@PreAuthorize("hasAuthority('CLIENTE') or hasAuthority('ADMIN')")

@@ -1,14 +1,16 @@
 package com.excelsisproject.productservice.services.implementation;
 
 import com.excelsisproject.productservice.dto.CartItemDto;
+import com.excelsisproject.productservice.dto.ProductClassDto;
 import com.excelsisproject.productservice.dto.ProductDto;
 import com.excelsisproject.productservice.entities.CartItem;
+import com.excelsisproject.productservice.entities.ProductClass;
 import com.excelsisproject.productservice.exceptions.AppException;
-import com.excelsisproject.productservice.exceptions.ResourceNotFoundException;
 import com.excelsisproject.productservice.mappers.CartItemMapper;
+import com.excelsisproject.productservice.mappers.ProductMapper;
 import com.excelsisproject.productservice.repositories.CartRepository;
-import com.excelsisproject.productservice.repositories.UserRepository;
 import com.excelsisproject.productservice.services.CartService;
+import com.excelsisproject.productservice.services.ProductClassService;
 import com.excelsisproject.productservice.services.ProductService;
 import com.excelsisproject.productservice.services.UserService;
 import lombok.AllArgsConstructor;
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
 public class CartServiceImpl implements CartService {
 
     private ProductService productService;
+    private ProductClassService productClassService;
     private UserService userService;
     private CartRepository cartRepository;
     private static final String ORDER_IN_CART ="In cart";
@@ -31,7 +34,9 @@ public class CartServiceImpl implements CartService {
     @Override
     public CartItemDto addToCart(CartItemDto cartItemDto) {
 
+
         ProductDto product = productService.getProductById(cartItemDto.getProductId());
+        ProductClassDto productClass = productClassService.getProductClassById(product.getProductClassId());
         List<CartItem> otherItemsInCart = cartRepository.findAllByUserIdAndStatus(userService.getLoggedUserId(), ORDER_IN_CART);
 
         // Iterar en la lista de items del carrito para verificar si el producto ya existe en el carrito
@@ -44,7 +49,7 @@ public class CartServiceImpl implements CartService {
                 }
                 // Agregar la cantidad del producto al cartItem
                 cartItem.setAmount(cartItem.getAmount() + cartItemDto.getAmount());
-                cartItem.setPrice(cartItem.getAmount() * product.getPrice());
+                cartItem.setPrice(cartItem.getAmount() * productClass.getPrice());
 
                 CartItem savedCartItem = cartRepository.save(cartItem);
                 return CartItemMapper.mapToCartItemDto(savedCartItem);
@@ -53,10 +58,10 @@ public class CartServiceImpl implements CartService {
 
         // Si el producto no esta en el carrito, se crea un nuevo cartItem
         if(product.getAmountInStock() >= cartItemDto.getAmount()) {
-            cartItemDto.setProductName(product.getName());
+            cartItemDto.setProductName(productClass.getName() + " " + product.getColor());
             cartItemDto.setStatus(ORDER_IN_CART);
             cartItemDto.setUserId(userService.getLoggedUserId());
-            cartItemDto.setPrice(cartItemDto.getAmount() * product.getPrice());
+            cartItemDto.setPrice(cartItemDto.getAmount() * productClass.getPrice());
 
             CartItem cartItem = CartItemMapper.mapToCartItem(cartItemDto);
             CartItem savedCartItem = cartRepository.save(cartItem);
@@ -66,7 +71,6 @@ public class CartServiceImpl implements CartService {
             // Si no hay suficientes productos en stock, se tira excepcion
             throw new AppException("No existen suficientes productos en stock", HttpStatus.BAD_REQUEST);
         }
-
     }
 
     @Override
@@ -123,14 +127,15 @@ public class CartServiceImpl implements CartService {
 
         if(cartItem.getUserId() == userService.getLoggedUserId()) { // Si la id del usuario no coincide con la del item de carrito, no puede editarlo
             ProductDto product = productService.getProductById(cartItem.getProductId());
+            ProductClassDto productClass = productClassService.getProductClassById(product.getProductClassId());
             cartItem.setAmount(updatedCartItem.getAmount());
-            cartItem.setPrice(updatedCartItem.getAmount() * product.getPrice());
+            cartItem.setPrice(updatedCartItem.getAmount() * productClass.getPrice());
 
             CartItem updatedCartItemObj = cartRepository.save(cartItem);
 
             return CartItemMapper.mapToCartItemDto(updatedCartItemObj);
         } else {
-            throw  new AppException("Item does not exist cart of user", HttpStatus.NOT_FOUND);
+            throw  new AppException("ProductClass does not exist cart of user", HttpStatus.NOT_FOUND);
         }
     }
 
