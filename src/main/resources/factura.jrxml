@@ -17,9 +17,9 @@
 	cart_items.amount,
 	products.price
 FROM products
-	INNER JOIN cart_items ON
+	INNER JOIN cart_items ON 
 	 cart_items.product_id = products.id
-WHERE cart_items.order_id = $P{orderId}]]>
+WHERE cart_items.order_id = $P{orderId} ]]>
 	</queryString>
 	<field name="price" class="java.lang.Double">
 		<property name="com.jaspersoft.studio.field.name" value="price"/>
@@ -124,7 +124,7 @@ www.empresa.asdf]]></text>
 					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<imageExpression><![CDATA["C:/Users/cgaetan/JaspersoftWorkspace/logo2.PNG"]]></imageExpression>
+				<imageExpression><![CDATA["C:/Users/jjrios/JaspersoftWorkspace/logo2.jpeg"]]></imageExpression>
 			</image>
 			<staticText>
 				<reportElement x="380" y="0" width="170" height="30" uuid="c194be2f-791a-4026-b7c5-1fd3fda71f42"/>
@@ -203,7 +203,7 @@ www.empresa.asdf]]></text>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<paragraph leftIndent="2"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{firstName} + " " + $P{lastName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{firstName} + " " + $P{lastName} ]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy">
 				<reportElement x="100" y="0" width="450" height="20" uuid="11d98f48-f591-4907-baea-5a3246d45a0e">

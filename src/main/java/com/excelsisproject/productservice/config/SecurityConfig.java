@@ -63,13 +63,13 @@ public class SecurityConfig {
                 .sessionManagement(customizer -> customizer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers(HttpMethod.POST, "/login","/register", "/api/products/createNew", "/api/products/addToCart", "/editUserStatus",
-                                "/changePasswordRequest","/api/JReport/facturar", "/resetPassword").permitAll()
+                                "/changePasswordRequest", "/resetPassword").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/products/view/all","/confirmar", "/api/products/view/productId/{id}","/api/orders/viewAll",
                                 "/api/orders/view/orderId/{id}", "/api/products/filter", "/newToken","/precioMiCarrito","/api/JReport/productPdf/export",
                                 "/api/products/filter", "/api/products/customFilter", "/api/products/filterProducts", "/api/JReport/orderPdf/export",
-                                "/changePassword", "/newPasswordToken").permitAll()
+                                "/changePassword", "/newPasswordToken","/api/JReport/facturar").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/deleteUser", "/api/products/delete/productId/{id}").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/api/orders/edit/orderId/{id}").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/orders/edit/orderId/{id}", "/editMyUser").permitAll()
                         .anyRequest().authenticated());
         return http.build();
         // El build() es el encargado de retornar el http como SecurityFilterChain

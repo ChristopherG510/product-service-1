@@ -94,7 +94,12 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    @GetMapping("/editMyUser")
+    @GetMapping("/getMyUser")
+    public ResponseEntity<UserDto> getMyUser() {
+        return ResponseEntity.ok(userService.getUser());
+    }
+
+    @PutMapping("/editMyUser")
     public ResponseEntity<UserDto> editMyUser(@RequestBody UserDto userDto) {
         UserDto user = userService.editMyUser(userDto);
         return ResponseEntity.ok(user);

@@ -66,7 +66,7 @@ public class JReportController {
 
     }
 
-    @PostMapping("/facturar")
+    @GetMapping("/facturar")
     public void facturar(HttpServletResponse response, @RequestParam Long orderId) throws IOException, JRException, SQLException {
         OrderDto orderDto = orderService.getOrderById(orderId);
 

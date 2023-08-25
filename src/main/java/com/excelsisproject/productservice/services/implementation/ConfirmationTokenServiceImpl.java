@@ -117,7 +117,7 @@ public class ConfirmationTokenServiceImpl implements ConfirmationTokenService{
             Set<Roles> roles = user.getRoles();
             // Cambiar el rol PENDIENTE a CLIENTE
             for (Roles role : roles) {
-                role.setName("ADMIN");
+                role.setName("CLIENTE");
             }
             user.setRoles(roles);
 
