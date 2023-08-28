@@ -16,7 +16,6 @@ import java.util.Set;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    // Se le puede agregar @Column(name ="***") para que en la db se vea diferente
     private Long id;
     private String color;
     private double amountInStock;
@@ -31,5 +30,4 @@ public class Product {
     )
     private Set<ImageModel> imageFiles;
     private Long productClassId;
-
 }

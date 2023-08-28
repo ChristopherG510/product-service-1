@@ -39,7 +39,8 @@ public class ProductMapper {
                 productClass.getDescription(),
                 productClass.getCategory(),
                 productClass.getProducts(),
-                productClass.getPrice()
+                productClass.getPrice(),
+                productClass.getImageFiles()
         );
     }
 
@@ -50,7 +51,8 @@ public class ProductMapper {
                 productClassDto.getDescription(),
                 productClassDto.getCategory(),
                 productClassDto.getProducts(),
-                productClassDto.getPrice()
+                productClassDto.getPrice(),
+                productClassDto.getImageFiles()
         );
     }
 }

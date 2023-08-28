@@ -3,6 +3,7 @@ package com.excelsisproject.productservice.services;
 import com.excelsisproject.productservice.dto.CartItemDto;
 import com.excelsisproject.productservice.dto.ProductDto;
 import com.excelsisproject.productservice.dto.RequestDto;
+import com.excelsisproject.productservice.entities.ImageModel;
 
 import java.util.List;
 
@@ -20,9 +21,6 @@ public interface ProductService {
     void deleteProduct(Long productId); // Eliminar un producto
 
     ProductDto updateStock(Long productId, double amountOrdered);
-
-    double getPrice(Long productId);
-
 
     List<ProductDto> productsSpecification(RequestDto requestDto);
 

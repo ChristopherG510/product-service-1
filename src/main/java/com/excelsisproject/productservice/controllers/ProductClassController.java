@@ -1,10 +1,7 @@
 package com.excelsisproject.productservice.controllers;
 
 import com.excelsisproject.productservice.dto.ProductClassDto;
-import com.excelsisproject.productservice.dto.ProductDto;
-import com.excelsisproject.productservice.services.CartService;
 import com.excelsisproject.productservice.services.ProductClassService;
-import com.excelsisproject.productservice.services.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,9 +13,7 @@ import java.util.List;
 @RequestMapping("/api/products")
 public class ProductClassController {
 
-    private ProductService productService;
     private ProductClassService productClassService;
-    private CartService cartService;
 
     @PostMapping("/createProductClass")
     public ResponseEntity<ProductClassDto> createProductClass(@RequestBody ProductClassDto productClassDto){

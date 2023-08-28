@@ -3,6 +3,7 @@ package com.excelsisproject.productservice.services.implementation;
 import com.excelsisproject.productservice.dto.PageRequestDto;
 import com.excelsisproject.productservice.dto.ProductDto;
 import com.excelsisproject.productservice.dto.RequestDto;
+import com.excelsisproject.productservice.entities.ImageModel;
 import com.excelsisproject.productservice.entities.Product;
 import com.excelsisproject.productservice.exceptions.ResourceNotFoundException;
 import com.excelsisproject.productservice.mappers.ProductMapper;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -91,14 +93,6 @@ public class ProductServiceImpl implements ProductService {
         Product updatedProductObj = productRepository.save(product);
 
         return ProductMapper.mapToProductDto(updatedProductObj);
-    }
-
-    @Override
-    public double getPrice(Long productId) {
-        Product product = productRepository.findById(productId).orElseThrow(
-                () -> new ResourceNotFoundException("Product does not exists with given id: " + productId));
-//        return product.getPrice();
-        return 0;
     }
 
     @Override

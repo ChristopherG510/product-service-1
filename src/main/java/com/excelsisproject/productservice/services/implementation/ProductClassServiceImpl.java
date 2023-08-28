@@ -4,6 +4,7 @@ import com.excelsisproject.productservice.dto.PageRequestDto;
 import com.excelsisproject.productservice.dto.ProductClassDto;
 import com.excelsisproject.productservice.dto.ProductDto;
 import com.excelsisproject.productservice.dto.RequestDto;
+import com.excelsisproject.productservice.entities.ImageModel;
 import com.excelsisproject.productservice.entities.Product;
 import com.excelsisproject.productservice.entities.ProductClass;
 import com.excelsisproject.productservice.exceptions.AppException;
@@ -46,8 +47,11 @@ public class ProductClassServiceImpl implements ProductClassService {
 
         Product product = ProductMapper.mapToProduct(productDto);
         productClass.getProducts().add(product);
-        ProductClass savedProductClass = productClassRepository.save(productClass);
 
+        for (ImageModel imageModel : product.getImageFiles()){
+            productClass.getImageFiles().add(imageModel);
+        }
+        ProductClass savedProductClass = productClassRepository.save(productClass);
         return ProductMapper.mapToProductClassDto(savedProductClass);
     }
 
