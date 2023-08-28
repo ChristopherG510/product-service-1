@@ -63,13 +63,14 @@ public class SecurityConfig {
                 .sessionManagement(customizer -> customizer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers(HttpMethod.POST, "/login","/register", "/api/products/createNew", "/api/products/addToCart", "/editUserStatus",
-                                "/changePasswordRequest", "/resetPassword", "/createProductClass", "/changePassword").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/products/view/all","/confirmar", "/api/products/view/productId/{id}","/api/orders/viewAll",
+                                "/changePasswordRequest", "/resetPassword", "/api/products/createProductClass", "/changePassword").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/products/view/allProducts","/confirmar", "/api/products/view/productId/{id}","/api/orders/viewAll",
                                 "/api/orders/view/orderId/{id}", "/api/products/filter", "/newToken","/precioMiCarrito","/api/JReport/productPdf/export",
                                 "/api/products/filter", "/api/products/customFilter", "/api/products/filterProducts", "/api/JReport/orderPdf/export",
-                                "/changePassword", "/newPasswordToken","/api/JReport/facturar").permitAll()
+                                "/changePassword", "/newPasswordToken","/api/JReport/facturar","/view/Product/{id}", "/api/products/view/allProducts",
+                                "/api/products/view/all").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/deleteUser", "/api/products/delete/productId/{id}").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/api/orders/edit/orderId/{id}", "/editMyUser").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/orders/edit/orderId/{id}", "/editMyUser","/api/products/edit/productClassId/{id}").permitAll()
                         .anyRequest().authenticated());
         return http.build();
     }

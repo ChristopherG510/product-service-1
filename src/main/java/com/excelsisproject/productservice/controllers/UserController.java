@@ -127,10 +127,10 @@ public class UserController {
     }
 
     @GetMapping("/newPasswordToken")
-    public String newResetPasswordToken(@RequestParam("token") String token){
+    public ResponseEntity<String> newResetPasswordToken(@RequestParam("token") String token){
         User user = confirmationTokenRepository.findByConfirmationToken(token)
                 .orElseThrow(() -> new AppException("Token not found", HttpStatus.NOT_FOUND)).getUser();
         confirmationTokenService.createPasswordToken(user);
-        return "";
+        return ResponseEntity.ok("Password reset sent.");
     }
 }
