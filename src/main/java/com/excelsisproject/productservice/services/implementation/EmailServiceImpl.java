@@ -21,8 +21,11 @@ public class EmailServiceImpl implements EmailService {
     @Value("${spring.mail.username}")
     private String fromEmail;
 
-    @Value("${mail.urlFront}")
-    private String urlFront;
+    @Value("${mail.urlFrontPassword}")
+    private String urlFrontPassword;
+
+    @Value("${mail.urlFrontVerify}")
+    private String urlFrontVerify;
 
     private final JavaMailSender emailSender;
     private final TemplateEngine templateEngine;
@@ -35,7 +38,7 @@ public class EmailServiceImpl implements EmailService {
 
         try {
             Context context = new Context();
-            context.setVariable("url", urlFront + token);
+            context.setVariable("url", urlFrontPassword + token);
             String text = templateEngine.process("change_password_email", context);
 
             MimeMessage message = getMimeMessage();
@@ -75,7 +78,7 @@ public class EmailServiceImpl implements EmailService {
     public void registrationConfirmationEmail(String to, String token) {
         try {
             Context context = new Context();
-            context.setVariable("url", VERIFICATION_URL + token);
+            context.setVariable("url", urlFrontVerify + token);
             String text = templateEngine.process("account_verification_email", context);
 
             MimeMessage message = getMimeMessage();

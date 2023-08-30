@@ -126,7 +126,7 @@ public class ConfirmationTokenServiceImpl implements ConfirmationTokenService{
             confirmationTokenRepository.save(confirmationToken);
             userRepository.save(user);
 
-            return "account_verified";
+            return TOKEN_VERIFIED;
 
         } else if (Objects.equals(confirmationToken.getStatus(), PSW_RESET_SENT)){
             confirmationToken.setStatus(TOKEN_VERIFIED);
