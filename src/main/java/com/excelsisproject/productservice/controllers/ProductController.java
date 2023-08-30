@@ -34,13 +34,14 @@ public class ProductController {
     // Add Product
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping(value = {"/createNew"}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<ProductClassDto> createProduct(@RequestPart("product") ProductDto productDto, @RequestPart(value = "imageFile", required = false) MultipartFile[] file) {
+    public ResponseEntity<ProductClassDto> createProduct(@RequestParam("productClassId") Long id, @RequestPart("product") ProductDto productDto, @RequestPart(value = "imageFile", required = false) MultipartFile[] file) {
         try{
             Set<ImageModel> images = uploadImage(file);
             productDto.setImageFiles(images);
         } catch(Exception e) {
             System.out.println(e.getMessage());
         }
+        productDto.setProductClassId(id);
         ProductClassDto savedProduct = productClassService.addProduct(productDto);
         return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
     }
@@ -79,7 +80,13 @@ public class ProductController {
     // Update product
     //@PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/edit/productId/{id}")
-    public ResponseEntity<ProductDto> updateProduct(@PathVariable("id") Long productId, @RequestBody ProductDto updatedProduct){
+    public ResponseEntity<ProductDto> updateProduct(@PathVariable("id") Long productId, @RequestPart("updatedProduct") ProductDto updatedProduct, @RequestPart(value = "imageFile", required = false) MultipartFile[] file){
+        try{
+            Set<ImageModel> images = uploadImage(file);
+            updatedProduct.setImageFiles(images);
+        } catch(Exception e) {
+            System.out.println(e.getMessage());
+        }
         ProductDto productDto = productService.updateProduct(productId, updatedProduct);
         return ResponseEntity.ok(productDto);
     }

@@ -60,7 +60,8 @@ public class ConfirmationTokenServiceImpl implements ConfirmationTokenService{
         confirmationToken.setTimeConfirmed(null);
         saveConfirmationToken(confirmationToken);
 
-        emailService.registrationConfirmationEmail(user.getFirstName(), user.getUserEmail(), confirmationToken.getConfirmationToken());
+        //emailService.registrationConfirmationEmail(user.getFirstName(), user.getUserEmail(), confirmationToken.getConfirmationToken());
+        emailService.registrationConfirmationEmail(user.getUserEmail(), confirmationToken.getConfirmationToken());
 
         return "Nuevo token generado";
     }
@@ -125,7 +126,7 @@ public class ConfirmationTokenServiceImpl implements ConfirmationTokenService{
             confirmationTokenRepository.save(confirmationToken);
             userRepository.save(user);
 
-            return "Usuario " + user.getLogin() + " Registrado";
+            return "account_verified";
 
         } else if (Objects.equals(confirmationToken.getStatus(), PSW_RESET_SENT)){
             confirmationToken.setStatus(TOKEN_VERIFIED);
@@ -153,6 +154,4 @@ public class ConfirmationTokenServiceImpl implements ConfirmationTokenService{
                 .orElseThrow(() -> new AppException("Token no valido", HttpStatus.BAD_REQUEST));
         confirmationToken.setTimeConfirmed(LocalDateTime.now());
     }
-
-
 }
