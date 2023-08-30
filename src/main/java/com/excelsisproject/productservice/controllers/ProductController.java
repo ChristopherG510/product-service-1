@@ -33,8 +33,8 @@ public class ProductController {
 
     // Add Product
     @PreAuthorize("hasAuthority('ADMIN')")
-    @PostMapping(value = {"/createNew"}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<ProductClassDto> createProduct(@RequestParam("productClassId") Long id, @RequestPart("product") ProductDto productDto, @RequestPart(value = "imageFile", required = false) MultipartFile[] file) {
+    @PostMapping(value = {"/createNew/{productClassId}"}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<ProductClassDto> createProduct(@PathVariable("productClassId") Long id, @RequestPart("product") ProductDto productDto, @RequestPart(value = "imageFile", required = false) MultipartFile[] file) {
         try{
             Set<ImageModel> images = uploadImage(file);
             productDto.setImageFiles(images);
