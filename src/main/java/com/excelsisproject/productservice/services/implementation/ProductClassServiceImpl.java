@@ -77,6 +77,8 @@ public class ProductClassServiceImpl implements ProductClassService {
                 ()-> new ResourceNotFoundException("Product class does not exist with given id: " + productClassId));
 
         productClass.setDescription(updatedProductClass.getDescription());
+        productClass.setName(updatedProductClass.getName());
+        productClass.setPrice(updatedProductClass.getPrice());
 
         ProductClass updatedProductClassObj = productClassRepository.save(productClass);
 
