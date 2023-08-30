@@ -49,7 +49,6 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductDto> getAllProducts() {
         List<Product> products = productRepository.findAll();
-
         return products.stream().map(ProductMapper::mapToProductDto)
                 .collect(Collectors.toList());
     }
@@ -65,9 +64,9 @@ public class ProductServiceImpl implements ProductService {
     public ProductDto updateProduct(Long productId, ProductDto updatedProduct) {
         Product product = productRepository.findById(productId).orElseThrow(
                 ()-> new ResourceNotFoundException("Product does not exist with given id: " + productId));
-
         product.setColor(updatedProduct.getColor());
         product.setAmountInStock(updatedProduct.getAmountInStock());
+        product.setImageFiles(updatedProduct.getImageFiles());
 
         Product updatedProductObj = productRepository.save(product);
 

@@ -1,7 +1,5 @@
 package com.excelsisproject.productservice.services;
 
-
-
 import com.excelsisproject.productservice.config.SecurityConfig;
 import com.excelsisproject.productservice.dto.ConfirmationTokenDto;
 import com.excelsisproject.productservice.dto.CredentialsDto;
@@ -20,7 +18,6 @@ import com.excelsisproject.productservice.entities.ConfirmationToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -30,7 +27,6 @@ import java.nio.CharBuffer;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
-
 
 @Service
 @RequiredArgsConstructor
@@ -76,7 +72,8 @@ public class UserService {
         ConfirmationTokenDto confirmationTokenDto = confirmationTokenService.createToken(savedUser);
         confirmationTokenRepository.save(ConfirmationTokenMapper.mapToConfirmationToken(confirmationTokenDto));
 
-        emailService.registrationConfirmationEmail(user.getFirstName(), user.getUserEmail(), confirmationTokenDto.getConfirmationToken());
+        //emailService.registrationConfirmationEmail(user.getFirstName(), user.getUserEmail(), confirmationTokenDto.getConfirmationToken());
+        emailService.registrationConfirmationEmail(user.getUserEmail(), confirmationTokenDto.getConfirmationToken());
 
         return UserMapper.toUserDto(savedUser);
     }
@@ -111,6 +108,12 @@ public class UserService {
     public UserDto editMyUser(UserDto updatedUser){
         User user = userRepository.findById(getLoggedUserId()).stream().findFirst().orElseThrow(
                 () -> new ResourceNotFoundException("User does not exists with given id: " + getLoggedUserId()));
+
+        Optional<User> optionalUser = userRepository.findByLoginOrUserEmail(updatedUser.getLogin(), updatedUser.getUserEmail());
+
+        if (optionalUser.isPresent()){
+            throw new AppException("El Usuario o Email ya esta registrado", HttpStatus.BAD_REQUEST);
+        }
 
         user.setFirstName(updatedUser.getFirstName());
         user.setLastName(updatedUser.getLastName());
