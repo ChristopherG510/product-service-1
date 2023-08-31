@@ -107,7 +107,7 @@ public class UserService {
 
     public UserDto editMyUser(UserDto updatedUser){
         User user = userRepository.findById(getLoggedUserId()).stream().findFirst().orElseThrow(
-                () -> new ResourceNotFoundException("User does not exists with given id: " + getLoggedUserId()));
+                () -> new ResourceNotFoundException("Usuario no existe con id: " + getLoggedUserId()));
 
         Optional<User> optionalUser = userRepository.findByLoginOrUserEmail(updatedUser.getLogin(), updatedUser.getUserEmail());
 
@@ -119,13 +119,31 @@ public class UserService {
 
         user.setFirstName(updatedUser.getFirstName());
         user.setLastName(updatedUser.getLastName());
-        user.setUserEmail(updatedUser.getUserEmail());
         user.setUserPhoneNumber(updatedUser.getUserPhoneNumber());
         user.setLogin(updatedUser.getLogin());
         user.setRuc(updatedUser.getRuc());
         User updatedUserObj = userRepository.save(user);
 
         return UserMapper.toUserDto(updatedUserObj);
+    }
+
+    public void requestChangeEmail(String newEmail){
+        User user = userRepository.findById(getLoggedUserId()).orElseThrow(
+                () -> new ResourceNotFoundException("Usuario no existe con id: " + getLoggedUserId()));
+        ConfirmationTokenDto token = confirmationTokenService.createEmailToken(user, newEmail);
+        confirmationTokenRepository.save(ConfirmationTokenMapper.mapToConfirmationToken(token));
+        emailService.changeEmailRequest(newEmail, token.getConfirmationToken());
+    }
+
+    public String changeEmail(String token){
+        ConfirmationToken confirmationToken = confirmationTokenService.getToken(token);
+        User user = confirmationToken.getUser();
+        user.setUserEmail(confirmationToken.getTemp());
+        confirmationTokenService.setConfirmedAt(token);
+
+        userRepository.save(user);
+
+        return "Correo cambiado exitosamente";
     }
 
     public String changePassword(ResetPasswordData resetPasswordData){
@@ -172,7 +190,7 @@ public class UserService {
 
     public UserDto editUserRoleOrStatus(UserDto updatedUser){
         User user = userRepository.findById(updatedUser.getId()).stream().findFirst().orElseThrow(
-                () -> new ResourceNotFoundException("User does not exists with given id: " + updatedUser.getId()));
+                () -> new ResourceNotFoundException("Usuario no existe con id: " + updatedUser.getId()));
         // Roles roleObject = updatedUser.getRoles().stream().findFirst().get();
 
         Roles roleObject = user.getRoles().iterator().next();

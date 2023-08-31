@@ -28,9 +28,10 @@ public class ConfirmationTokenServiceImpl implements ConfirmationTokenService{
     private static final String TOKEN_EXPIRED = "EXPIRED";
     private static final String TOKEN_VERIFIED = "VERIFIED";
     private static final String TOKEN_SENT = "SENT";
-
     private static final String PSW_RESET_SENT = "PASSWORD RESET SENT";
     private static final String PSW_RESET_EXPIRED = "PASSWORD RESET EXPIRED";
+    private static final String EMAIL_CHANGE_SENT = "EMAIL CHANGE SENT";
+    private static final String EMAIL_CHANGE_EXPIRED = "EMAIL CHANGE EXPIRED";
     private static final String TOKEN_INVALID = "INVALID";
 
     @Override
@@ -130,6 +131,8 @@ public class ConfirmationTokenServiceImpl implements ConfirmationTokenService{
 
         } else if (Objects.equals(confirmationToken.getStatus(), PSW_RESET_SENT)){
             confirmationToken.setStatus(TOKEN_VERIFIED);
+            confirmationToken.setTimeConfirmed(LocalDateTime.now());
+            confirmationTokenRepository.save(confirmationToken);
 
             return TOKEN_VERIFIED;
         } else {
@@ -143,6 +146,19 @@ public class ConfirmationTokenServiceImpl implements ConfirmationTokenService{
     }
 
     @Override
+    public ConfirmationTokenDto createEmailToken(User user, String newEmail) {
+        ConfirmationTokenDto confirmationTokenDto = new ConfirmationTokenDto();
+        confirmationTokenDto.setConfirmationToken(UUID.randomUUID().toString());
+        confirmationTokenDto.setTimeCreated(LocalDateTime.now());
+        confirmationTokenDto.setTimeExpired(LocalDateTime.now().plusMinutes(15));
+        confirmationTokenDto.setTimeConfirmed(null);
+        confirmationTokenDto.setUser(user);
+        confirmationTokenDto.setStatus(EMAIL_CHANGE_SENT);
+        confirmationTokenDto.setTemp(newEmail);
+        return confirmationTokenDto;
+    }
+
+    @Override
     public ConfirmationToken getToken(String token) {
         return confirmationTokenRepository.findByConfirmationToken(token)
                 .orElseThrow(() -> new AppException("Token no valido", HttpStatus.BAD_REQUEST));
@@ -153,5 +169,8 @@ public class ConfirmationTokenServiceImpl implements ConfirmationTokenService{
         ConfirmationToken confirmationToken = confirmationTokenRepository.findByConfirmationToken(token)
                 .orElseThrow(() -> new AppException("Token no valido", HttpStatus.BAD_REQUEST));
         confirmationToken.setTimeConfirmed(LocalDateTime.now());
+        confirmationToken.setTemp(null);
+        confirmationToken.setStatus(TOKEN_VERIFIED);
+        confirmationTokenRepository.save(confirmationToken);
     }
 }

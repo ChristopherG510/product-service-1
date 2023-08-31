@@ -27,6 +27,10 @@ public class EmailServiceImpl implements EmailService {
     @Value("${mail.urlFrontVerify}")
     private String urlFrontVerify;
 
+    @Value("${mail.urlFrontProfile}")
+    private String urlProfile;
+
+
     private final JavaMailSender emailSender;
     private final TemplateEngine templateEngine;
 
@@ -85,6 +89,27 @@ public class EmailServiceImpl implements EmailService {
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
             helper.setPriority(1);
             helper.setSubject("Nueva Autenticación de Usuario");
+            helper.setFrom(fromEmail);
+            helper.setTo(to);
+            helper.setText(text, true);
+            emailSender.send(message);
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    @Override
+    public void changeEmailRequest(String to, String token) {
+        try {
+            Context context = new Context();
+            context.setVariable("url", urlProfile + token);
+            String text = templateEngine.process("email_change_request", context);
+
+            MimeMessage message = getMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            helper.setPriority(1);
+            helper.setSubject("Solicitud de cambio de correo electronico");
             helper.setFrom(fromEmail);
             helper.setTo(to);
             helper.setText(text, true);

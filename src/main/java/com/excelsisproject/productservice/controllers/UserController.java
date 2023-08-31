@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 // Controlador para el registro y login de usuarios
 
@@ -132,5 +133,16 @@ public class UserController {
                 .orElseThrow(() -> new AppException("Token not found", HttpStatus.NOT_FOUND)).getUser();
         confirmationTokenService.createPasswordToken(user);
         return ResponseEntity.ok("Password reset sent.");
+    }
+    @PostMapping("/changeEmailRequest")
+    public ResponseEntity<String> changeEmailRequest(@RequestBody UserDto userDto){
+        userService.requestChangeEmail(userDto.getUserEmail());
+
+        return ResponseEntity.ok("Change email request sent.");
+    }
+
+    @GetMapping("/changeEmail")
+    public ResponseEntity<String> changeEmail(@RequestParam("token") String token){
+        return ResponseEntity.ok(userService.changeEmail(token));
     }
 }

@@ -18,6 +18,8 @@ public interface ConfirmationTokenService {
 
     void saveConfirmationToken(ConfirmationToken token);
 
+    ConfirmationTokenDto createEmailToken(User user, String newEmail);
+
     ConfirmationToken getToken(String token);
 
     void setConfirmedAt(String token);

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .header {
+      background-color: #f0f0f0;
+      padding: 20px;
+      text-align: center;
+    }
+    .content {
+      background-color: #ffffff;
+      padding: 20px;
+      text-align: center;
+    }
+    .button {
+      display: inline-block;
+      background-color: #0078d4;
+      color: #ffffff;
+      padding: 10px 20px;
+      text-decoration: none;
+    }
+    .footer {
+      background-color: #f0f0f0;
+      padding: 20px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>Cambio de correo Electrónico</h1>
+  </div>
+  <div class="content">
+    <p>Haga click abajo para cambiar su dirección correo electrónico a este.</p>
+    <a th:href="${url}" class="button">Cambiar Email</a>
+    <p>Si no solicitaste un cambio de correo, puedes ignorar este correo.</p>
+  </div>
+  <div class="footer">
+
+  </div>
+</div>
+</body>
+</html>
