@@ -112,7 +112,9 @@ public class UserService {
         Optional<User> optionalUser = userRepository.findByLoginOrUserEmail(updatedUser.getLogin(), updatedUser.getUserEmail());
 
         if (optionalUser.isPresent()){
-            throw new AppException("El Usuario o Email ya esta registrado", HttpStatus.BAD_REQUEST);
+            if(!(Objects.equals(updatedUser.getLogin(), optionalUser.get().getLogin()) || Objects.equals(updatedUser.getUserEmail(), optionalUser.get().getUserEmail()))) {
+                throw new AppException("El Usuario o Email ya esta registrado", HttpStatus.BAD_REQUEST);
+            }
         }
 
         user.setFirstName(updatedUser.getFirstName());
