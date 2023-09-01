@@ -130,6 +130,12 @@ public class UserService {
     public void requestChangeEmail(String newEmail){
         User user = userRepository.findById(getLoggedUserId()).orElseThrow(
                 () -> new ResourceNotFoundException("Usuario no existe con id: " + getLoggedUserId()));
+
+        Optional<User> optionalUser = userRepository.findByLoginOrUserEmail(newEmail, newEmail);
+        if (optionalUser.isPresent()){
+            throw new AppException("El Email ya se encuentra registrado", HttpStatus.BAD_REQUEST);
+        }
+
         ConfirmationTokenDto token = confirmationTokenService.createEmailToken(user, newEmail);
         confirmationTokenRepository.save(ConfirmationTokenMapper.mapToConfirmationToken(token));
         emailService.changeEmailRequest(newEmail, token.getConfirmationToken());
