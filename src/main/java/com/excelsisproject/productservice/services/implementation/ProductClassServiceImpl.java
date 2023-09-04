@@ -43,7 +43,7 @@ public class ProductClassServiceImpl implements ProductClassService {
     @Override
     public ProductClassDto addProduct(ProductDto productDto) {
         ProductClass productClass  = productClassRepository.findById(productDto.getProductClassId()).orElseThrow(
-                () -> new ResourceNotFoundException("Product class does not exists with given id: " + productDto.getId()));
+                () -> new ResourceNotFoundException("Clase de Producto no existe con id: " + productDto.getId()));
 
         Product product = ProductMapper.mapToProduct(productDto);
         productClass.getProducts().add(product);
@@ -58,7 +58,7 @@ public class ProductClassServiceImpl implements ProductClassService {
     @Override
     public ProductClassDto getProductClassById(Long productClassId){
         ProductClass productClass = productClassRepository.findById(productClassId).orElseThrow(
-                () -> new ResourceNotFoundException("Product class does not exists with given id: " + productClassId));
+                () -> new ResourceNotFoundException("Clase de Producto no existe con id: " + productClassId));
 
         return ProductMapper.mapToProductClassDto(productClass);
     }
@@ -74,7 +74,7 @@ public class ProductClassServiceImpl implements ProductClassService {
     @Override
     public ProductClassDto updateProductClass(Long productClassId, ProductClassDto updatedProductClass) {
         ProductClass productClass = productClassRepository.findById(productClassId).orElseThrow(
-                ()-> new ResourceNotFoundException("Product class does not exist with given id: " + productClassId));
+                ()-> new ResourceNotFoundException("Clase de Producto no existe con id: " + productClassId));
 
         productClass.setDescription(updatedProductClass.getDescription());
         productClass.setName(updatedProductClass.getName());
@@ -89,7 +89,7 @@ public class ProductClassServiceImpl implements ProductClassService {
     @Override
     public void deleteProductClass(Long productClassId) {
         ProductClass productClass = productClassRepository.findById(productClassId).orElseThrow(
-                ()-> new ResourceNotFoundException("Product class does not exist with given id: " + productClassId));
+                ()-> new ResourceNotFoundException("Clase de Producto no existe con id: " + productClassId));
 
         productClassRepository.deleteById(productClassId);
     }

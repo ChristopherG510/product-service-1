@@ -52,7 +52,7 @@ public class CartController {
 
         if (cartItem != null){
             cartService.removeFromCart(cartItemId);
-            return "item with id: " + cartItemId +" deleted from cart";
+            return "Item con id: " + cartItemId +" eliminado del carrito";
         } else {
             throw new ResourceNotFoundException("item con id: " + cartItemId + "no existe en el carrito");
         }

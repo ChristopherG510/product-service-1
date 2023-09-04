@@ -91,7 +91,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto getOrderById(Long orderId) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new ResourceNotFoundException("Order does not exist by given id: " + orderId));
+                .orElseThrow(() -> new ResourceNotFoundException("Orden no existe con id: " + orderId));
         return OrderMapper.mapToOrderDto(order);
     }
 
@@ -111,7 +111,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto updateOrder(Long orderId, OrderDto updatedOrder) {
         Order order = orderRepository.findById(orderId).orElseThrow(
-                ()-> new ResourceNotFoundException("order does not exist with given id: " + orderId));
+                ()-> new ResourceNotFoundException("Orden no existe con id: " + orderId));
 
         order.setOrderStatus(updatedOrder.getOrderStatus());
 
@@ -122,7 +122,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void deleteOrder(Long orderId){
         Order order = orderRepository.findById(orderId).orElseThrow(
-                ()-> new ResourceNotFoundException("Order does not exist with given id: " + orderId));
+                ()-> new ResourceNotFoundException("Orden no existe con id: " + orderId));
 
         orderRepository.deleteById(orderId);
     }
@@ -130,7 +130,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto updatePrice(Long orderId, double totalPrice) {
         Order order = orderRepository.findById(orderId).orElseThrow(
-                ()-> new ResourceNotFoundException("Order does not exist with given id: " + orderId));
+                ()-> new ResourceNotFoundException("Orden no existe con id: " + orderId));
 
         order.setTotalPrice(totalPrice);
 
@@ -142,7 +142,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto updateStatus(Long orderId, String orderStatus) {
         Order order = orderRepository.findById(orderId).orElseThrow(
-                ()-> new ResourceNotFoundException("Order does not exist with given id: " + orderId));
+                ()-> new ResourceNotFoundException("Orden no existe con id: " + orderId));
 
         order.setOrderStatus(orderStatus);
 

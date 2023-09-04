@@ -130,15 +130,15 @@ public class UserController {
     @GetMapping("/newPasswordToken")
     public ResponseEntity<String> newResetPasswordToken(@RequestParam("token") String token){
         User user = confirmationTokenRepository.findByConfirmationToken(token)
-                .orElseThrow(() -> new AppException("Token not found", HttpStatus.NOT_FOUND)).getUser();
+                .orElseThrow(() -> new AppException("Token no encontrado", HttpStatus.NOT_FOUND)).getUser();
         confirmationTokenService.createPasswordToken(user);
-        return ResponseEntity.ok("Password reset sent.");
+        return ResponseEntity.ok("Solicitud de cambio de contraseña enviado.");
     }
     @PostMapping("/changeEmailRequest")
     public ResponseEntity<String> changeEmailRequest(@RequestBody UserDto userDto){
         userService.requestChangeEmail(userDto.getUserEmail());
 
-        return ResponseEntity.ok("Change email request sent.");
+        return ResponseEntity.ok("Solicitud de cambio de email enviado.");
     }
 
     @GetMapping("/changeEmail")

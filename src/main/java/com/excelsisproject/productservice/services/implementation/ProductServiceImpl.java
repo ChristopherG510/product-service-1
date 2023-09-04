@@ -41,7 +41,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDto getProductById(Long productId) {
         Product product = productRepository.findById(productId).orElseThrow(
-                () -> new ResourceNotFoundException("Product does not exists with given id: " + productId));
+                () -> new ResourceNotFoundException("Producto no existe con id: " + productId));
 
         return ProductMapper.mapToProductDto(product);
     }
@@ -63,7 +63,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDto updateProduct(Long productId, ProductDto updatedProduct) {
         Product product = productRepository.findById(productId).orElseThrow(
-                ()-> new ResourceNotFoundException("Product does not exist with given id: " + productId));
+                ()-> new ResourceNotFoundException("Producto no existe con id: " + productId));
         product.setColor(updatedProduct.getColor());
         product.setAmountInStock(updatedProduct.getAmountInStock());
         product.setImageFiles(updatedProduct.getImageFiles());
@@ -77,7 +77,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void deleteProduct(Long productId) {
         Product product = productRepository.findById(productId).orElseThrow(
-                ()-> new ResourceNotFoundException("Product does not exist with given id: " + productId));
+                ()-> new ResourceNotFoundException("Producto no existe con id: " + productId));
 
         productRepository.deleteById(productId);
     }
@@ -85,7 +85,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDto updateStock(Long productId, double amountOrdered) {
         Product product = productRepository.findById(productId).orElseThrow(
-                ()-> new ResourceNotFoundException("Product does not exist with given id: " + productId));
+                ()-> new ResourceNotFoundException("Producto no existe con id: " + productId));
 
         product.setAmountInStock(product.getAmountInStock() - amountOrdered);
 
