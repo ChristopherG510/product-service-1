@@ -113,8 +113,8 @@ public class UserController {
     }
 
     @PostMapping("/changePassword")
-    public String changePassword(@RequestBody ResetPasswordData resetPasswordData){
-        return userService.changePassword(resetPasswordData);
+    public void changePassword(@RequestBody ResetPasswordData resetPasswordData){
+        userService.changePassword(resetPasswordData);
     }
 
     @PostMapping("/changePasswordRequest")

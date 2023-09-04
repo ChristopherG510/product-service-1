@@ -152,7 +152,7 @@ public class UserService {
         return "Correo cambiado exitosamente";
     }
 
-    public String changePassword(ResetPasswordData resetPasswordData){
+    public void changePassword(ResetPasswordData resetPasswordData){
 
         User user = userRepository.findByLogin(getUser().getLogin()).orElseThrow(
                 () -> new AppException("El Usuario o Email no existe.", HttpStatus.NOT_FOUND));
