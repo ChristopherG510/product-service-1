@@ -86,4 +86,31 @@ public class JReportService {
         ByteArrayDataSource attachment = new ByteArrayDataSource(baos.toByteArray(), "application/pdf");
         emailService.sendInvoiceEmail(orderDto.getUserEmail(), attachment);
     }
+
+    public void exportTicket(HttpServletResponse response, OrderDto orderDto) throws JRException, IOException, SQLException {
+
+        Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+
+        File file = ResourceUtils.getFile("classpath:ticket.jrxml");
+        JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
+//        JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(list);
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("orderId", orderDto.getOrderId());
+        parameters.put("firstName", orderDto.getFirstName());
+        parameters.put("lastName", orderDto.getLastName());
+        parameters.put("ruc", orderDto.getRuc());
+        parameters.put("orderDate", orderDto.getDateOrdered());
+        parameters.put("userPhoneNumber", orderDto.getUserPhoneNumber());
+        parameters.put("userAddress", orderDto.getUserAddress());
+        //Fill Jasper report
+        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, connection);
+        //Export report
+        //JasperExportManager.exportReportToPdfStream(jasperPrint,response.getOutputStream());
+
+        // send to mail
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        JasperExportManager.exportReportToPdfStream(jasperPrint, baos);
+        ByteArrayDataSource attachment = new ByteArrayDataSource(baos.toByteArray(), "application/pdf");
+        emailService.sendTicketEmail(orderDto.getUserEmail(), attachment);
+    }
 }

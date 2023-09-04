@@ -80,4 +80,19 @@ public class JReportController {
 
         jReportService.exportInvoice(response, orderDto);
     }
+
+    @GetMapping("/generarTicket")
+    public void generarTicket(HttpServletResponse response, @RequestParam Long orderId) throws IOException, JRException, SQLException {
+        OrderDto orderDto = orderService.getOrderById(orderId);
+
+        response.setContentType("application/pdf");
+        DateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+        String currentDateTime = dateFormatter.format(new Date());
+
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=pdf_" + currentDateTime + ".pdf";
+        response.setHeader(headerKey, headerValue);
+
+        jReportService.exportTicket(response, orderDto);
+    }
 }

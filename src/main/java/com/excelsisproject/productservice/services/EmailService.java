@@ -8,6 +8,8 @@ public interface EmailService {
 
     void sendInvoiceEmail(String to, ByteArrayDataSource dataSource);
 
+    void sendTicketEmail(String to, ByteArrayDataSource dataSource);
+
     void registrationConfirmationEmail(String to, String token);
 
     void changeEmailRequest(String to, String token);

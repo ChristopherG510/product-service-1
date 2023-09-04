@@ -79,6 +79,24 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
+    public void sendTicketEmail(String to, ByteArrayDataSource dataSource) {
+        try {
+            MimeMessage message = getMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            helper.setPriority(1);
+            helper.setSubject("Ticket de Compra");
+            helper.setFrom(fromEmail);
+            helper.setTo(to);
+            helper.setText("");
+            helper.addAttachment("ticket.pdf", dataSource);
+            emailSender.send(message);
+        } catch (Exception exception){
+            System.out.println(exception.getMessage());
+            throw new RuntimeException(exception.getMessage());
+        }
+    }
+
+    @Override
     public void registrationConfirmationEmail(String to, String token) {
         try {
             Context context = new Context();
