@@ -48,7 +48,7 @@ public class EmailServiceImpl implements EmailService {
             MimeMessage message = getMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
             helper.setPriority(1);
-            helper.setSubject("Nueva Autenticación de Usuario");
+            helper.setSubject("Solicitud ambio de Contraseña");
             helper.setFrom(fromEmail);
             helper.setTo(to);
             helper.setText(text, true);

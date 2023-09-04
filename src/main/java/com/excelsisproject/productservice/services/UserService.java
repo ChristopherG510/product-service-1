@@ -161,7 +161,7 @@ public class UserService {
             if (Objects.equals(resetPasswordData.getPassword(), resetPasswordData.getRepeatPassword())){
                 user.setPassword(securityConfig.passwordEncoder().encode(CharBuffer.wrap(resetPasswordData.getPassword())));
                 userRepository.save(user);
-                return "Contraseña cambiada correctamente.";
+                throw new AppException("Contraseña cambiada correctamente.", HttpStatus.OK);
             } else {
                 throw new AppException("Las contraseñas no coinciden", HttpStatus.BAD_REQUEST);
             }

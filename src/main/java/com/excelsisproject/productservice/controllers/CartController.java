@@ -1,9 +1,11 @@
 package com.excelsisproject.productservice.controllers;
 
 import com.excelsisproject.productservice.dto.CartItemDto;
+import com.excelsisproject.productservice.exceptions.AppException;
 import com.excelsisproject.productservice.exceptions.ResourceNotFoundException;
 import com.excelsisproject.productservice.services.CartService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,13 +48,13 @@ public class CartController {
     }
 
     @DeleteMapping("/miCarrito/delete/{id}")
-    public String removeFromCart(@PathVariable("id") Long cartItemId){
+    public void removeFromCart(@PathVariable("id") Long cartItemId){
 
         CartItemDto cartItem = cartService.getMyCartItem(cartItemId);
 
         if (cartItem != null){
             cartService.removeFromCart(cartItemId);
-            return "Item con id: " + cartItemId +" eliminado del carrito";
+            throw new AppException("Item eliminado del carrito", HttpStatus.OK);
         } else {
             throw new ResourceNotFoundException("item con id: " + cartItemId + "no existe en el carrito");
         }
