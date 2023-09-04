@@ -69,7 +69,7 @@ public class SecurityConfig {
                                 "/api/products/filter", "/api/products/customFilter", "/api/products/filterProducts", "/api/JReport/orderPdf/export",
                                 "/changePassword", "/newPasswordToken","/api/JReport/facturar","/view/Product/{id}", "/api/products/view/allProducts",
                                 "/api/products/view/all","/api/products/view/productByClass/{classId}", "/api/Products/view/Product/{id}", "/changeEmail").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/deleteUser", "/api/products/delete/productId/{id}").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/deleteUser", "/api/products/delete/productId/{id}", "/api/cart/miCarrito/delete/{id}").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/orders/edit/orderId/{id}", "/editMyUser","/api/products/edit/productClassId/{id}").permitAll()
                         .anyRequest().authenticated());
         return http.build();

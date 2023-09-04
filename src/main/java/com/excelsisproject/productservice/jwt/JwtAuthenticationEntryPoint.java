@@ -34,7 +34,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         if (exceptionClass == BadCredentialsException.class) {
             OBJECT_MAPPER.writeValue(response.getOutputStream(), new ErrorDto("Credenciales inválidas"));
         } else {
-            OBJECT_MAPPER.writeValue(response.getOutputStream(), new ErrorDto("Acceso no va"));
+            OBJECT_MAPPER.writeValue(response.getOutputStream(), new ErrorDto("Acceso no válido"));
         }
     }
 }
