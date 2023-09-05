@@ -5,6 +5,7 @@ import com.excelsisproject.productservice.dto.ProductDto;
 import com.excelsisproject.productservice.dto.RequestDto;
 import com.excelsisproject.productservice.entities.ImageModel;
 import com.excelsisproject.productservice.entities.Product;
+import com.excelsisproject.productservice.exceptions.AppException;
 import com.excelsisproject.productservice.exceptions.ResourceNotFoundException;
 import com.excelsisproject.productservice.mappers.ProductMapper;
 import com.excelsisproject.productservice.repositories.ProductRepository;
@@ -16,10 +17,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -32,6 +35,11 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDto createProduct(ProductDto productDto){
+
+        Optional<Product> verif = productRepository.getByColorAndProductClassId(productDto.getColor(), productDto.getProductClassId());
+        if (verif.isPresent()){
+            throw new AppException("Color de producto ya existe.", HttpStatus.CONFLICT);
+        }
 
         Product product = ProductMapper.mapToProduct(productDto);
         Product savedProduct = productRepository.save(product);

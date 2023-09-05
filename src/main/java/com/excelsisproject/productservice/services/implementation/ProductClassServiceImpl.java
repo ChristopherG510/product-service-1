@@ -11,16 +11,19 @@ import com.excelsisproject.productservice.exceptions.AppException;
 import com.excelsisproject.productservice.exceptions.ResourceNotFoundException;
 import com.excelsisproject.productservice.mappers.ProductMapper;
 import com.excelsisproject.productservice.repositories.ProductClassRepository;
+import com.excelsisproject.productservice.repositories.ProductRepository;
 import com.excelsisproject.productservice.services.FilterSpecification;
 import com.excelsisproject.productservice.services.ProductClassService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,10 +31,16 @@ import java.util.stream.Collectors;
 public class ProductClassServiceImpl implements ProductClassService {
 
     private ProductClassRepository productClassRepository;
+    private ProductRepository productRepository;
     private FilterSpecification<ProductClass> filterSpecification;
 
     @Override
     public ProductClassDto createProductClass(ProductClassDto productClassDto){
+
+        Optional<ProductClass> verif = productClassRepository.getByNameIgnoreCase(productClassDto.getName());
+        if (verif.isPresent()){
+            throw new AppException("Ya existe una clase de producto con ese nombre.", HttpStatus.CONFLICT);
+        }
 
         ProductClass productClass = ProductMapper.mapToProductClass(productClassDto);
         List<Product> products = new ArrayList<>();
@@ -44,6 +53,11 @@ public class ProductClassServiceImpl implements ProductClassService {
     public ProductClassDto addProduct(ProductDto productDto) {
         ProductClass productClass  = productClassRepository.findById(productDto.getProductClassId()).orElseThrow(
                 () -> new ResourceNotFoundException("Clase de Producto no existe con id: " + productDto.getId()));
+
+        Optional<Product> verif = productRepository.getByColorAndProductClassId(productDto.getColor(), productDto.getProductClassId());
+        if (verif.isPresent()){
+            throw new AppException("Color de producto ya existe.", HttpStatus.CONFLICT);
+        }
 
         Product product = ProductMapper.mapToProduct(productDto);
         productClass.getProducts().add(product);
