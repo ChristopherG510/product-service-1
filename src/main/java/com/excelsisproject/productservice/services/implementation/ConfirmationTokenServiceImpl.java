@@ -40,7 +40,7 @@ public class ConfirmationTokenServiceImpl implements ConfirmationTokenService{
         ConfirmationTokenDto confirmationTokenDto = new ConfirmationTokenDto();
         confirmationTokenDto.setConfirmationToken(UUID.randomUUID().toString());
         confirmationTokenDto.setTimeCreated(LocalDateTime.now());
-        confirmationTokenDto.setTimeExpired(LocalDateTime.now().plusMinutes(15));
+        confirmationTokenDto.setTimeExpired(LocalDateTime.now().plusMinutes(1));
         confirmationTokenDto.setTimeConfirmed(null);
         confirmationTokenDto.setUser(user);
         confirmationTokenDto.setStatus(TOKEN_SENT);
@@ -57,7 +57,7 @@ public class ConfirmationTokenServiceImpl implements ConfirmationTokenService{
         confirmationToken.setConfirmationToken(UUID.randomUUID().toString());
         confirmationToken.setStatus(TOKEN_SENT);
         confirmationToken.setTimeCreated(LocalDateTime.now());
-        confirmationToken.setTimeExpired(LocalDateTime.now().plusMinutes(15));
+        confirmationToken.setTimeExpired(LocalDateTime.now().plusMinutes(1));
         confirmationToken.setTimeConfirmed(null);
         saveConfirmationToken(confirmationToken);
 
@@ -95,7 +95,7 @@ public class ConfirmationTokenServiceImpl implements ConfirmationTokenService{
 
         emailService.changePasswordEmail(user.getUserEmail(), confirmationToken.getConfirmationToken());
 
-        return "Nuevo token generado";
+        throw new AppException("Nuevo token generado", HttpStatus.OK);
     }
 
     public String verifyToken(String token){
@@ -105,14 +105,16 @@ public class ConfirmationTokenServiceImpl implements ConfirmationTokenService{
 
         if(LocalDateTime.now().isAfter(confirmationToken.getTimeExpired()) && (!Objects.equals(confirmationToken.getStatus(), TOKEN_VERIFIED))) {
             confirmationToken.setStatus(TOKEN_EXPIRED);
-            return "<HTML><body> <a href=\"http://localhost:8080/newToken?token=" + token + "\">Su token ha expirado. Haga clic aqui para crear uno nuevo.</a></body></HTML>";
+            confirmationTokenRepository.save(confirmationToken);
+            throw new AppException("Su token ha expirado. Haga clic aqui para crear uno nuevo. http://localhost:8080/newToken?token=" + token, HttpStatus.BAD_REQUEST);
 
         } else if (LocalDateTime.now().isAfter(confirmationToken.getTimeExpired()) && (Objects.equals(confirmationToken.getStatus(), PSW_RESET_SENT))){
             confirmationToken.setStatus(PSW_RESET_EXPIRED);
-            return "<HTML><body> <a href=\"http://localhost:8080/newPasswordToken?token=" + token + "\">Su token ha expirado. Haga clic aqui para crear uno nuevo.</a></body></HTML>";
+            confirmationTokenRepository.save(confirmationToken);
+            throw new AppException("Su token ha expirado. Haga clic aqui para crear uno nuevo. http://localhost:8080/newPasswordToken?token=" + token, HttpStatus.BAD_REQUEST);
 
         } else if (Objects.equals(confirmationToken.getStatus(), TOKEN_VERIFIED)) {
-            return TOKEN_VERIFIED;
+            throw new AppException("Usuario ya Verificado.", HttpStatus.OK);
 
         } else if (Objects.equals(confirmationToken.getStatus(), TOKEN_SENT)) {
             confirmationToken.setStatus(TOKEN_VERIFIED);
@@ -127,16 +129,16 @@ public class ConfirmationTokenServiceImpl implements ConfirmationTokenService{
             confirmationTokenRepository.save(confirmationToken);
             userRepository.save(user);
 
-            return TOKEN_VERIFIED;
+            throw new AppException("Usuario Verificado.", HttpStatus.OK);
 
         } else if (Objects.equals(confirmationToken.getStatus(), PSW_RESET_SENT)){
             confirmationToken.setStatus(TOKEN_VERIFIED);
             confirmationToken.setTimeConfirmed(LocalDateTime.now());
             confirmationTokenRepository.save(confirmationToken);
 
-            return TOKEN_VERIFIED;
+            throw new AppException("La contraseña ya ha sido verificada.", HttpStatus.OK);
         } else {
-            return TOKEN_INVALID;
+            throw new AppException("Token inválido.", HttpStatus.BAD_REQUEST);
         }
     }
 
