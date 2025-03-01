@@ -1,10 +1,12 @@
 package com.excelsisproject.productservice.services.implementation;
 
+import com.excelsisproject.productservice.dto.CartItemDto;
 import com.excelsisproject.productservice.dto.ProductDto;
 import com.excelsisproject.productservice.entities.Product;
 import com.excelsisproject.productservice.exceptions.ResourceNotFoundException;
 import com.excelsisproject.productservice.mappers.ProductMapper;
 import com.excelsisproject.productservice.repositories.ProductRepository;
+import com.excelsisproject.productservice.services.CartService;
 import com.excelsisproject.productservice.services.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;

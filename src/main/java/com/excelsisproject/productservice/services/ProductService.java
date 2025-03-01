@@ -1,5 +1,6 @@
 package com.excelsisproject.productservice.services;
 
+import com.excelsisproject.productservice.dto.CartItemDto;
 import com.excelsisproject.productservice.dto.ProductDto;
 
 import java.util.List;
@@ -20,4 +21,5 @@ public interface ProductService {
     double getPrice(Long productId);
 
     List<ProductDto> searchProducts(String searchKey);
+
 }

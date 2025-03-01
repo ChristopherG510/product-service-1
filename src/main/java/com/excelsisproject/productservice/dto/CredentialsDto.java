@@ -1,4 +1,11 @@
 package com.excelsisproject.productservice.dto;
 
-public record CredentialsDto(String login, char[] password) {
+// Credenciales para el login de usuarios
+
+import lombok.Data;
+
+@Data
+public class CredentialsDto{
+    private String login;
+    private String password;
 }

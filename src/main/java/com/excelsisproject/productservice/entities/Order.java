@@ -15,22 +15,29 @@ import java.util.List;
 @Entity
 @Table(name = "Orders")
 public class Order {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId;
-    @Column(name = "user")
-    private String orderUserName;
-    @Column(name = "address")
-    private String orderUserAddress;
-    @Column(name = "contact")
-    private String orderContact;
+    @Column(name = "user_id")
+    private Long userId;
+
+    private String firstName;
+    private String lastName;
+    private String userEmail;
+    private String userPhoneNumber;
+    @Column(nullable = false)
+    private String userAddress;
+    @Column(nullable = false)
+    private String paymentMethod;
+    private String orderDescription;
+    private String orderStatus;
+
     @Column(name = "order_date")
     private String dateOrdered;
     @Column(name = "order_time")
     private String timeOrdered;
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, targetEntity = Cart.class)
-    private List<Cart> cartItems;
+    @Column(nullable = false)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, targetEntity = CartItem.class)
+    private List<CartItem> cartItems;
     private double totalPrice;
-
 }

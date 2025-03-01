@@ -1,6 +1,6 @@
 package com.excelsisproject.productservice.dto;
 
-import com.excelsisproject.productservice.entities.Cart;
+import com.excelsisproject.productservice.entities.CartItem;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,13 +14,20 @@ import java.util.List;
 @AllArgsConstructor
 public class OrderDto {
     private Long orderId;
-    private String orderUserName;
-    private String orderUserAddress;
-    private String orderContact;
+    private Long userId;
+    private String firstName;
+    private String lastName;
+    private String userEmail;
+    private String userPhoneNumber;
+    private String userAddress;
+    private String paymentMethod;
+    private String orderDescription;
+    private String orderStatus;
     private String dateOrdered;
     private String timeOrdered;
-    private List<Cart> cartItems;
+    private List<CartItem> cartItems;
     private double totalPrice;
+
 
 }
 

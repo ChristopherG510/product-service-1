@@ -11,14 +11,16 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "Cart")
-public class Cart {
+@Table(name = "cart_items")
+public class CartItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long itemId;
+    private Long userId;
     private Long productId;
+    private String productName;
+    private String status;
     private double amount;
     private double price;
-
 }
